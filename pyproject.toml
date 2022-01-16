@@ -1,0 +1,8 @@
+[build-system]
+requires = ["mesonpep517", "ninja"]
+build-backend = "mesonpep517.buildapi"
+
+[tool.mesonpep517.metadata]
+author = "Matt Piekenbrock"
+author-email = "matt.piekenbrock@gmail.com"
+summary = "Implements approximate and exact Set Cover and Weighted Set Cover algorithms."
