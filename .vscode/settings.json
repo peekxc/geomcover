@@ -1,0 +1,23 @@
+{
+  "files.associations": {
+    "vector": "cpp",
+    "array": "cpp",
+    "atomic": "cpp",
+    "complex": "cpp",
+    "deque": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "unordered_set": "cpp",
+    "iterator": "cpp",
+    "memory_resource": "cpp",
+    "optional": "cpp",
+    "string_view": "cpp",
+    "initializer_list": "cpp",
+    "stop_token": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "valarray": "cpp"
+  }
+}

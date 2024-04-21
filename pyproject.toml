@@ -1,8 +1,24 @@
 [build-system]
-requires = ["mesonpep517", "ninja"]
-build-backend = "mesonpep517.buildapi"
+build-backend = "poetry.masonry.api"
+requires = ["poetry>=0.12", "wheel", "setuptools", "pybind11>=2.8.0"]
 
-[tool.mesonpep517.metadata]
-author = "Matt Piekenbrock"
-author-email = "matt.piekenbrock@gmail.com"
-summary = "Implements approximate and exact Set Cover and Weighted Set Cover algorithms."
+[tool.poetry]
+name = "set_cover"
+authors = ["Matt Piekenbrock"]
+version = "0.1.0"
+description = "Weighted Set Cover algorithms"
+build = "build.py"
+packages = [
+	{ include = "set_cover", from = "src" }, # from = "src/tallem" 
+	{ include = "sc_ext", from = "src/set_cover" }
+]
+include = [
+	{ path = "src/**/*.so", format = "wheel" },
+	{ path = "src/**/*.pyd", format = "wheel" },
+	"README.md"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+numpy = "^1.22.3"
+scipy = "^1.8.0"
