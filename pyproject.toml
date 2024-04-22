@@ -1,24 +1,21 @@
 [build-system]
-build-backend = "poetry.masonry.api"
-requires = ["poetry>=0.12", "wheel", "setuptools", "pybind11>=2.8.0"]
+build-backend = "mesonpy"
+requires = ["meson-python", "wheel", "ninja", "numpy", "pybind11>=2.8.0"]
 
-[tool.poetry]
+[project]
 name = "set_cover"
-authors = ["Matt Piekenbrock"]
 version = "0.1.0"
+authors = [
+	{  name = "Matt Piekenbrock", email = "matt.piekenbrock@gmail.com" }
+]
 description = "Weighted Set Cover algorithms"
-build = "build.py"
+readme = "README.md"
 packages = [
-	{ include = "set_cover", from = "src" }, # from = "src/tallem" 
-	{ include = "sc_ext", from = "src/set_cover" }
+	{ include = "set_cover", from = "src" },
 ]
-include = [
-	{ path = "src/**/*.so", format = "wheel" },
-	{ path = "src/**/*.pyd", format = "wheel" },
-	"README.md"
+dependencies = [
+  "numpy", 
+	"combin"
 ]
+license = {file = "LICENSE"}
 
-[tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-numpy = "^1.22.3"
-scipy = "^1.8.0"

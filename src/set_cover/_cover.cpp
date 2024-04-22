@@ -10,26 +10,6 @@
 using namespace pybind11::literals;
 namespace py = pybind11;
 
-// S, W = subsets, weights
-// n, J = S.shape
-// elements, sets, point_cover, set_cover = set(range(n)), set(range(J)), set(), array('I')
-// slice_col = lambda j: S.indices[S.indptr[j]:S.indptr[j+1]] # provides efficient cloumn slicing
-
-// ## Make infinite costs finite, but very large
-// if np.any(W == np.inf):
-// 	W[W == np.inf] = 1.0/np.finfo(float).resolution
-
-// # Greedily add the subsets with the most uncovered points
-// while point_cover != elements:
-// 	#I = min(sets, key=lambda j: W[j]/len(set(slice_col(j)) - point_cover) ) # adding RHS new elements to cover incurs weighted cost of w/|RHS|
-// 	I = min(sets, key=lambda j: np.inf if (p := len(set(slice_col(j)) - point_cover)) == 0.0 else W[j]/p)
-// 	set_cover.append(I)
-// 	point_cover |= set(slice_col(I))
-// 	sets -= set(set_cover)
-// assignment = np.zeros(J, dtype=bool)
-// assignment[set_cover] = True
-// return((assignment, np.sum(weights[assignment])))
-
 // Counter to avoid storing the set difference 
 struct Counter {
   struct value_type { template<typename T> value_type(const T&) { } };
@@ -112,6 +92,6 @@ py::array_t< int > greedy_set_cover(py::array_t< int >& indices, py::array_t< in
   return(soln_np);
 }
 
-PYBIND11_MODULE(set_cover, m) {
+PYBIND11_MODULE(_cover, m) {
   m.def("greedy_set_cover", &greedy_set_cover);
 };

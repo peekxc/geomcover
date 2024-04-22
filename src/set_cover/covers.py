@@ -1,34 +1,9 @@
-import math
+from math import comb
 import numpy as np
 from numpy.typing import ArrayLike
-# from tallem.dimred import neighborhood_graph, neighborhood_list, pca
 from scipy.sparse import csr_matrix, csc_matrix, find, coo_matrix
-from scipy.spatial.distance import pdist, cdist
-
-
-## Utility 
-def inverse_choose(x: int, k: int):
-	assert k >= 1, "k must be >= 1" 
-	if k == 1: return(x)
-	if k == 2:
-		rng = np.array(list(range(int(np.floor(np.sqrt(2*x))), int(np.ceil(np.sqrt(2*x)+2) + 1))))
-		final_n = rng[np.nonzero(np.array([math.comb(n, 2) for n in rng]) == x)[0].item()]
-	else:
-		# From: https://math.stackexchange.com/questions/103377/how-to-reverse-the-n-choose-k-formula
-		if x < 10**7:
-			lb = (math.factorial(k)*x)**(1/k)
-			potential_n = np.array(list(range(int(np.floor(lb)), int(np.ceil(lb+k)+1))))
-			idx = np.nonzero(np.array([math.comb(n, k) for n in potential_n]) == x)[0].item()
-			final_n = potential_n[idx]
-		else:
-			lb = np.floor((4**k)/(2*k + 1))
-			C, n = math.factorial(k)*x, 1
-			while n**k < C: n = n*2
-			m = (np.nonzero( np.array(list(range(1, n+1)))**k >= C )[0])[0].item()
-			potential_n = np.array(list(range(int(np.max([m, 2*k])), int(m+k+1))))
-			ind = np.nonzero(np.array([math.comb(n, k) for n in potential_n]) == x)[0].item()
-			final_n = potential_n[ind]
-	return(final_n)
+from scipy.spatial.distance import pdist, cdist, squareform
+from combin import inverse_choose
 
 ## Predicates to simplify type-checking
 def is_distance_matrix(x: ArrayLike) -> bool:
@@ -42,26 +17,37 @@ def is_pairwise_distances(x: ArrayLike) -> bool:
 	x = np.array(x, copy=False) # don't use asanyarray here
 	if x.ndim > 1: return(False)
 	n = inverse_choose(len(x), 2)
-	return(x.ndim == 1 and n == int(n))
+	return(x.ndim == 1 and len(x) == comb(n, 2))
 
 def is_point_cloud(x: ArrayLike) -> bool: 
 	''' Checks whether 'x' is a 2-d array of points '''
 	return(isinstance(x, np.ndarray) and x.ndim == 2)
 
 ## Classical MDS 
-def cmds(a: ArrayLike, d: int = 2, coords: bool = True):
-	''' Computes classical MDS (cmds) '''
-	if is_pairwise_distances(a):
-		D = as_dist_matrix(a)
-	elif not(is_distance_matrix(a)) and is_point_cloud(a):
-		D = cdist(a, a)
-	else:
-		D = a
-	assert(is_distance_matrix(D))
-	n = D.shape[0]
-	D_center = D.mean(axis=0)
-	Dc = -0.50 * (D  - D_center - D_center.reshape((n,1)) + D_center.mean())
-	evals, evecs = np.linalg.eigh(Dc)
+def cmds(G: ArrayLike, d: int = 2, coords: bool = True):
+	''' Projects 'G' onto a d-dimensional embedding via Classical (Torgerson's) Multi-Dimensional Scaling (CMDS)
+
+	CMDS is a linear dimensionality reduction algorithm that projects a double-centered symmetric inner product (gram) matrix 'G' to a 
+	lower dimensional space whose coordinates minimize the reconstruction error of centered scalar products, or 'strain'.
+
+	Parameters: 
+		G = set of pairwise inner products or a squared Euclidean distance matrix. 
+		d = dimension of the embedding to produce.
+		center = whether to center the data prior to computing eigenvectors
+		coords = whether to return the embedding (default = True), or just return the eigenvectors
+	
+	Returns:
+		if coords = True, returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. Otherwise, 
+		the eigenvalues and eigenvectors can be returned as-is. 
+	''' 
+	is_pd = is_pairwise_distances(G)
+	is_dm = is_distance_matrix(G)
+	assert is_pd or is_dm, "Input 'D' should set of pairwise distances or distance matrix"
+	G = squareform(G) if is_pd else G
+	n = G.shape[0]
+	G_center = G.mean(axis=0)
+	G = -0.50 * (G  - G_center - G_center.reshape((n,1)) + G_center.mean())
+	evals, evecs = np.linalg.eigh(G)
 	evals, evecs = evals[(n-d):n], evecs[:,(n-d):n]
 
 	# Compute the coordinates using positive-eigenvalued components only     
@@ -76,29 +62,34 @@ def cmds(a: ArrayLike, d: int = 2, coords: bool = True):
 		evals[ni] = 0.0
 		return(evals, evecs)
 
-## Plain PCA
-def pca(x: ArrayLike, d: int = 2, center: bool = False, coords: bool = True) -> ArrayLike:
+def pca(X: ArrayLike, d: int = 2, center: bool = False, coords: bool = True) -> ArrayLike:
 	''' 
-	Uses PCA to produce a d-dimensional embedding of 'x', or an eiegnvalue decomposition of its covariance matrix. 
-	
+	Projects 'X' onto a d-dimensional embedding via Principal Component Analysis (PCA)
+
+	PCA is a linear dimensionality reduction algorithm that projects a point set 'X' onto a lower dimensional space 
+	using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix. 
+
+	PCA is dual to CMDS in the sense that the d-dimensional embedding produced by CMDS on the gram matrix  
+	of squared Euclidean distances from 'X' satisfies the same reconstruction as the d-dimensional projection of 'X' with PCA. 
+
 	Parameters: 
-		x := point cloud, distance matrix, or set of pairwise distances
-		d := dimension of the embedding 
-		center := whether to center the data prior to computing eigenvectors
-		coords := whether to return the embedding (default), or just return the eigenvectors
+		X = (n x D) point cloud / design matrix of n points in D dimensions. 
+		d = dimension of the embedding to produce.
+		center = whether to center the data prior to computing eigenvectors
+		coords = whether to return the embedding (default), or just return the eigenvectors
 	
-	Returns: 
-		if coords = False, returns the projection of 'x' onto the largest 'd' eiegenvectors of x's covariance matrix. Otherwise, 
-		the eigenvalues and eigenvectors can be returned as-is. 
+	Returns:
+		if coords = True (default), returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. 
+		Otherwise, the eigenvalues and eigenvectors can be returned as-is. 
 	'''
-	if is_pairwise_distances(x) or is_distance_matrix(x):
-		return(cmds(x, d))
-	assert is_point_cloud(x), "Input should be a point cloud, not a distance matrix."
-	if center: x -= x.mean(axis = 0)
-	evals, evecs = np.linalg.eigh(np.cov(x, rowvar=False))
+	X = np.atleast_2d(X)
+	assert is_point_cloud(X), "Input should be a point cloud, not a distance matrix."
+	if center: 
+		X -= X.mean(axis = 0)
+	evals, evecs = np.linalg.eigh(np.cov(X, rowvar=False))
 	idx = np.argsort(evals)[::-1] # descending order to pick the largest components first 
 	if coords:
-		return(np.dot(x, evecs[:,idx[range(d)]]))
+		return(np.dot(X, evecs[:,idx[range(d)]]))
 	else: 
 		return(evals[idx[range(d)]], evecs[:,idx[range(d)]])
 
@@ -108,14 +99,14 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	which approximates the d-dimensional tangent space around each of those points. 
 
 	Parameters: 
-		X := (n x d) point cloud data in Euclidean space, or and (n x n) sparse adjacency matrix yielding a weighted neighborhood graph
-		d := local dimension where the metric is approximately Euclidean
-		r := radius around each point determining the neighborhood from which to compute the tangent vector
-		ind := indices to approximate the neighborhoods at. If not specified, will use every point. 
+		X = (n x d) point cloud data in Euclidean space, or and (n x n) sparse adjacency matrix yielding a weighted neighborhood graph
+		d = local dimension where the metric is approximately Euclidean
+		r = radius around each point determining the neighborhood from which to compute the tangent vector
+		ind = indices to approximate the neighborhoods at. If not specified, will use every point. 
 
 	Returns: 
-		G := (n x len(ind)) csc_matrix giving the incidence relations of the neighborhood graph
-		weights := len(ind)-length array 
+		G = the neighborhood graph, given as an (n x len(ind)) incidence matrix
+		weights = len(ind)-length array 
 	'''
 	ind = np.array(range(X.shape[0])) if ind is None else ind
 	m = len(ind)

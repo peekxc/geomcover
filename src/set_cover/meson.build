@@ -1,23 +1,23 @@
-pybind11_include = include_directories('extern')
+python_sources = [
+  '__init__.py', 
+  '__version__.py', 
+  'covers.py', 
+  'wset_cover.py'
+]
 
-message('Got here')
-
-module = python.extension_module(
-  'sc_ext',      
-  sources: ['set_cover.cpp'],
-  include_directories: [pybind11_include],
-  install: true,
-  dependencies: [python.dependency()],
-  subdir: 'sc_ext', # Folder relative to site-packages to install to
+## Extension modules
+module = py.extension_module(
+  '_cover',      
+  sources: ['_cover.cpp'],
+  include_directories: includes,
+  install: true, 
+  cpp_args: _cpp_args
 )
-# # Pure Python sources
-# python_sources = ['__init__.py']
 
-# # Install pure Python
-# python.install_sources(
-#   python_sources,
-#   pure: false, # install native extensions alongside pure python modules
-#   subdir: 'sc_ext' # Folder relative to site-packages to install to
-# )
-# python3 -m build . --skip-dependency-check --no-isolation
-# meson introspect build/ -i --targets
+## Print install directory
+message('Source install dir = '+py.get_install_dir())
+py.install_sources(
+  python_sources,
+  subdir: pkg_name, 
+  pure: false       # Will be installed next to binaries
+)
