@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "mesonpy"
-requires = ["meson-python", "wheel", "ninja", "numpy", "pybind11>=2.8.0"]
+requires = ["meson-python", "wheel", "numpy", "pybind11>=2.8.0"]
 
 [project]
 name = "set_cover"

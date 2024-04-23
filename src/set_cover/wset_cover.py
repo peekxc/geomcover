@@ -4,7 +4,7 @@ import numpy as np
 from array import array
 from typing import *
 from numpy.typing import ArrayLike
-from scipy.sparse import issparse, csc_matrix
+from scipy.sparse import issparse, csc_matrix, csc_array
 from scipy.optimize import linprog
 
 def package_exists(package: str) -> bool: 
@@ -14,6 +14,12 @@ def package_exists(package: str) -> bool:
 def ask_package_install(package: str):
 	if not(package_exists(package)):
 		raise RuntimeError(f"Module {package} not installed. To use this function, please install {package}.")
+
+def _clean_sp_mat(A):
+	A = A.tocsc() if not hasattr(A, "indices") else A 
+	A.eliminate_zeros()
+	A.sort_indices()
+	return A
 
 def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "default"):
 	''' 
@@ -32,13 +38,15 @@ def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 	'''
 	assert issparse(subsets), "cover must be sparse matrix"
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
+	subsets = _clean_sp_mat(subsets)
+
 	W = weights.reshape((1, len(weights))) # ensure W is a column vector
 	if subsets.dtype != int:
 		subsets = subsets.astype(int)
 
 	# linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, bounds=None, method='interior-point', callback=None, options=None, x0=None)
 	# Since A_ub @ x <= b_ub, negate A_ub to enable constraint A_ub @ x >= 1
-	soln = linprog(c=W, b_ub=np.repeat(-1.0, subsets.shape[0]), A_ub=-subsets, bounds=(0.0, 1.0), options={"sparse": True})
+	soln = linprog(c=W, b_ub=np.repeat(-1.0, subsets.shape[0]), A_ub=-subsets, bounds=(0.0, 1.0)) # options={"sparse": True}
 	assert soln.success
 
 	## Change maxiter to default solution
@@ -77,6 +85,8 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike):
 	"""
 	assert issparse(subsets), "cover must be sparse matrix"
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
+	subsets = _clean_sp_mat(subsets)
+
 	S, W = subsets, weights
 	n, J = S.shape
 	elements, sets, point_cover, set_cover = set(range(n)), set(range(J)), set(), array('I')
@@ -100,26 +110,44 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike):
 
 def _maxsat_wcnf(subsets: csc_matrix, weights: ArrayLike):
 	""" Produces a WMAX-SAT CNF formula"""
+	assert isinstance(subsets, csc_matrix) or isinstance(subsets, csc_array), "Subset membership must be given as sparse (n x J) CSC array."
 	from pysat.formula import WCNF
-	from tempfile import TemporaryFile, NamedTemporaryFile
 	assert subsets.shape[1] == len(weights)
-	subsets = subsets.astype(bool) 
-	wcnf = WCNF()
-	for j in range(subsets.shape[1]): 
-		wcnf.append(list(np.flatnonzero(subsets[:,j].A)+1), weight=None)
-	for j, w in enumerate(weights): 
-		wcnf.append([-int(j+1)], weight=w)
+	n, J = subsets.shape
 	
-	## The types are not inferred from direct inputs, so have to write to file to get correct parsing
-	tmp = NamedTemporaryFile()
-	wcnf.to_file(tmp.name)
-	wcnf = WCNF(from_file=tmp.name)
-	tmp.close()
-	return(wcnf)
+	## To encode covering constraints in CNF form, we use the transpose
+	B = subsets.T.tocsc().sorted_indices()
+	wcnf = WCNF()
+	
+	## (Hard) covering constraint: all elements must be covered
+	N = [z for z in np.split(B.indices+1, B.indptr)[1:-1]]
+	wcnf.extend(N, weights=None)
+
+	## (Soft) weight constraint: encourage less subsets by accumulating negative variables 
+	wcnf.extend(-(np.arange(J)+1)[:,np.newaxis], weights=list(weights))
+	
+	## return valid formula
+	return WCNF(from_string=wcnf.to_dimacs())
+
+# for j in range(subsets.shape[1]): 
+# 	wcnf.append(list(np.flatnonzero(subsets[:,j].A)+1), weight=None)
+# for subset in np.split(subsets.indices, subsets.indptr)[1:-1]:
+# 	wcnf.append(list(subset+1), weight=None)
+# for j, w in enumerate(weights): 
+# 	wcnf.append([-int(j+1)], weight=w)
+## The types are not inferred from direct inputs, so have to write to file to get correct parsing
+# tmp = NamedTemporaryFile()
+# wcnf.to_file(tmp.name)
+# wcnf = WCNF(from_file=tmp.name)
+# tmp.close()
+
 
 def wset_cover_sat(subsets: csc_matrix, weights: ArrayLike, return_solver: bool = False, **kwargs):
 	ask_package_install("pysat")
+	import pysat
+	assert "examples" in dir(pysat), "Please install the full pysat package with extensions for SAT support"
 	from pysat.examples.rc2 import RC2
+	subsets = _clean_sp_mat(subsets)
 	wcnf = _maxsat_wcnf(subsets, weights)
 	solver = RC2(wcnf, **kwargs)
 	finished, clauses = False, None
@@ -135,6 +163,16 @@ def wset_cover_sat(subsets: csc_matrix, weights: ArrayLike, return_solver: bool 
 		assignment = np.zeros(subsets.shape[1], dtype=bool)
 		assignment[set_ind] = True
 		return(assignment, np.sum(weights[assignment]))
+
+def wset_cover(subsets: csc_matrix, weights: ArrayLike, method: str = "LP", **kwargs):
+	assert isinstance(method, str) and method.lower() in ["lp", "greedy", "sat"], f"Invalid method '{str(method)}' supplied; must be one of 'LP', 'greedy', or 'SAT'"
+	method = method.upper()
+	if method == "LP":
+		return wset_cover_LP(subsets, weights, **kwargs)
+	elif method == "GREEDY":
+		return wset_cover_greedy(subsets, weights, **kwargs)
+	else:
+		return wset_cover_sat(subsets, weights, **kwargs)
 
 # # RC2(wcnf)
 

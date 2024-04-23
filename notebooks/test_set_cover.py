@@ -29,19 +29,22 @@ G, weights, tangents = tangent_neighbor_graph(S, d=1, r=0.75)
 
 
 # %% View individual subset 
-plt.scatter(*S.T, c='blue', s=15.5)
-for j in range(G.shape[1]):
-  plt.scatter(*S[G[:,j].indices,:].T, s=15.5)
+p = figure(width=300, height=300)
+p.scatter(*S.T, color='blue', size=5.5)
+# for j in range(G.shape[1]):
+p.scatter(*S[G[:,j].indices,:].T, color='red', size=6.5)
+show(p)
 
 # %% Visualize the tangent space + its orthogonal complement
 Tx = tangents[0].flatten()
 Ty = np.linalg.svd(Tx.reshape((2,1)))[0][:,1]
 
 subset_centered = S[G[:,0].indices,:] - S[0,:]
-plt.scatter(*subset_centered.T)
-plt.plot([0.0, Tx[0]], [0.0, Tx[1]], c='red')
-plt.plot([0.0, Ty[0]], [0.0, Ty[1]], c='green')
-plt.gca().set_aspect('equal')
+p = figure(width=300, height=250)
+p.scatter(*subset_centered.T)
+p.scatter([0.0, Tx[0]], [0.0, Tx[1]], color='red')
+p.scatter([0.0, Ty[0]], [0.0, Ty[1]], color='green')
+show(p)
 
 # %% Smallest bounding box with tangent vector as basis 
 import matplotlib

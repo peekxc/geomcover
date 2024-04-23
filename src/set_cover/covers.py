@@ -1,7 +1,7 @@
 from math import comb
 import numpy as np
 from numpy.typing import ArrayLike
-from scipy.sparse import csr_matrix, csc_matrix, find, coo_matrix
+from scipy.sparse import csr_matrix, csc_matrix, find, coo_matrix, csc_array
 from scipy.spatial.distance import pdist, cdist, squareform
 from combin import inverse_choose
 
@@ -134,3 +134,32 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	G = coo_matrix((v, (r,c)), shape=(X.shape[0], len(ind)), dtype=bool)
 	return(G.tocsc(), weights, tangents)
 	#return(weights, tangents)
+
+def tangent_bundle(G, X: np.ndarray) -> dict:
+	'''Estimates the tangent bundle of a graph 'G' whose vertices in Euclidean space 'X' via local PCA.'''
+	pass 
+	# ## Get tangent space estimates at centered points
+	# centered_pts = X[nn_idx,:]-x
+	# _, T_y = pca(centered_pts, d=d, coords=False)
+	# tangents[i] = T_y # ambient x local
+	# if len(nn_idx) < 2: 
+	# # raise ValueError("Singularity at point {i}: neighborhood too small to compute tangent")
+	# weights[i] = np.inf 
+	# tangents[i] = np.zeros(shape=(X.shape[1], d))
+	# continue 
+
+
+def valid_cover(A, ind: np.ndarray = None) -> bool:
+	"""Determines whether certain subsets of a set of subsets forms a covers every row."""
+	import sortednp
+	n, J = A.shape
+	A = csc_array(A).astype(bool) if not hasattr(A, "indices") else A
+	A.eliminate_zeros()
+	A.sort_indices()
+	subset_splits = np.split(A.indices, A.indptr)[1:-1]
+	assert len(subset_splits) == J, "Splitting of cover array failed. Are there empty columns?"
+	if ind is not None:
+		ind = np.array(ind).astype(int) 
+		subset_splits = [subset_splits[i] for i in ind]
+	covered_ind = sortednp.kway_merge(*subset_splits, assume_sorted=True, duplicates=4)
+	return len(covered_ind) == n
