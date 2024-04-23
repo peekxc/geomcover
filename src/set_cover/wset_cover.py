@@ -7,6 +7,9 @@ from numpy.typing import ArrayLike
 from scipy.sparse import issparse, csc_matrix, csc_array
 from scipy.optimize import linprog
 
+from .loaders import _clean_sp_mat
+import _cover
+
 def package_exists(package: str) -> bool: 
 	pkg_spec = importlib.util.find_spec(package)
 	return(pkg_spec is not None)
@@ -14,12 +17,6 @@ def package_exists(package: str) -> bool:
 def ask_package_install(package: str):
 	if not(package_exists(package)):
 		raise RuntimeError(f"Module {package} not installed. To use this function, please install {package}.")
-
-def _clean_sp_mat(A):
-	A = A.tocsc() if not hasattr(A, "indices") else A 
-	A.eliminate_zeros()
-	A.sort_indices()
-	return A
 
 def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "default"):
 	''' 
@@ -67,7 +64,7 @@ def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 
 # Adapted from: http://www.martinbroadhurst.com/greedy-set-cover-in-python.html
 # Also see: https://courses.engr.illinois.edu/cs598csc/sp2011/Lectures/lecture_4.pdf
-def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike):
+def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = False):
 	"""
 	Computes a set of indices I whose subsets S[I] = { S_1, S_2, ..., S_k }
 	yield an approximation to the minimal weighted set cover, i.e.
@@ -105,7 +102,7 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike):
 		sets -= set(set_cover)
 	assignment = np.zeros(J, dtype=bool)
 	assignment[set_cover] = True
-	return((assignment, np.sum(weights[assignment])))
+	return (assignment, np.sum(weights[assignment])) if not info else set_cover
 
 
 def _maxsat_wcnf(subsets: csc_matrix, weights: ArrayLike):
@@ -144,12 +141,12 @@ def _maxsat_wcnf(subsets: csc_matrix, weights: ArrayLike):
 
 def wset_cover_sat(subsets: csc_matrix, weights: ArrayLike, return_solver: bool = False, **kwargs):
 	ask_package_install("pysat")
-	import pysat
-	assert "examples" in dir(pysat), "Please install the full pysat package with extensions for SAT support"
-	from pysat.examples.rc2 import RC2
+	# import pysat
+	# assert "examples" in dir(pysat), "Please install the full pysat package with extensions for SAT support"
+	from pysat.examples.rc2 import RC2, RC2Stratified
 	subsets = _clean_sp_mat(subsets)
 	wcnf = _maxsat_wcnf(subsets, weights)
-	solver = RC2(wcnf, **kwargs)
+	solver = RC2Stratified(wcnf, **kwargs)
 	finished, clauses = False, None
 	try: 
 		clauses = np.array(solver.compute())

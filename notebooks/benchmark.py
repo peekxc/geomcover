@@ -9,11 +9,56 @@
 import numpy as np 
 from scipy.sparse import csc_array, coo_array
 
+from set_cover import load_set_cover_instance
+from set_cover import wset_cover, wset_cover_LP, wset_cover_greedy, wset_cover_sat
+from set_cover.covers import valid_cover
+
+A, w = load_set_cover_instance("/Users/mpiekenbrock/set_cover/notebooks/scp41.txt")
+
+soln, cost = wset_cover_LP(A, w)
+soln, cost = wset_cover_greedy(A, w)
+soln, cost = wset_cover_sat(A, w)
+
+from set_cover.wset_cover import _cover
+dir(_cover)
+## TODO: fix
+ind = _cover.greedy_set_cover(A.indices, A.indptr, w, A.shape[0])
+
+wset_cover_greedy(A, w, info=True)
+
+np.flip(np.sort(ind[:82]))
+valid_cover(A, ind)
+
+# valid_cover(A, np.flatnonzero(soln))
+
+len(np.flatnonzero(soln))
+
+from ortools.linear_solver import pywraplp
+from ortools.sat.python import cp_model
+
+solver = pywraplp.Solver.CreateSolver("SCIP") # mip solver with the SCIP backend.
+assert solver is not None
+
+## Define variables 
+x = {}
+for j in range(data["num_vars"]):
+  x[j] = solver.IntVar(0, infinity, "x[%i]" % j)
+
+B.indices
+
+constraint = solver.RowConstraint(0, 1, "")
+
+
+
+z1 = solver.BoolVar("z1")
+solver.Add(x + 7 * y <= 17.5)
+
+solver.Minimize()
+status = solver.Solve()
+
 
 A = csc_array(np.loadtxt("notebooks/camera_stadium.txt").astype(bool)).sorted_indices()
 
-from set_cover import wset_cover, wset_cover_LP, wset_cover_greedy, wset_cover_sat
-from set_cover.covers import valid_cover
 
 set_weights = np.ones(A.shape[1])
 

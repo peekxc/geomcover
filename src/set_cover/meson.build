@@ -1,6 +1,7 @@
 python_sources = [
   '__init__.py', 
   '__version__.py', 
+  'loaders.py',
   'covers.py', 
   'wset_cover.py'
 ]

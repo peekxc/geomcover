@@ -59,7 +59,7 @@ py::array_t< int > greedy_set_cover(py::array_t< int >& indices, py::array_t< in
     // Main computational set: get the sizes of the all the set differences
     set_imports.clear();
     for (size_t ji = 0; ji < cand_sets.size(); ++ji){
-      size_t j = cand_sets[ji];
+      size_t j = cand_sets[ji]; // absolute column / set index 
       auto jb = ind.begin()+IP[j];
       auto je = ind.begin()+IP[j+1];
       const size_t I_sz = setdiff_size(jb, je, pci.begin(), pci.end());
@@ -69,22 +69,27 @@ py::array_t< int > greedy_set_cover(py::array_t< int >& indices, py::array_t< in
     // Greedy step
     auto min_it = std::min_element(set_imports.begin(), set_imports.end());
     auto min_ind = std::distance(set_imports.begin(), min_it);
-    const size_t best_j = cand_sets[min_ind];
-    cand_sets.erase(cand_sets.begin()+best_j); // remove the set from future consideration
+    const size_t best_j = cand_sets[min_ind]; // absolute column index
+    // cand_sets.erase(cand_sets.begin()+best_j); // remove the set from future consideration
+    cand_sets.erase(std::remove(cand_sets.begin(), cand_sets.end(), best_j), cand_sets.end());
 
     // Union the best set into the point cover
     auto jb = ind.begin()+IP[best_j];
     auto je = ind.begin()+IP[best_j+1];
-    std::set_difference(jb, je, pci.begin(), pci.end(), std::back_inserter(pci));
-    if (set_imports[best_j] == std::numeric_limits< double >::max()){
-      // set difference empty
-      soln.push_back(best_j);
-    } else {
-      const size_t j_sz = static_cast< size_t >(set_imports[best_j]*W[best_j]);
-      std::inplace_merge( pci.begin(), pci.begin() + j_sz, pci.end()); 
-      soln.push_back(best_j);
-    }
 
+    const size_t c_sz = pci.size();
+    std::set_difference(jb, je, pci.begin(), pci.end(), std::back_inserter(pci));
+    // if (set_imports[best_j] == std::numeric_limits< double >::max()){
+    //   // set difference empty
+    //   soln.push_back(best_j);
+    // } else {
+    // Merge the set into the set of point indices
+    const size_t j_sz = std::distance(jb, je); // static_cast< size_t >(set_imports[best_j]*W[best_j]);
+    std::inplace_merge(pci.begin(), pci.begin() + c_sz, pci.end()); 
+    // auto last = std::unique(pci.begin(), pci.end());
+    // pci.erase(last, pci.end());
+    soln.push_back(best_j);
+    // }
     cc++; 
   }
 
