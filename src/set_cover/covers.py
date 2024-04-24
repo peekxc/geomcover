@@ -135,18 +135,36 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	return(G.tocsc(), weights, tangents)
 	#return(weights, tangents)
 
-def tangent_bundle(G, X: np.ndarray) -> dict:
-	'''Estimates the tangent bundle of a graph 'G' whose vertices in Euclidean space 'X' via local PCA.'''
-	pass 
-	# ## Get tangent space estimates at centered points
-	# centered_pts = X[nn_idx,:]-x
-	# _, T_y = pca(centered_pts, d=d, coords=False)
-	# tangents[i] = T_y # ambient x local
-	# if len(nn_idx) < 2: 
-	# # raise ValueError("Singularity at point {i}: neighborhood too small to compute tangent")
-	# weights[i] = np.inf 
-	# tangents[i] = np.zeros(shape=(X.shape[1], d))
-	# continue 
+def neighborhood_graph(X: np.ndarray, r: float, ind = None):
+	"""Constructs an 'r'-neighborhood graph on the point cloud 'X' at the given indices 'ind'.abs(
+		
+	Returns: 
+		G = compressed (n x i) adjacency list, where n = |X| and i = |ind|, given as a CSR sparse matrix 
+	"""
+	ind = np.array(range(X.shape[0])) if ind is None else ind
+	m = len(ind)
+	r,c,v = find(cdist(X, X[ind,:]) <= r*2)
+	G = coo_matrix((v, (r,c)), shape=(X.shape[0], len(ind)), dtype=bool)
+	return G.tocsr()
+
+
+def tangent_bundle(M: csc_array, X: np.ndarray, k: int = 1) -> dict:
+	'''Estimates the tangent bundle of a graph 'M' whose vertices in Euclidean space 'X' via local PCA.
+	
+	Parameters: 
+		M = Adjacency matrix, given as a sparse matrix
+		X = coordinates of the vertices of 'G'
+	'''
+
+	## Get tangent space estimates at centered points
+	centered_pts = X[nn_idx,:]-x
+	_, T_y = pca(centered_pts, d=d, coords=False)
+	tangents[i] = T_y # ambient x local
+	if len(nn_idx) < 2: 
+	# raise ValueError("Singularity at point {i}: neighborhood too small to compute tangent")
+	weights[i] = np.inf 
+	tangents[i] = np.zeros(shape=(X.shape[1], d))
+	continue 
 
 
 def valid_cover(A, ind: np.ndarray = None) -> bool:
