@@ -17,8 +17,8 @@ def spiral(N, sigma=1.0):
 
 # %% Make an plot data set
 S = spiral(N=300, sigma=0.50)
-p = figure(width=250, height=250)
-p.scatter(*S.T)
+p = figure(width=300, height=300, match_aspect=True)
+p.scatter(*S.T, color='red', size=3.4, line_width=0.5, line_color='gray')
 show(p)
 
 # %% Construct neighborhood cover
@@ -28,23 +28,106 @@ G, weights, tangents = tangent_neighbor_graph(S, d=1, r=0.75)
 # np.all(np.ravel(G.sum(axis=1).flatten()) >= 0)
 
 
-# %% View individual subset 
-p = figure(width=300, height=300)
-p.scatter(*S.T, color='blue', size=5.5)
-# for j in range(G.shape[1]):
-p.scatter(*S[G[:,j].indices,:].T, color='red', size=6.5)
+from set_cover.covers import tangent_bundle, neighborhood_graph
+M = neighborhood_graph(S, r=1.15)
+TM = tangent_bundle(M, S, d=1)
+
+# %% Plot the neighborhood graph 
+A = M.tocoo()
+xs = list(zip(S[A.row,0], S[A.col,0]))
+ys = list(zip(S[A.row,1], S[A.col,1]))
+
+p = figure(width=300, height=300, match_aspect=True)
+p.multi_line(xs,ys, color='black', line_width=0.80, line_alpha=0.30)
+p.scatter(*S.T, color='red', size=3.4, line_width=0.5, line_color='gray')
 show(p)
+
 
 # %% Visualize the tangent space + its orthogonal complement
-Tx = tangents[0].flatten()
-Ty = np.linalg.svd(Tx.reshape((2,1)))[0][:,1]
+xs = [np.ravel((p[0]-v[0], p[0]+v[0])) for p,v in TM]
+ys = [np.ravel((p[1]-v[1], p[1]+v[1])) for p,v in TM]
+# ml = [[(x1,x2), (y1,y2)] for ((x1,y1), (x2,y2)) in [(p-np.ravel(v), p+np.ravel(v)) for p,v in TM]]
 
-subset_centered = S[G[:,0].indices,:] - S[0,:]
-p = figure(width=300, height=250)
-p.scatter(*subset_centered.T)
-p.scatter([0.0, Tx[0]], [0.0, Tx[1]], color='red')
-p.scatter([0.0, Ty[0]], [0.0, Ty[1]], color='green')
+p = figure(width=300, height=300, match_aspect=True)
+p.scatter(*S.T, color='gray', size=3.4, line_width=0.5, alpha=0.25, line_color='gray')
+p.multi_line(xs,ys, color='red', line_width=1.20, line_alpha=0.50)
 show(p)
+
+
+## Same plot, but with tangents centered at the points in S
+TM = tangent_bundle(M, S, d=1, centers=S)
+xs = [np.ravel((p[0]-v[0], p[0]+v[0])) for p,v in TM]
+ys = [np.ravel((p[1]-v[1], p[1]+v[1])) for p,v in TM]
+p = figure(width=300, height=300, match_aspect=True)
+p.scatter(*S.T, color='gray', size=3.4, line_width=0.5, alpha=0.25, line_color='gray')
+p.multi_line(xs,ys, color='red', line_width=1.20, line_alpha=0.50)
+show(p)
+
+
+# %% Weight the tangent vectors based on mean cosine similarity 
+# def mean_v
+A = M.tocoo()
+p, v = TM[0]
+
+## Span seems pretty decent 
+mean_cos_sim = lambda j: np.mean(1.0 - cdist(TM[j][1].T, [np.ravel(TM[i][1]) for i in A.row[A.col == j]], metric="cosine"))
+cos_sim_span = lambda j: np.ptp(cdist(TM[j][1].T, [np.ravel(TM[i][1]) for i in A.row[A.col == j]], metric="cosine"))
+
+# cdist(TM[0][1].T, [np.ravel(TM[i][1]) for i in A.row[A.col == 0]])
+
+# mean_cos_sim = lambda j: np.mean(1.0 - pdist([np.ravel(TM[i][1]) for i in A.row[A.col == j]], "cosine"))
+# TS_alignment = np.array([mean_cos_sim(j) for j in range(M.shape[1])])
+TS_alignment = np.array([(cos_sim_span(j)) for j in range(M.shape[1])])
+
+# np.histogram(TS_alignment)
+
+from pbsig.color import bin_color
+
+p = figure(width=300, height=300, match_aspect=True)
+p.scatter(*S.T, color='gray', size=3.4, line_width=0.5, alpha=0.25, line_color='gray')
+# p.multi_line(xs,ys, color='red', line_width=1.20, line_alpha=0.50)
+
+TS_color = (bin_color(2.0 - TS_alignment, 'Turbo')*255).astype(np.uint8)
+p.multi_line(xs,ys, color=TS_color, line_width=1.20, line_alpha=1.00)
+show(p)
+
+# %% 
+from set_cover import wset_cover_LP, wset_cover_greedy, wset_cover_sat
+
+# soln, wght = wset_cover_LP(M, weights = np.ones(M.shape[1]))
+# soln, wght = wset_cover_LP(M, weights = TS_alignment)
+soln, wght = wset_cover_LP(M, weights = np.exp(TS_alignment)) # this one is good !
+# soln, wght = wset_cover_greedy(M, weights = 2.0 - TS_alignment)
+ind = np.flatnonzero(soln)
+
+xs, ys = [], []
+for j in ind:
+  p,v = TM[j]
+  xs.append(np.ravel((p[0]-2.0*v[0], p[0]+2.0*v[0])))
+  ys.append(np.ravel((p[1]-2.0*v[1], p[1]+2.0*v[1])))
+
+p = figure(width=300, height=300, match_aspect=True)
+p.scatter(*S.T, color='gray', size=3.4, line_width=0.5, alpha=0.25, line_color='gray')
+p.multi_line(xs,ys, color='red', line_width=2.20, line_alpha=0.75)
+show(p)
+
+# TS_color = (bin_color(TS_alignment, 'Turbo')*255).astype(np.uint8)
+# p.multi_line(xs,ys, color=TS_color, line_width=1.20, line_alpha=1.00)
+# show(p)
+
+
+
+
+# %% Visualize the tangent space + its orthogonal complement
+# Tx = tangents[0].flatten()
+# Ty = np.linalg.svd(Tx.reshape((2,1)))[0][:,1]
+
+# subset_centered = S[G[:,0].indices,:] - S[0,:]
+# p = figure(width=300, height=250)
+# p.scatter(*subset_centered.T)
+# p.scatter([0.0, Tx[0]], [0.0, Tx[1]], color='red')
+# p.scatter([0.0, Ty[0]], [0.0, Ty[1]], color='green')
+# show(p)
 
 # %% Smallest bounding box with tangent vector as basis 
 import matplotlib

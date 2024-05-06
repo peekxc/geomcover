@@ -2,8 +2,10 @@ python_sources = [
   '__init__.py', 
   '__version__.py', 
   'loaders.py',
+  'csgraph.py',
   'covers.py', 
-  'wset_cover.py'
+  'wset_cover.py', 
+  'plotting.py'
 ]
 
 ## Extension modules
