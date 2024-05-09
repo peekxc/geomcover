@@ -24,12 +24,12 @@ show(p)
 # %% Construct neighborhood cover
 # from tallem.dimred import neighborhood_graph
 from set_cover import tangent_neighbor_graph
-G, weights, tangents = tangent_neighbor_graph(S, d=1, r=0.75)
+G, weights, tangents = tangent_neighbor_graph(S, d=1, r=0.95)
 # np.all(np.ravel(G.sum(axis=1).flatten()) >= 0)
 
 
 from set_cover.covers import tangent_bundle, neighborhood_graph
-M = neighborhood_graph(S, r=1.15)
+M = neighborhood_graph(S, r=0.95)
 TM = tangent_bundle(M, S, d=1)
 
 # %% Plot the neighborhood graph 

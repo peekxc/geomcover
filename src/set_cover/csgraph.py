@@ -32,8 +32,10 @@ def complete_graph(n: int):
 
 def cycle_graph(n: int, k: int = 2):
   """Creates a cycle graph from the sequence [0,1,...,n-1], connecting all k-adjacent pairs (cyclically)"""
-  S = np.fromiter(cycle_window(range(n), w=k), dtype=(np.int32, k))
-  E = np.fromiter(chain(*[S[:,[i,j]] for i,j in pairwise(range(k))]), dtype=(np.int32, 2))
+  S = np.fromiter(cycle_window(range(n), w=k, offset=k), dtype=(np.int32, k))
+  E = np.fromiter(chain(*[combinations(s, 2) for s in S]), dtype=(np.int32, 2))
+  E = np.unique(E, axis=0)
+  # E = np.fromiter(chain(*[S[:,[i,j]] for i,j in pairwise(range(k))]), dtype=(np.int32, 2))
   G = coo_array((np.ones(len(E), dtype=bool), (E[:,0], E[:,1])), shape=(n,n))
   G = G + G.T
   return G

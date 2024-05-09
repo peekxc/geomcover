@@ -7,6 +7,9 @@ from scipy.spatial.distance import pdist, cdist, squareform
 from combin import inverse_choose
 from .loaders import _clean_sp_mat
 
+from collections import namedtuple
+TangentPair = namedtuple("TangentPair", field_names=("base_point", "tangent_vec"))
+
 ## Predicates to simplify type-checking
 def is_distance_matrix(x: ArrayLike) -> bool:
 	''' Checks whether 'x' is a distance matrix, i.e. is square, symmetric, and that the diagonal is all 0. '''
@@ -24,6 +27,10 @@ def is_pairwise_distances(x: ArrayLike) -> bool:
 def is_point_cloud(x: ArrayLike) -> bool: 
 	''' Checks whether 'x' is a 2-d array of points '''
 	return(isinstance(x, np.ndarray) and x.ndim == 2)
+
+
+# def nerve():
+# 	"""Computes the simplicial nerve of a given cover"""
 
 ## Classical MDS 
 def cmds(G: ArrayLike, d: int = 2, coords: bool = True):
@@ -98,18 +105,18 @@ def pca(X: ArrayLike, d: int = 2, center: bool = False, coords: bool = True) -> 
 	else: 
 		return(evals[idx[range(d)]], evecs[:,idx[range(d)]])
 
-def neighborhood_graph(X: np.ndarray, r: float, ind = None):
-	"""Constructs an 'r'-neighborhood graph on the point cloud 'X' at the given indices 'ind'
+# def neighborhood_graph(X: np.ndarray, r: float, ind = None):
+# 	"""Constructs an 'r'-neighborhood graph on the point cloud 'X' at the given indices 'ind'
 		
-	Returns: 
-		G = compressed (n x i) adjacency list, where n = |X| and i = |ind|, given as a CSR sparse matrix 
-		r = radius of the ball to thicken each point in X with
-	"""
-	ind = np.array(range(X.shape[0])) if ind is None else ind
-	m = len(ind)
-	r,c,v = find(cdist(X, X[ind,:]) <= r*2)
-	G = coo_matrix((v, (r,c)), shape=(X.shape[0], m), dtype=bool)
-	return G.tocsc()
+# 	Returns: 
+# 		G = compressed (n x i) adjacency list, where n = |X| and i = |ind|, given as a CSR sparse matrix 
+# 		r = radius of the ball to thicken each point in X with
+# 	"""
+# 	ind = np.array(range(X.shape[0])) if ind is None else ind
+# 	m = len(ind)
+# 	r,c,v = find(cdist(X, X[ind,:]) <= r*2)
+# 	G = coo_matrix((v, (r,c)), shape=(X.shape[0], m), dtype=bool)
+# 	return G.tocsc()
 
 def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray = None) -> dict:
 	"""Estimates the tangent bundle of 'M' via local PCA on neighborhoods in 'X'
@@ -135,7 +142,7 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 		
 		## First compute the base point
 		center = centers[j] if centers is not None else X[ind,:].mean(axis=0)
-		if len(ind) == 0: 
+		if len(ind) <= 1: 
 			# raise ValueError("Singularity at point {i}: neighborhood too small to compute tangent")
 			tangents[j] = (center, np.eye(D, d))
 			continue 
@@ -143,34 +150,29 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 		## Get tangent space estimates at centered points
 		centered_pts = X[ind,:] - center
 		_, T_y = pca(centered_pts, d=d, coords=False)
-		tangents[j] = (center, T_y) # ambient x local, columns represent unit vectors
+		tangents[j] = TangentPair(center, T_y) # ambient x local, columns represent unit vectors
 	return tangents
 
-## TODO: add various tangent-related weight functions 
-## 1. (avg/min/max) distance to tangent plane
-## 2. (avg/min/max) cosine similarity (between what? )
-## 3. span / Point-to-point cosine similarity 
-## 4. Stiefel canonical metric / angles between orthogonal spaces
-## 5. Alignment of normals? 
 def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLike = None):
-	"""Computes a geometrically informative statistic on each tangent space the tangent bundle.
-	
-	This function computes variety
-	Assumes the connectivity of the tangent space vectors is given by M
+	"""Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle.
+
 	"""
 	A = M.tocoo()
-	assert method in ['distance', 'cosine', 'angle']
+	assert method in ['distance', 'cosine', 'angle'], f"Invalid method '{str(method)}' supplied"
 	stat_f = getattr(np, reduce) if isinstance(reduce, str) else reduce
 	assert isinstance(stat_f, Callable), "Reduce function should be the name of a numpy aggregate function or a Callable itself."
-	base_points = np.array([p for p,v in TM]) # n x D
-	tangent_vec = np.array([v.T.flatten() for p,v in TM]) # n x D x d
 
 	if method == 'cosine':
+		## The cosine distance is taken as the minimum to each tangent vector and its opposite  
+		base_points = np.array([p for p,v in TM]) # n x D
+		tangent_vec = np.array([v.T.flatten() for p,v in TM]) # n x D x d
 		cosine_dist_sgn = lambda j: np.min(cdist(tangent_vec[[j,j]] * np.array([[1],[-1]]), tangent_vec[A.row[A.col == j]], 'cosine'), axis=0)
 		cosine_dist = [cosine_dist_sgn(j) for j in range(M.shape[1])]
 		weights = np.array([stat_f(cd) for cd in cosine_dist])
 		return weights 
 	elif method == 'distance':
+		base_points = np.array([p for p,v in TM]) # n x D
+		tangent_vec = np.array([v.T.flatten() for p,v in TM]) # n x D x d
 		weights = np.zeros(len(TM), dtype=np.float32)
 		for j, (pt, T_y) in enumerate(TM):
 			neighbor_ind = A.row[A.col == j]
@@ -183,11 +185,38 @@ def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLik
 				proj_coords = pt + tangent_v * tangent_inner_prod[:,np.newaxis]
 				proj_dist[:,ii] = np.linalg.norm(proj_coords - neighbor_coords, axis=1)
 			weights[j] = stat_f(proj_dist)
-			return weights
+		return weights
 	else:
-		raise ValueError("Invlaid method {method} supplied")
+		from geomstats.geometry.stiefel import StiefelCanonicalMetric, Stiefel
+		manifold = Stiefel(*TM[0].tangent_vec.shape) # 1-frames in R^2
+		metric = StiefelCanonicalMetric(manifold)
+		weights = np.zeros(len(TM), dtype=np.float32)
+		for j, (pt, T_y) in enumerate(TM):
+			neighbor_ind = A.row[A.col == j]
+			tangent_prods = np.abs([metric.inner_product(T_y, TM[i].tangent_vec, base_point = T_y) for i in neighbor_ind])
+			# print(f"{j} => {tangent_prods}")
+			## All entries should be in [-k, k], where k = 0.5 * p 
+			# (0.5 * manifold.p)
+			tangent_prods = (0.5 * manifold.p) - tangent_prods
+			weights[j] = stat_f(tangent_prods)
+		return weights
 
 
+def neighborhood_graph(X: ArrayLike, radius: float, batch: int = 15, metric: str = "euclidean", **kwargs):
+	from array import array
+	n = len(X)
+	identity = np.arange(n)
+	R,C = array('I'), array('I')
+	for ind in np.split(identity, n // batch):
+		r,c,v = find(cdist(X, X[ind,:], metric=metric, **kwargs) <= (radius*2))
+		R.extend(r)
+		C.extend(ind[c])
+	V = np.ones(len(R), dtype=bool)
+	G = coo_matrix((V, (R,C)), shape=(n, n), dtype=bool).tocsc()
+	# G = (G + G.T).tocsc()
+	G.sort_indices()
+	return G
+	#return(weights, tangents)
 
 def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	''' 
