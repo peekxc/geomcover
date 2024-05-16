@@ -4,6 +4,10 @@ import numpy as np
 from numpy import pi
 from bokeh.io import output_notebook
 from bokeh.plotting import figure, show
+from set_cover.csgraph import path_graph, cycle_graph
+from scipy.sparse import dia_array
+from set_cover.covers import tangent_bundle, neighborhood_graph
+from set_cover.plotting import plot_tangent_bundle
 from landmark import landmarks
 output_notebook()
 
@@ -15,30 +19,22 @@ def spiral(N, sigma=1.0):
   data_b = np.array([np.cos(theta)*r_b, np.sin(theta)*r_b]).T + sigma*np.random.randn(N,2)
   return(np.vstack((data_a, data_b)))
 
-# %% 
+# %% Data set 
 X = spiral(N=300, sigma=0.50)
-p = figure(width=300, height=300, match_aspect=True)
-p.scatter(*X.T, color='red', line_color='gray', size=3)
+p = figure(width=325, height=325, match_aspect=True)
+p.scatter(*X.T, size=4, color='red', line_color='gray')
 show(p)
 
 # %% First step: tangent bundle estimation
-from set_cover.csgraph import path_graph, cycle_graph
-from scipy.sparse import dia_array
-from set_cover.covers import tangent_bundle, neighborhood_graph
-from set_cover.plotting import plot_tangent_bundle
+from set_cover.covers import neighborhood_graph
 
-## Our manifold will be the simple path graph (+ identity)
+## Our manifold will be the r-neighborhood graph
 n = len(X)
-M = neighborhood_graph(X, radius=1.05)
-# assert valid_cover(M), "Invalid cover"
-A = M.tocoo()
-# len(A.row[A.col == 0])
-
-# M = cycle_graph(n, k=5) + dia_array(np.eye(n))
+M = neighborhood_graph(X, radius=1.00)
 TM = tangent_bundle(M=M, X=X, d=1, centers=X)
 
 ## Plot the bundle 
-p = plot_tangent_bundle(TM, width = 300, height = 300, match_aspect=True)
+p = plot_tangent_bundle(TM, width = 325, height = 325, match_aspect=True)
 show(p)
 
 ## Plot the cover 
@@ -63,7 +59,8 @@ show(p)
 from set_cover.wset_cover import wset_cover
 
 # cover, cover_weight = wset_cover(M, np.ones(len(TW)), "greedy")
-cover, cover_weight = wset_cover(M, TW, "LP")
+# cover, cover_weight = wset_cover(M, TW, "LP")
+cover, cover_weight = wset_cover(M, TW, "sat")
 cover_ind = np.flatnonzero(cover)
 # assert valid_cover(M, ind=np.flatnonzero(cover))
 
