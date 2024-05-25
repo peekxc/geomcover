@@ -6,12 +6,12 @@ from bokeh.io import output_notebook
 from bokeh.plotting import figure, show
 from set_cover.csgraph import path_graph, cycle_graph
 from scipy.sparse import dia_array
-from set_cover.covers import tangent_bundle, neighborhood_graph
+from set_cover.covers import tangent_bundle, neighbor_graph_ball
 from set_cover.plotting import plot_tangent_bundle
 from landmark import landmarks
 output_notebook()
 
-## Simple dataset with two parts of a spiral
+# %% Simple dataset with two parts of a spiral
 def spiral(N, sigma=1.0):
   theta = np.sqrt(np.random.rand(N))*2*pi # np.linspace(0,2*pi,100)
   r_a, r_b = 2*theta + pi, -2*theta - pi
@@ -26,11 +26,12 @@ p.scatter(*X.T, size=4, color='red', line_color='gray')
 show(p)
 
 # %% First step: tangent bundle estimation
-from set_cover.covers import neighborhood_graph
+from set_cover.covers import neighbor_graph_ball, neighbor_graph_knn
 
 ## Our manifold will be the r-neighborhood graph
 n = len(X)
-M = neighborhood_graph(X, radius=1.00)
+# M = neighbor_graph_ball(X, radius=1.00)
+M = neighbor_graph_knn(X, k=15, weighted=False)
 TM = tangent_bundle(M=M, X=X, d=1, centers=X)
 
 ## Plot the bundle 
@@ -58,9 +59,14 @@ show(p)
 # %% Step 3: form the minimal weight set cover 
 from set_cover.wset_cover import wset_cover
 
-# cover, cover_weight = wset_cover(M, np.ones(len(TW)), "greedy")
-# cover, cover_weight = wset_cover(M, TW, "LP")
+TW_unit = np.ones(len(TW))
+
+cover, cover_weight = wset_cover(M, TW_unit, "greedy")
+cover, cover_weight = wset_cover(M, TW_unit, "LP", sparsity=0.25)
+cover, cover_weight = wset_cover(M, TW, "LP", sparsity=0.25)
 cover, cover_weight = wset_cover(M, TW, "sat")
+wset_cover(M, TW_unit, "sat")
+# cover, cover_weight = wset_cover(M, TW, "sat")
 cover_ind = np.flatnonzero(cover)
 # assert valid_cover(M, ind=np.flatnonzero(cover))
 

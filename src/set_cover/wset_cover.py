@@ -1,4 +1,3 @@
-import os 
 import importlib
 import numpy as np
 from array import array
@@ -7,7 +6,7 @@ from numpy.typing import ArrayLike
 from scipy.sparse import issparse, csc_matrix, csc_array
 from scipy.optimize import linprog
 
-from .loaders import _clean_sp_mat
+from .loaders import clean_sp_mat
 import _cover
 
 def package_exists(package: str) -> bool: 
@@ -18,7 +17,7 @@ def ask_package_install(package: str):
 	if not(package_exists(package)):
 		raise RuntimeError(f"Module {package} not installed. To use this function, please install {package}.")
 
-def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "default"):
+def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "default", sparsity: float = 1.0):
 	''' 
 	Computes an approximate solution to the weighted set cover problem via Linear Programming (LP) sampling 
 	
@@ -26,8 +25,11 @@ def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 		subsets: (n x J) sparse matrix of J subsets whose union forms a cover over n points  
 		weights: (J)-length array of weights associated with each subset 
 		maxiter: number of iterations to repeat the sampling process. See details.  
+		sparsity: constant used to emphasize sparsity between (0, 1]. See details. 
 	
-	If not supplied, maxiter defaults to 2*log(n)
+	If not supplied, maxiter defaults to (2 / sparsity) * log(n). 'Sparsity' values lower than 1 
+	will result in choosing less cover elements per iteration, which may result in sparser / lower 
+	weight cover (at the cost of more iterations). 
 
 	Returns: 
 		(s, c) := tuple where s is a boolean vector indicating which subsets are included in the optimal solution 
@@ -35,7 +37,7 @@ def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 	'''
 	assert issparse(subsets), "cover must be sparse matrix"
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
-	subsets = _clean_sp_mat(subsets)
+	subsets = clean_sp_mat(subsets, "csc")
 
 	W = weights.reshape((1, len(weights))) # ensure W is a column vector
 	if subsets.dtype != int:
@@ -43,21 +45,23 @@ def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 
 	# linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, bounds=None, method='interior-point', callback=None, options=None, x0=None)
 	# Since A_ub @ x <= b_ub, negate A_ub to enable constraint A_ub @ x >= 1
-	soln = linprog(c=W, b_ub=np.repeat(-1.0, subsets.shape[0]), A_ub=-subsets, bounds=(0.0, 1.0)) # options={"sparse": True}
+	b_ub = np.repeat(-1.0, subsets.shape[0])
+	soln = linprog(c=W, b_ub=b_ub, A_ub=-subsets, bounds=(0.0, 1.0)) # options={"sparse": True}
 	assert soln.success
 
 	## Change maxiter to default solution
 	if maxiter == "default":
-		maxiter = 2*int(np.ceil(np.log(subsets.shape[0])))
+		maxiter = int(np.ceil((2/sparsity) * np.log(subsets.shape[0])))
 
 	## Sample subsets elementwise with probability 'p_i' until achieving a valid cover.
 	## Repeat the sampling process 'maxiter' times and choose the best one
 	p = soln.x
 	best_cost, assignment = np.inf, np.zeros(len(p), dtype=bool)
+	t = sparsity * p
 	for _ in range(maxiter):
-		z = np.random.random_sample(len(p)) <= p
+		z = np.random.random_sample(len(p)) <= t
 		while np.any((subsets @ z) < 1.0): # while any point is left uncovered
-			z = np.logical_or(z, np.random.random_sample(len(p)) <= p)
+			z = np.logical_or(z, np.random.random_sample(len(p)) <= t)
 		cost = np.dot(W, z)
 		best_cost, assignment = (cost, z) if cost < best_cost else (best_cost, assignment)
 	return(assignment, best_cost)
@@ -82,7 +86,7 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = Fals
 	"""
 	assert issparse(subsets), "cover must be sparse matrix"
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
-	subsets = _clean_sp_mat(subsets)
+	subsets = clean_sp_mat(subsets, "csc")
 
 	S, W = subsets, weights
 	n, J = S.shape
@@ -144,7 +148,7 @@ def wset_cover_sat(subsets: csc_matrix, weights: ArrayLike, return_solver: bool 
 	# import pysat
 	# assert "examples" in dir(pysat), "Please install the full pysat package with extensions for SAT support"
 	from pysat.examples.rc2 import RC2, RC2Stratified
-	subsets = _clean_sp_mat(subsets)
+	subsets = clean_sp_mat(subsets, "csc")
 	wcnf = _maxsat_wcnf(subsets, weights)
 	solver = RC2Stratified(wcnf, **kwargs)
 	finished, clauses = False, None

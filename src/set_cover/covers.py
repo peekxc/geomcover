@@ -1,13 +1,16 @@
 from math import comb
 import numpy as np
 from typing import Callable, Union
+from itertools import combinations
 from numpy.typing import ArrayLike
-from scipy.sparse import csr_matrix, csc_matrix, coo_matrix, find, csc_array, csr_array, coo_array
+from scipy.sparse import csr_matrix, csc_matrix, coo_matrix, find, csc_array, csr_array, coo_array, dia_array
+from scipy.spatial import Delaunay
 from scipy.spatial.distance import pdist, cdist, squareform
 from combin import inverse_choose
-from .loaders import _clean_sp_mat
-
 from collections import namedtuple
+from .loaders import clean_sp_mat
+
+## Simple type
 TangentPair = namedtuple("TangentPair", field_names=("base_point", "tangent_vec"))
 
 ## Predicates to simplify type-checking
@@ -124,7 +127,7 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 	This function estimates the d-dimensional tangent spaces of neighborhoods in 'X' given by columns in 'M'.
 	
 	Parameters: 
-		M = Adjacency list, given as a sparse CSR matrix
+		M = Adjacency list, given as a sparse matrix
 		X = coordinates of the vertices of 'G'
 		d = dimension of the tangent space
 		centers = points to center the tangent space estimates. If None, each neighborhoods is centered around its average. 
@@ -134,7 +137,7 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 		centers = np.atleast_2d(centers)
 		assert centers.shape[1] == X.shape[1], "Centers must have same dimension as 'X'"
 		assert len(centers) == M.shape[1], "Number of centers doesn't match number of neighborhoods in 'M'"
-	M = _clean_sp_mat(M)
+	M = clean_sp_mat(M, 'csr')
 	D = X.shape[1]
 	m = M.shape[1]
 	tangents = [None] * m 
@@ -144,7 +147,7 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 		center = centers[j] if centers is not None else X[ind,:].mean(axis=0)
 		if len(ind) <= 1: 
 			# raise ValueError("Singularity at point {i}: neighborhood too small to compute tangent")
-			tangents[j] = (center, np.eye(D, d))
+			tangents[j] = TangentPair(center, np.eye(D, d))
 			continue 
 		
 		## Get tangent space estimates at centered points
@@ -202,21 +205,52 @@ def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLik
 		return weights
 
 
-def neighborhood_graph(X: ArrayLike, radius: float, batch: int = 15, metric: str = "euclidean", **kwargs):
+def neighbor_graph_ball(X: ArrayLike, radius: float, batch: int = 15, metric: str = "euclidean", weighted: bool = False, **kwargs):
 	from array import array
 	n = len(X)
-	identity = np.arange(n)
-	R,C = array('I'), array('I')
-	for ind in np.split(identity, n // batch):
-		r,c,v = find(cdist(X, X[ind,:], metric=metric, **kwargs) <= (radius*2))
+	R, C = array('I'), array('I')
+	V = array('f') if weighted else []
+	threshold = 2.0 * radius
+	dtype = np.float32 if weighted else bool
+	for ind in np.array_split(range(n), n // batch):
+		D = cdist(X, X[ind,:], metric=metric, **kwargs)
+		r,c,v = find(np.where(D <= threshold, D, 0.0))
 		R.extend(r)
 		C.extend(ind[c])
-	V = np.ones(len(R), dtype=bool)
-	G = coo_matrix((V, (R,C)), shape=(n, n), dtype=bool).tocsc()
-	# G = (G + G.T).tocsc()
-	G.sort_indices()
-	return G
-	#return(weights, tangents)
+		V.extend(v.astype(dtype))
+	G = coo_matrix((V, (R,C)), shape=(n, n), dtype=dtype)
+	return clean_sp_mat(G, form="csc", diag=True, symmetrize=False)
+
+def neighbor_graph_knn(X: ArrayLike, k: int, batch: int = 15, metric: str = "euclidean", weighted: bool = False, diag: bool = False, **kwargs):
+	from array import array
+	n = len(X)
+	R, C = array('I'), array('I')
+	V = array('f') if weighted else array('B')
+	for ind in np.array_split(range(n), n // batch):
+		D = cdist(X[ind,:], X, metric=metric, **kwargs)
+		r = D.argpartition(kth=(k+1), axis=1)[:,:(k+1)].flatten()
+		c = np.repeat(ind, k+1)
+		R.extend(r)
+		C.extend(c)
+		V.extend(D[c - c[0],r] if weighted else np.ones(len(r), dtype=bool))
+	R,C = np.array(R), np.array(C)
+	dtype = np.float32 if weighted else bool
+	G = coo_matrix((V, (R,C)), shape=(n, n), dtype=dtype)
+	return clean_sp_mat(G, form="csc", diag=True, symmetrize=False)
+
+def neighbor_graph_del(X: ArrayLike, weighted: bool = False, **kwargs):
+	from array import array
+	n = len(X)
+	dt = Delaunay(X)
+	R,C = array('I'), array('I')
+	for I, J in combinations(dt.simplices.T, 2):
+		R.extend(I)
+		C.extend(J)
+	V = np.ones(len(R)) if not weighted else np.linalg.norm(X[R] - X[C], axis=1)
+	dtype = np.bool if not weighted else np.float32
+	G = coo_array((V, (R,C)), shape=(n,n), dtype=dtype)
+	return clean_sp_mat(G, form="csc", diag=True, symmetrize=False)
+
 
 def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	''' 
@@ -260,15 +294,11 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	return(G.tocsc(), weights, tangents)
 	#return(weights, tangents)
 
-
-
-def valid_cover(A, ind: np.ndarray = None) -> bool:
-	"""Determines whether certain subsets of a set of subsets forms a covers every row."""
+def valid_cover(A: csc_array, ind: np.ndarray = None) -> bool:
+	"""Determines whether given sets cover every row."""
 	import sortednp
 	n, J = A.shape
-	A = csc_array(A).astype(bool) if not hasattr(A, "indices") else A
-	A.eliminate_zeros()
-	A.sort_indices()
+	A = clean_sp_mat(A, "csc")
 	subset_splits = np.split(A.indices, A.indptr)[1:-1]
 	assert len(subset_splits) == J, "Splitting of cover array failed. Are there empty columns?"
 	if ind is not None:

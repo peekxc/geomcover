@@ -8,7 +8,6 @@ from bokeh.layouts import row, column
 from landmark import landmarks
 output_notebook()
 
-
 # %%
 from scipy.stats import expon, norm, uniform
 np.random.seed(1234)

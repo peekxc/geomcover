@@ -20,7 +20,7 @@ show(p)
 from set_cover.csgraph import path_graph, cycle_graph
 from scipy.sparse import dia_array
 from set_cover.covers import tangent_bundle
-from set_cover.plotting import plot_tangent_bundle
+from set_cover.plotting import plot_tangent_bundle, plot_nerve
 
 ## Our manifold will be the simple path graph (+ identity)
 n = len(x)
@@ -32,8 +32,8 @@ p = plot_tangent_bundle(TM, width = 450, height = 150, x_range = p.x_range, y_ra
 show(p)
 
 ## Plot the cover 
-# p = plot_nerve(M, X, width = 450, height = 150)
-# show(p)
+p = plot_nerve(M, X, width = 450, height = 150)
+show(p)
 
 # %% Step 2: choose a bundle weighting scheme
 from set_cover.covers import bundle_weights
