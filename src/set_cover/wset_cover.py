@@ -6,7 +6,7 @@ from numpy.typing import ArrayLike
 from scipy.sparse import issparse, csc_matrix, csc_array
 from scipy.optimize import linprog
 
-from .loaders import clean_sp_mat
+from .loaders import to_canonical
 import _cover
 
 def package_exists(package: str) -> bool: 
@@ -19,11 +19,11 @@ def ask_package_install(package: str):
 
 def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "default", sparsity: float = 1.0):
 	''' 
-	Computes an approximate solution to the weighted set cover problem via Linear Programming (LP) sampling 
-	
+	Computes an approximate solution to the weighted set cover problem via randomized rounding. 
+
 	Args:
-		subsets: (n x J) sparse matrix of J subsets whose union forms a cover over n points  
-		weights: (J)-length array of weights associated with each subset 
+		subsets: (n x J) sparse matrix of J subsets whose union forms a cover over n points.
+		weights: (J)-length array of subset weights.
 		maxiter: number of iterations to repeat the sampling process. See details.  
 		sparsity: constant used to emphasize sparsity between (0, 1]. See details. 
 	
@@ -35,9 +35,11 @@ def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 		(s, c) := tuple where s is a boolean vector indicating which subsets are included in the optimal solution 
 		and c is the minimized cost of that solution. 
 	'''
-	assert issparse(subsets), "cover must be sparse matrix"
+	assert issparse(subsets), "Cover must be sparse matrix"
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
-	subsets = clean_sp_mat(subsets, "csc")
+	weights = np.asarray(weights)
+	assert np.all(weights >= 0), "Set weights must be non-negative."
+	subsets = to_canonical(subsets, "csc")
 
 	W = weights.reshape((1, len(weights))) # ensure W is a column vector
 	if subsets.dtype != int:
@@ -64,7 +66,7 @@ def wset_cover_LP(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 			z = np.logical_or(z, np.random.random_sample(len(p)) <= t)
 		cost = np.dot(W, z)
 		best_cost, assignment = (cost, z) if cost < best_cost else (best_cost, assignment)
-	return(assignment, best_cost)
+	return assignment, np.ravel(best_cost).item()
 
 # Adapted from: http://www.martinbroadhurst.com/greedy-set-cover-in-python.html
 # Also see: https://courses.engr.illinois.edu/cs598csc/sp2011/Lectures/lecture_4.pdf
@@ -86,7 +88,7 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = Fals
 	"""
 	assert issparse(subsets), "cover must be sparse matrix"
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
-	subsets = clean_sp_mat(subsets, "csc")
+	subsets = to_canonical(subsets, "csc")
 
 	S, W = subsets, weights
 	n, J = S.shape
@@ -148,7 +150,7 @@ def wset_cover_sat(subsets: csc_matrix, weights: ArrayLike, return_solver: bool 
 	# import pysat
 	# assert "examples" in dir(pysat), "Please install the full pysat package with extensions for SAT support"
 	from pysat.examples.rc2 import RC2, RC2Stratified
-	subsets = clean_sp_mat(subsets, "csc")
+	subsets = to_canonical(subsets, "csc")
 	wcnf = _maxsat_wcnf(subsets, weights)
 	solver = RC2Stratified(wcnf, **kwargs)
 	finished, clauses = False, None
@@ -164,6 +166,41 @@ def wset_cover_sat(subsets: csc_matrix, weights: ArrayLike, return_solver: bool 
 		assignment = np.zeros(subsets.shape[1], dtype=bool)
 		assignment[set_ind] = True
 		return(assignment, np.sum(weights[assignment]))
+
+MIP_solvers = ["highs", "cbc", "glop", "bop", "sat", "scip", "gurobi_mip", "cplex_mip", "xpress_mip", "glpk_mip"]
+def wset_cover_ILP(subsets: csc_matrix, weights: ArrayLike, solver: str = "highs"):
+	assert solver.lower() in MIP_solvers, f"Unknown solver supplied '{solver}'; must be one of {str(MIP_solvers)}"
+	
+	if solver == "highs":
+		from scipy.optimize import LinearConstraint, milp
+		subsets = to_canonical(subsets, "csc")
+		c = np.ravel(weights).astype(np.float64)
+		b_u = -np.ones(subsets.shape[0])
+		b_l = np.full_like(b_u, -np.inf, dtype=float)
+		subsets.data = np.negative(subsets.data.astype(np.float64, copy=False))
+		subsets.indices	= subsets.indices.astype(np.int32, copy=False)
+		subsets.indptr = subsets.indptr.astype(np.int32, copy=False)
+		constraints = LinearConstraint(subsets, lb=b_l, ub=b_u)
+		integrality = np.ones_like(c)
+		res = milp(c=c, constraints=constraints, integrality=integrality)
+		return res.x.astype(bool), res.fun
+	else:
+		ask_package_install("ortools")
+		from ortools.linear_solver import pywraplp
+		solver = pywraplp.Solver.CreateSolver("GLOP") # mip solver with the SCIP backend.
+		assert solver is not None
+		subset_indicators = [solver.IntVar(0,1,"") for i in range(A.shape[1])]
+		min_weight_obj = solver.Sum([s*w for s, w in zip(subset_indicators, weights)])
+		B = to_canonical(subsets, form="csr")
+		for z in np.split(B.indices, B.indptr)[1:-1]:
+			solver.Add(solver.Sum([subset_indicators[zi] for zi in z]) >= 1)
+		solver.Minimize(min_weight_obj)
+		status = solver.Solve()
+		assert status == 0 or status == 1, "Failed to find a feasible solution"
+		soln = np.array([s.solution_value() for s in subset_indicators], dtype=bool)
+		min_cost = solver.Objective().Value()
+	# assert valid_cover(A, np.flatnonzero(soln))
+	return soln, min_cost
 
 def wset_cover(subsets: csc_matrix, weights: ArrayLike, method: str = "LP", **kwargs):
 	assert isinstance(method, str) and method.lower() in ["lp", "greedy", "sat"], f"Invalid method '{str(method)}' supplied; must be one of 'LP', 'greedy', or 'SAT'"

@@ -8,7 +8,7 @@ from scipy.spatial import Delaunay
 from scipy.spatial.distance import pdist, cdist, squareform
 from combin import inverse_choose
 from collections import namedtuple
-from .loaders import clean_sp_mat
+from .loaders import to_canonical
 
 ## Simple type
 TangentPair = namedtuple("TangentPair", field_names=("base_point", "tangent_vec"))
@@ -137,7 +137,7 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 		centers = np.atleast_2d(centers)
 		assert centers.shape[1] == X.shape[1], "Centers must have same dimension as 'X'"
 		assert len(centers) == M.shape[1], "Number of centers doesn't match number of neighborhoods in 'M'"
-	M = clean_sp_mat(M, 'csr')
+	M = to_canonical(M, 'csr')
 	D = X.shape[1]
 	m = M.shape[1]
 	tangents = [None] * m 
@@ -204,7 +204,6 @@ def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLik
 			weights[j] = stat_f(tangent_prods)
 		return weights
 
-
 def neighbor_graph_ball(X: ArrayLike, radius: float, batch: int = 15, metric: str = "euclidean", weighted: bool = False, **kwargs):
 	from array import array
 	n = len(X)
@@ -219,7 +218,7 @@ def neighbor_graph_ball(X: ArrayLike, radius: float, batch: int = 15, metric: st
 		C.extend(ind[c])
 		V.extend(v.astype(dtype))
 	G = coo_matrix((V, (R,C)), shape=(n, n), dtype=dtype)
-	return clean_sp_mat(G, form="csc", diag=True, symmetrize=False)
+	return to_canonical(G, form="csc", diag=True, symmetrize=False)
 
 def neighbor_graph_knn(X: ArrayLike, k: int, batch: int = 15, metric: str = "euclidean", weighted: bool = False, diag: bool = False, **kwargs):
 	from array import array
@@ -236,7 +235,7 @@ def neighbor_graph_knn(X: ArrayLike, k: int, batch: int = 15, metric: str = "euc
 	R,C = np.array(R), np.array(C)
 	dtype = np.float32 if weighted else bool
 	G = coo_matrix((V, (R,C)), shape=(n, n), dtype=dtype)
-	return clean_sp_mat(G, form="csc", diag=True, symmetrize=False)
+	return to_canonical(G, form="csc", diag=True, symmetrize=False)
 
 def neighbor_graph_del(X: ArrayLike, weighted: bool = False, **kwargs):
 	from array import array
@@ -249,8 +248,7 @@ def neighbor_graph_del(X: ArrayLike, weighted: bool = False, **kwargs):
 	V = np.ones(len(R)) if not weighted else np.linalg.norm(X[R] - X[C], axis=1)
 	dtype = np.bool if not weighted else np.float32
 	G = coo_array((V, (R,C)), shape=(n,n), dtype=dtype)
-	return clean_sp_mat(G, form="csc", diag=True, symmetrize=False)
-
+	return to_canonical(G, form="csc", diag=True, symmetrize=False)
 
 def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	''' 
@@ -294,15 +292,23 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	return(G.tocsc(), weights, tangents)
 	#return(weights, tangents)
 
+def covered(A: csc_array, ind: np.ndarray = None) -> np.ndarray:
+	"""Returns the amount covered by each subset in the set of cover indices provided."""
+	# A.tolil()[:,np.flatnonzero(soln)].sum(axis=1) # equiv
+	A = to_canonical(A, "coo")
+	covered = np.zeros(A.shape[0], dtype=np.int64)
+	np.add.at(covered, A.row[np.isin(A.col, ind)], 1)
+	return covered
+
 def valid_cover(A: csc_array, ind: np.ndarray = None) -> bool:
 	"""Determines whether given sets cover every row."""
-	import sortednp
-	n, J = A.shape
-	A = clean_sp_mat(A, "csc")
-	subset_splits = np.split(A.indices, A.indptr)[1:-1]
-	assert len(subset_splits) == J, "Splitting of cover array failed. Are there empty columns?"
-	if ind is not None:
-		ind = np.array(ind).astype(int) 
-		subset_splits = [subset_splits[i] for i in ind]
-	covered_ind = sortednp.kway_merge(*subset_splits, assume_sorted=True, duplicates=4)
-	return len(covered_ind) == n
+	return np.all(covered(A, ind))
+
+	# n, J = A.shape
+	# subset_splits = np.split(A.indices, A.indptr)[1:-1]
+	# assert len(subset_splits) == J, "Splitting of cover array failed. Are there empty columns?"
+	# if ind is not None:
+	# 	ind = np.array(ind).astype(int) 
+	# 	subset_splits = [subset_splits[i] for i in ind]
+	# covered_ind = sortednp.kway_merge(*subset_splits, assume_sorted=True, duplicates=4)
+	# return len(covered_ind) == n
