@@ -8,7 +8,7 @@ from scipy.spatial import Delaunay
 from scipy.spatial.distance import pdist, cdist, squareform
 from combin import inverse_choose
 from collections import namedtuple
-from .loaders import to_canonical
+from .csgraph import to_canonical
 
 ## Simple type
 TangentPair = namedtuple("TangentPair", field_names=("base_point", "tangent_vec"))
@@ -292,17 +292,23 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	return(G.tocsc(), weights, tangents)
 	#return(weights, tangents)
 
-def covered(A: csc_array, ind: np.ndarray = None) -> np.ndarray:
+# https://people.brunel.ac.uk/~mastjjb/jeb/orlib/scpinfo.html
+## https://algnotes.info/on/obliv/lagrangian/set-cover-fractional/
+def coverage(A: csc_array, ind: np.ndarray = None) -> np.ndarray:
 	"""Returns the amount covered by each subset in the set of cover indices provided."""
-	# A.tolil()[:,np.flatnonzero(soln)].sum(axis=1) # equiv
+	# A.tolil()[:,np.flatnonzero(soln)].sum(axis=1) # equiv, 5.9s
+	# lili approach: 1.4s
 	A = to_canonical(A, "coo")
 	covered = np.zeros(A.shape[0], dtype=np.int64)
-	np.add.at(covered, A.row[np.isin(A.col, ind)], 1)
+	if ind is None:
+		np.add.at(covered, A.row, 1)
+	else: 
+		np.add.at(covered, A.row[np.isin(A.col, ind)], 1)
 	return covered
 
 def valid_cover(A: csc_array, ind: np.ndarray = None) -> bool:
-	"""Determines whether given sets cover every row."""
-	return np.all(covered(A, ind))
+	"""Determines whether given sets form a valid or *feasible* cover over the universe."""
+	return np.min(coverage(A, ind)) > 0
 
 	# n, J = A.shape
 	# subset_splits = np.split(A.indices, A.indptr)[1:-1]
