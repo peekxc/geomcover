@@ -3,15 +3,15 @@ build-backend = "mesonpy"
 requires = ["meson-python", "wheel", "numpy", "pybind11>=2.8.0"]
 
 [project]
-name = "set_cover"
+name = "geomcover"
 version = "0.1.0"
 authors = [
 	{  name = "Matt Piekenbrock", email = "matt.piekenbrock@gmail.com" }
 ]
-description = "Weighted Set Cover algorithms"
+description = "Geometrically-oriented cover estimation using reductions to weighted set cover."
 readme = "README.md"
 packages = [
-	{ include = "set_cover", from = "src" },
+	{ include = "geom_cover", from = "src" },
 ]
 dependencies = [
   "numpy", 
@@ -22,5 +22,6 @@ license = {file = "LICENSE"}
 [project.optional-dependencies]
 extras = [
 	"pysat",
-	"ortools"
+	"ortools", 
+	"geomstats"
 ]

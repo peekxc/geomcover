@@ -10,16 +10,74 @@ import numpy as np
 from scipy.sparse import csc_array, coo_array
 
 from set_cover import load_set_cover_instance
-from set_cover import wset_cover, wset_cover_LP, wset_cover_greedy, wset_cover_sat
-from set_cover.covers import valid_cover
+from set_cover import wset_cover_ILP, wset_cover_RR, wset_cover_greedy, wset_cover_sat
+from set_cover.covers import valid_cover, coverage, to_canonical
 
-A, w = load_set_cover_instance("/Users/mpiekenbrock/set_cover/notebooks/scp41.txt")
+A, weights = load_set_cover_instance("/Users/mpiekenbrock/set_cover/notebooks/scp41.txt")
 
-soln, cost = wset_cover_LP(A, w)
-soln, cost = wset_cover_greedy(A, w)
-soln, cost = wset_cover_sat(A, w)
+soln, cost = wset_cover_RR(A, weights)
+soln, cost = wset_cover_greedy(A, weights)
+soln, cost = wset_cover_sat(A, weights)
+soln, cost = wset_cover_ILP(A, weights)
 
-from set_cover.wset_cover import _cover
+# wset_cover_greedy2(A, weights) # 27x faster !
+
+import timeit
+timeit.timeit(lambda: wset_cover_greedy(A, weights), number=150)
+# timeit.timeit(lambda: wset_cover_greedy2(A, weights), number=150)
+
+assert valid_cover(A, np.flatnonzero(soln))
+
+## accidents = benchmark at 4-45 seconds, solution from 181-245
+freq_item_sets = ["mushroom.dat"]
+with open("/Users/mpiekenbrock/set_cover/notebooks/accidents.dat", 'r') as f:
+  x = list(f.readlines())
+
+# https://people.brunel.ac.uk/~mastjjb/jeb/orlib/scpinfo.html
+# http://dimacs.rutgers.edu/~graham/pubs/papers/ckw.pdf
+from scipy.sparse import csc_array
+sets = [list(map(int, l.replace('\n', '').strip().split(' '))) for l in x]
+col_ind = np.concatenate([np.repeat(i, len(s)) for i,s in enumerate(sets)])
+row_ind = np.concatenate(sets) - 1
+assert np.all(np.unique(row_ind) == np.arange(np.max(row_ind)+1))
+
+A = csc_array((np.ones(len(row_ind)), (row_ind, col_ind)), shape=(np.max(row_ind)+1, len(sets)))
+A = to_canonical(A, "csc")
+
+weights = np.ones(A.shape[1])
+soln, cost = wset_cover_greedy(A, weights)  # 3.2s, 181 cost
+soln, cost = wset_cover_RR(A, weights)      # 10s, 158 cost
+soln, cost = wset_cover_ILP(A, weights)     # 13.5s, 158 cost 
+soln, cost = wset_cover_sat(A, weights)     # 80.7s, 158 cost 
+
+np.min(coverage(A))
+
+# BAsed on: https://algnotes.info/on/obliv/lagrangian/set-cover-fractional/
+## simply doesn't work! 
+# C = 1
+# c = np.ones(A.shape[1])#weights
+# eps = 0.5
+# # xe = coverage(A)
+# B = to_canonical(A, "coo")
+# xs = np.zeros(A.shape[1])
+# ii = 0
+# while np.min(coverage(B, np.flatnonzero(xs))) < 5:
+#   xe = np.array([np.sum(xs[B.row[B.col == j]]) for j in range(B.shape[1])]) # coverage per element?
+#   opt_s = np.argmax([np.sum(np.power(1-eps, xe[B.row[B.col == j]])) / c[j] for j in range(B.shape[1])])
+#   xs[opt_s] -= 1
+#   print(opt_s)
+#   ii += 1
+#   if ii == 15: 
+#     break 
+
+coverage(A, xs)
+
+A = np.ones(shape=(10000,10000))
+timeit.timeit(lambda: eval("partial(lambda j, A: A[:,j], A=A)(0)"), number=1500)
+timeit.timeit(lambda: eval("(lambda j: A[:,j])(0)"), number=1500)
+
+
+from set_cover.wset_cover import _cover, wset_cover_ILP
 dir(_cover)
 ## TODO: fix
 ind = _cover.greedy_set_cover(A.indices, A.indptr, w, A.shape[0])
@@ -35,9 +93,57 @@ len(np.flatnonzero(soln))
 
 from ortools.linear_solver import pywraplp
 from ortools.sat.python import cp_model
+from set_cover.loaders import to_canonical
+
 
 solver = pywraplp.Solver.CreateSolver("SCIP") # mip solver with the SCIP backend.
 assert solver is not None
+subset_indicators = [solver.IntVar(0,1,"") for i in range(A.shape[1])]
+min_weight_obj = solver.Sum([s*w for s, w in zip(subset_indicators, weights)])
+B = to_canonical(A, form="csr")
+for z in np.split(B.indices, B.indptr)[1:-1]:
+  solver.Add(solver.Sum([subset_indicators[zi] for zi in z]) >= 1)
+solver.Minimize(min_weight_obj)
+status = solver.Solve()
+soln = np.array([s.solution_value() for s in subset_indicators], dtype=bool)
+min_cost = solver.Objective().Value()
+assert valid_cover(A, np.flatnonzero(soln))
+
+
+# z = np.split(A.indices, A.indptr)[1:-1][0]
+constraint_sat = np.array([
+  np.sum([subset_indicators[zi].solution_value() for zi in z])
+  for z in np.split(A.indices, A.indptr)[1:-1]
+])
+covered(A, np.flatnonzero(soln))
+
+np.any(np.array(constraint_sat) == 0)
+
+# from set_cover.covers import covered
+# covered(A, np.flatnonzero(soln))
+
+
+
+np.split(A.indices, A.indptr[[0,1,2,-1,-1]])[1:-1]
+
+# def subset_cols(A: csc_array, col_ind: np.ndarray):
+#   B = A.tocoo()
+#   covered = np.zeros(A.shape[0], dtype=bool)
+#   np.add.at(covered, B.row[np.isin(B.col, col_ind)], 1)
+#   return np.all(covered)
+
+
+
+
+
+from set_cover.covers import valid_cover
+valid_cover(A, np.flatnonzero(soln))
+A.indices
+
+A.indices
+
+solver.IntVar(0, 1, "")
+solver.Sum()
 
 ## Define variables 
 x = {}

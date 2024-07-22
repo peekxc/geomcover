@@ -1,6 +1,6 @@
 project(
-  'set_cover', 'cpp', 
-  version: run_command(['src/set_cover/__version__.py'], check: true).stdout().strip(),
+  'geom_cover', 'cpp', 
+  version: run_command(['src/geom_cover/__version__.py'], check: true).stdout().strip(),
   license: 'Apache-2.0',
   meson_version: '>= 1.2.0',
   default_options : [

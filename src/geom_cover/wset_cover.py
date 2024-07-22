@@ -5,6 +5,7 @@ from typing import *
 from numpy.typing import ArrayLike
 from scipy.sparse import issparse, csc_matrix, csc_array
 from scipy.optimize import linprog
+from functools import partial
 
 from .loaders import to_canonical
 # import _cover
@@ -28,7 +29,7 @@ def wset_cover_RR(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 	continuing until a feasible solution is found. 
 
 	If not supplied, maxiter defaults to (2 / sparsity) * log(n). Supplying 'sparsity' values lower than 1 
-	will result in choosing less cover elements per iteration, which may result in sparser / lower 
+	will result in choosing fewer subsets per iteration, which may result in sparser and/or lower 
 	weight cover (at the cost of more iterations). 
 
 	Args:
@@ -38,8 +39,7 @@ def wset_cover_RR(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 		sparsity: constant used to emphasize sparsity between (0, 1]. See details. 
 
 	Returns: 
-		(s, c) := tuple where s is a boolean vector indicating which subsets are included in the optimal solution 
-		and c is the minimized cost of that solution. 
+		tuple (s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost.
 	'''
 	assert issparse(subsets), "Cover must be sparse matrix"
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
@@ -119,6 +119,12 @@ def wset_cover_RR(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 # 	assignment[set_cover] = True
 # 	return (assignment, np.sum(weights[assignment])) if not info else set_cover
 
+
+## Note: Attempted optimization of v @ A for sparse v via the following: 
+# to_count = np.isin(subsets.indices, np.flatnonzero(1 - point_cover))
+# set_counts = np.maximum(np.add.reduceat(to_count, subsets.indptr[:-1]), 1/n)
+# Though it works, it's roughly 5x slower
+
 def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = False):
 	"""
 	Computes a set of indices I whose subsets S[I] = { S_1, S_2, ..., S_k }
@@ -136,7 +142,7 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = Fals
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
 	subsets = to_canonical(subsets, "csc")
 	n, J = subsets.shape
-	slice_col = lambda j: subsets.indices[subsets.indptr[j]:subsets.indptr[j+1]] # provides efficient column slicing
+	slice_col = lambda j: subsets.indices[slice(*subsets.indptr[[j,j+1]])] # noqa: E731
 	
 	## Vectorized version of the set version that trac
 	set_counts = subsets.sum(axis=0)
@@ -147,11 +153,6 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = Fals
 		set_counts = np.maximum((1 - point_cover) @ subsets, 1/n)
 		soln[opt_s] = True
 	return soln, np.sum(weights[soln])
-
-## Note: Attempted optimization of v @ A for sparse v via the following: 
-# to_count = np.isin(subsets.indices, np.flatnonzero(1 - point_cover))
-# set_counts = np.maximum(np.add.reduceat(to_count, subsets.indptr[:-1]), 1/n)
-# Though it works, it's roughly 5x slower
 
 def _maxsat_wcnf(subsets: csc_matrix, weights: ArrayLike):
 	""" Produces a WMAX-SAT CNF formula"""
@@ -239,16 +240,24 @@ def wset_cover_ILP(subsets: csc_matrix, weights: ArrayLike, solver: str = "highs
 	else:
 		ask_package_install("ortools")
 		from ortools.linear_solver import pywraplp
+		
+		## Choose the solver 
 		solver = pywraplp.Solver.CreateSolver(solver.upper()) # mip solver
 		assert solver is not None
-		subset_indicators = [solver.IntVar(0,1,"") for i in range(A.shape[1])]
-		min_weight_obj = solver.Sum([s*w for s, w in zip(subset_indicators, weights)])
+		
+		## Setup the constraints 
 		B = to_canonical(subsets, form="csr", copy=True)
+		subset_indicators = [solver.IntVar(0,1,"") for i in range(B.shape[1])]
+		min_weight_obj = solver.Sum([s*w for s, w in zip(subset_indicators, weights)])
 		for z in np.split(B.indices, B.indptr)[1:-1]:
 			solver.Add(solver.Sum([subset_indicators[zi] for zi in z]) >= 1)
+		
+		## Call the solver 
 		solver.Minimize(min_weight_obj)
 		status = solver.Solve()
 		assert status == 0 or status == 1, "Failed to find a feasible solution"
+		
+		## Extract solution and cost  
 		soln = np.array([s.solution_value() for s in subset_indicators], dtype=bool)
 		min_cost = solver.Objective().Value()
 		return soln, min_cost
