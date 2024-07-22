@@ -19,3 +19,8 @@ dependencies = [
 ]
 license = {file = "LICENSE"}
 
+[project.optional-dependencies]
+extras = [
+	"pysat",
+	"ortools"
+]
