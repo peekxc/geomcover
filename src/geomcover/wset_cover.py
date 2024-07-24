@@ -1,14 +1,13 @@
 import importlib
 import numpy as np
+import re
 from array import array
-from typing import *
+from typing import Callable
 from numpy.typing import ArrayLike
 from scipy.sparse import issparse, csc_matrix, csc_array
 from scipy.optimize import linprog
-from functools import partial
 
 from .loaders import to_canonical
-# import _cover
 
 def package_exists(package: str) -> bool: 
 	pkg_spec = importlib.util.find_spec(package)
@@ -54,8 +53,7 @@ def wset_cover_RR(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 	if subsets.dtype != int:
 		subsets = subsets.astype(int)
 
-	# linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, bounds=None, method='interior-point', callback=None, options=None, x0=None)
-	# Since A_ub @ x <= b_ub, negate A_ub to enable constraint A_ub @ x >= 1
+	## Since A_ub @ x <= b_ub, negate A_ub to enable constraint A_ub @ x >= 1
 	b_ub = np.repeat(-1.0, subsets.shape[0])
 	soln = linprog(c=W, b_ub=b_ub, A_ub=-subsets, bounds=(0.0, 1.0)) # options={"sparse": True}
 	assert soln.success, "Linear progam did not find a solution, which suggests problem is infeasible"
@@ -120,11 +118,38 @@ def wset_cover_RR(subsets: ArrayLike, weights: ArrayLike, maxiter: int = "defaul
 # 	return (assignment, np.sum(weights[assignment])) if not info else set_cover
 
 
+def _greedy_heuristic(heuristic: str, seed: int | None = None) -> Callable[[ArrayLike], int]:
+	if heuristic == "greedy":
+		return np.argmin
+	else:
+		assert isinstance(heuristic, str) and heuristic[:3] == "top", f"Invalid heuristic '{heuristic}' supplied; must be one of ['greedy', 'topk', 'topk%'] where k >= 1."
+		k = max(1, int(re.match("top(\\d+)[%]?", heuristic)[1]))
+		if heuristic[-1] == "%":
+			rng = np.random.default_rng(seed)
+			def _heuristic(set_weights: np.ndarray) -> int:
+				set_weights = np.asarray(set_weights)
+				kth = max(1, min(np.ceil(len(set_weights) * (k / 100)), len(set_weights)-1))
+				indices = np.argpartition(set_weights, kth=kth)[:kth]
+				prob = set_weights[indices] / np.sum(set_weights[indices])
+				return rng.choice(indices, size=1, p=prob).item()
+			return _heuristic
+		else:
+			rng = np.random.default_rng(seed)
+			def _heuristic(set_weights: np.ndarray) -> int:
+				set_weights = np.asarray(set_weights)
+				kth = max(1, min(k, len(set_weights)-1))
+				indices = np.argpartition(set_weights, kth=kth)[:kth]
+				prob = set_weights[indices] / np.sum(set_weights[indices])
+				return rng.choice(indices, size=1, p=prob).item()
+			return _heuristic
+
+	# else:
+	# 	raise ValueError(f"Invalid heuristic '{heuristic}' supplied; must be one of ['greedy', 'topk', 'topk%'] where k >= 1.")
+
 ## Note: Attempted optimization of v @ A for sparse v via the following: 
 # to_count = np.isin(subsets.indices, np.flatnonzero(1 - point_cover))
 # set_counts = np.maximum(np.add.reduceat(to_count, subsets.indptr[:-1]), 1/n)
 # Though it works, it's roughly 5x slower
-
 def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = False):
 	"""
 	Computes a set of indices I whose subsets S[I] = { S_1, S_2, ..., S_k }
@@ -153,6 +178,8 @@ def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, info: bool = Fals
 		set_counts = np.maximum((1 - point_cover) @ subsets, 1/n)
 		soln[opt_s] = True
 	return soln, np.sum(weights[soln])
+
+
 
 def _maxsat_wcnf(subsets: csc_matrix, weights: ArrayLike):
 	""" Produces a WMAX-SAT CNF formula"""
@@ -211,17 +238,16 @@ def wset_cover_sat(subsets: csc_matrix, weights: ArrayLike, return_solver: bool 
 		return(assignment, np.sum(weights[assignment]))
 
 def wset_cover_ILP(subsets: csc_matrix, weights: ArrayLike, solver: str = "highs"):
-	''' 
-	Computes an approximate solution to the weighted set cover problem via mixed-integer linear programming. 
+	"""Computes an approximate solution to the weighted set cover problem via mixed-integer linear programming.
 
 	Args:
 		subsets: (n x J) sparse matrix of J subsets whose union forms a cover over n points.
 		weights: (J)-length array of subset weights.
-		solver: which MILP solver to use. Defaults to the HiGHS solver in SciPy. 
+		solver: which MILP solver to use. Defaults to the HiGHS solver in SciPy.
 
-	Returns: 
+	Returns:
 		tuple (s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost.
-	''' 
+	""" 
 	assert solver.lower() in MIP_solvers, f"Unknown solver supplied '{solver}'; must be one of {str(MIP_solvers)}"
 	if solver == "highs":
 		from scipy.optimize import LinearConstraint, milp
@@ -263,6 +289,7 @@ def wset_cover_ILP(subsets: csc_matrix, weights: ArrayLike, solver: str = "highs
 		return soln, min_cost
 
 def wset_cover(subsets: csc_matrix, weights: ArrayLike, method: str = "RR", **kwargs):
+	"""Computes an approximate solution to the weighted set cover problem using a supplied method."""
 	assert isinstance(method, str) and method.lower() in ["rr", "greedy", "ilp", "sat"], f"Invalid method '{str(method)}' supplied; must be one of 'LP', 'greedy', or 'SAT'"
 	method = method.upper()
 	if method == "RR":

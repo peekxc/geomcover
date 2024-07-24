@@ -1,6 +1,8 @@
 [build-system]
-build-backend = "mesonpy"
-requires = ["meson-python", "wheel", "numpy", "pybind11>=2.8.0"]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+# build-backend = "mesonpy"
+# requires = ["meson-python", "wheel", "numpy", "pybind11>=2.8.0"]
 
 [project]
 name = "geomcover"
@@ -10,9 +12,6 @@ authors = [
 ]
 description = "Geometrically-oriented cover estimation using reductions to weighted set cover."
 readme = "README.md"
-packages = [
-	{ include = "geom_cover", from = "src" },
-]
 dependencies = [
   "numpy", 
 	"combin"
@@ -25,3 +24,17 @@ extras = [
 	"ortools", 
 	"geomstats"
 ]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["D", "E4", "E7", "E9", "F"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
