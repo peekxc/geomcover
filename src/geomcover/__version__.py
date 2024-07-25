@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-def init_version():
+def _init_version():
   init = os.path.join(os.path.dirname(__file__), '../../pyproject.toml')
   with open(init) as fid:
     data = fid.readlines()
@@ -11,4 +11,4 @@ def init_version():
   return version
 
 if __name__ == "__main__":
-  print(init_version())
+  print(_init_version())

@@ -1,0 +1,18 @@
+# wset_cover_greedy { #geomcover.wset_cover_greedy }
+
+`wset_cover_greedy(subsets, weights)`
+
+Computes an approximate solution to the weighted set cover problem via a greedy approach.
+
+## Parameters
+
+| Name      | Type       | Description                                                                         | Default    |
+|-----------|------------|-------------------------------------------------------------------------------------|------------|
+| `subsets` | csc_matrix | (n x J) sparse matrix of ``J`` subsets whose union forms a cover over ``n`` points. | _required_ |
+| `weights` | ArrayLike  | (J)-length array of subset weights.                                                 | _required_ |
+
+## Returns
+
+| Type   | Description                                                                         |
+|--------|-------------------------------------------------------------------------------------|
+| tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |

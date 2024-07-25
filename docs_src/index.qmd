@@ -1,0 +1,29 @@
+# API Reference {.doc .doc-index}
+
+## Set Cover
+
+Functions to find minimum weight set covers.
+
+| | |
+| --- | --- |
+| [cover.wset_cover_RR](cover.wset_cover_RR.qmd#geomcover.cover.wset_cover_RR) | Computes an approximate solution to the weighted set cover problem via randomized rounding. |
+| [cover.wset_cover_greedy](cover.wset_cover_greedy.qmd#geomcover.cover.wset_cover_greedy) | Computes an approximate solution to the weighted set cover problem via a greedy approach. |
+| [cover.wset_cover_ILP](cover.wset_cover_ILP.qmd#geomcover.cover.wset_cover_ILP) | Computes an approximate solution to the weighted set cover problem via *integer linear programming*. |
+
+## Linear Algebra
+
+Standard linear algebra algorithms.
+
+| | |
+| --- | --- |
+| [linalg.pca](linalg.pca.qmd#geomcover.linalg.pca) | Projects `X` onto a d-dimensional linear subspace via Principal Component Analysis. |
+| [linalg.cmds](linalg.cmds.qmd#geomcover.linalg.cmds) | Generates a d-dimensional a gram matrix 'G' onto  embedding via Classical (Torgerson's) Multi-Dimensional Scaling. |
+
+## Geometry
+
+Algorithms for computing information on manifolds.
+
+| | |
+| --- | --- |
+| [geometry.tangent_bundle](geometry.tangent_bundle.qmd#geomcover.geometry.tangent_bundle) | Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`. |
+| [geometry.bundle_weights](geometry.bundle_weights.qmd#geomcover.geometry.bundle_weights) | Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle. |

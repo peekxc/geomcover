@@ -1,6 +1,5 @@
 import numpy as np
 from itertools import islice, cycle, chain, combinations
-from more_itertools import pairwise
 from typing import Iterable, Generator
 from scipy.sparse import coo_array
 
@@ -37,16 +36,17 @@ def sliding_window(S: Iterable, n: int = 2) -> Generator:
     yield result
 
 def cycle_window(S: Iterable, offset: int = 1, w: int = 2):
+  """Creates a cyclic windowed iterable over `S` with the given offset and width."""
   return sliding_window(islice(cycle(S), len(S)+offset), w)
 
 def complete_graph(n: int):
-  """Creates the complete graph from the sequence [0,1,...,n-1]""" 
+  """Creates the complete graph from the sequence [0,1,...,n-1].""" 
   G = np.ones(shape=(n,n), dtype=bool)
   np.fill_diagonal(G, 0)
   return coo_array(G)
 
 def cycle_graph(n: int, k: int = 2):
-  """Creates a cycle graph from the sequence [0,1,...,n-1], connecting all k-adjacent pairs (cyclically)"""
+  """Creates a cycle graph from the sequence [0,1,...,n-1], connecting all k-adjacent pairs (cyclically)."""
   S = np.fromiter(cycle_window(range(n), w=k, offset=k), dtype=(np.int32, k))
   E = np.fromiter(chain(*[combinations(s, 2) for s in S]), dtype=(np.int32, 2))
   E = np.unique(E, axis=0)

@@ -1,0 +1,26 @@
+# linalg.cmds { #geomcover.linalg.cmds }
+
+`linalg.cmds(G, d=2, coords=True)`
+
+Generates a d-dimensional a gram matrix 'G' onto  embedding via Classical (Torgerson's) Multi-Dimensional Scaling.
+
+CMDS is a linear dimensionality reduction algorithm that projects a double-centered symmetric inner product (gram) matrix 'G' to a 
+lower dimensional space whose coordinates minimize the reconstruction error of centered scalar products, or 'strain'.
+
+CMDS is dual to PCA in the sense that the d-dimensional covariance-derived projection produced by PCA minimizes the 
+same inner-product-derived 'strain' objective minimized by CMDS. 
+
+## Parameters
+
+| Name     | Type      | Description                                                                       | Default    |
+|----------|-----------|-----------------------------------------------------------------------------------|------------|
+| `G`      | ArrayLike | set of pairwise inner products or a squared Euclidean distance matrix.            | _required_ |
+| `d`      | int       | dimension of the embedding to produce.                                            | `2`        |
+| `coords` | bool      | whether to return the embedding (default = True), or just return the eigenvectors | `True`     |
+
+## Returns
+
+| Type       | Description                                                                                                            |
+|------------|------------------------------------------------------------------------------------------------------------------------|
+| np.ndarray | if coords = True, returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. Otherwise, |
+| np.ndarray | the eigenvalues and eigenvectors can be returned as-is.                                                                |

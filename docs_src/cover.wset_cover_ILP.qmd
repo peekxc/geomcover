@@ -1,0 +1,19 @@
+# cover.wset_cover_ILP { #geomcover.cover.wset_cover_ILP }
+
+`cover.wset_cover_ILP(subsets, weights, solver='highs')`
+
+Computes an approximate solution to the weighted set cover problem via *integer linear programming*.
+
+## Parameters
+
+| Name      | Type       | Description                                                                 | Default    |
+|-----------|------------|-----------------------------------------------------------------------------|------------|
+| `subsets` | csc_matrix | (n x J) sparse matrix of J subsets whose union forms a cover over n points. | _required_ |
+| `weights` | ArrayLike  | (J)-length array of subset weights.                                         | _required_ |
+| `solver`  | str        | which MILP solver to use. Defaults to the HiGHS solver in SciPy.            | `'highs'`  |
+
+## Returns
+
+| Type   | Description                                                                                    |
+|--------|------------------------------------------------------------------------------------------------|
+| tuple  | (s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost. |

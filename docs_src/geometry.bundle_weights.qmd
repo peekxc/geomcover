@@ -1,0 +1,5 @@
+# geometry.bundle_weights { #geomcover.geometry.bundle_weights }
+
+`geometry.bundle_weights(M, TM, method, reduce, X=None)`
+
+Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle.

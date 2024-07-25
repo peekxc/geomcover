@@ -1,112 +1,43 @@
+"""Geometry algorithms for manifolds."""
+
 from math import comb
 import numpy as np
 from typing import Callable, Union
 from itertools import combinations
 from numpy.typing import ArrayLike
-from scipy.sparse import csr_matrix, csc_matrix, coo_matrix, find, csc_array, csr_array, coo_array, dia_array
+from scipy.sparse import coo_matrix, find, csr_array, coo_array
 from scipy.spatial import Delaunay
-from scipy.spatial.distance import pdist, cdist, squareform
+from scipy.spatial.distance import cdist
 from combin import inverse_choose
 from collections import namedtuple
+
 from .csgraph import to_canonical
+from .linalg import pca
 
 ## Simple type
 TangentPair = namedtuple("TangentPair", field_names=("base_point", "tangent_vec"))
 
 ## Predicates to simplify type-checking
 def is_distance_matrix(x: ArrayLike) -> bool:
-	''' Checks whether 'x' is a distance matrix, i.e. is square, symmetric, and that the diagonal is all 0. '''
+	"""Checks whether 'x' is a distance matrix, i.e. is square, symmetric, and that the diagonal is all 0."""
 	x = np.array(x, copy=False)
 	is_square = x.ndim == 2	and (x.shape[0] == x.shape[1])
 	return(False if not(is_square) else np.all(np.diag(x) == 0))
 
 def is_pairwise_distances(x: ArrayLike) -> bool:
-	''' Checks whether 'x' is a 1-d array of pairwise distances '''
+	"""Checks whether 'x' is a 1-d array of pairwise distances"""
 	x = np.array(x, copy=False) # don't use asanyarray here
-	if x.ndim > 1: return(False)
+	if x.ndim > 1: 
+		return(False)
 	n = inverse_choose(len(x), 2)
 	return(x.ndim == 1 and len(x) == comb(n, 2))
 
 def is_point_cloud(x: ArrayLike) -> bool: 
-	''' Checks whether 'x' is a 2-d array of points '''
+	"""Checks whether 'x' is a 2-d array of points"""
 	return(isinstance(x, np.ndarray) and x.ndim == 2)
-
 
 # def nerve():
 # 	"""Computes the simplicial nerve of a given cover"""
-
-## Classical MDS 
-def cmds(G: ArrayLike, d: int = 2, coords: bool = True):
-	'''Generates a d-dimensional a gram matrix 'G' onto  embedding via Classical (Torgerson's) Multi-Dimensional Scaling (CMDS)
-
-	CMDS is a linear dimensionality reduction algorithm that projects a double-centered symmetric inner product (gram) matrix 'G' to a 
-	lower dimensional space whose coordinates minimize the reconstruction error of centered scalar products, or 'strain'.
-
-	CMDS is dual to PCA in the sense that the d-dimensional covariance-derived projection produced by PCA minimizes the 
-	same inner-product-derived 'strain' objective minimized by CMDS. 
-
-	Parameters: 
-		G = set of pairwise inner products or a squared Euclidean distance matrix. 
-		d = dimension of the embedding to produce.
-		center = whether to center the data prior to computing eigenvectors
-		coords = whether to return the embedding (default = True), or just return the eigenvectors
-	
-	Returns:
-		if coords = True, returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. Otherwise, 
-		the eigenvalues and eigenvectors can be returned as-is. 
-	''' 
-	is_pd = is_pairwise_distances(G)
-	is_dm = is_distance_matrix(G)
-	assert is_pd or is_dm, "Input 'D' should set of pairwise distances or distance matrix"
-	G = squareform(G) if is_pd else G
-	n = G.shape[0]
-	G_center = G.mean(axis=0)
-	G = -0.50 * (G  - G_center - G_center.reshape((n,1)) + G_center.mean())
-	evals, evecs = np.linalg.eigh(G)
-	evals, evecs = evals[(n-d):n], evecs[:,(n-d):n]
-
-	# Compute the coordinates using positive-eigenvalued components only     
-	if coords:               
-		w = np.flip(np.maximum(evals, np.repeat(0.0, d)))
-		Y = np.fliplr(evecs) @ np.diag(np.sqrt(w))
-		return(Y)
-	else: 
-		w = np.where(evals > 0)[0]
-		ni = np.setdiff1d(np.arange(d), w)
-		evecs[:,ni] = 1.0
-		evals[ni] = 0.0
-		return(evals, evecs)
-
-def pca(X: ArrayLike, d: int = 2, center: bool = False, coords: bool = True) -> ArrayLike:
-	''' 
-	Projects 'X' onto a d-dimensional embedding via Principal Component Analysis (PCA)
-
-	PCA is a linear dimensionality reduction algorithm that projects a point set 'X' onto a lower dimensional space 
-	using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix. 
-
-	PCA is dual to CMDS in the sense that the d-dimensional embedding produced by CMDS on the gram matrix  
-	of squared Euclidean distances from 'X' satisfies the same reconstruction as the d-dimensional projection of 'X' with PCA. 
-
-	Parameters: 
-		X = (n x D) point cloud / design matrix of n points in D dimensions. 
-		d = dimension of the embedding to produce.
-		center = whether to center the data prior to computing eigenvectors
-		coords = whether to return the embedding (default), or just return the eigenvectors
-	
-	Returns:
-		if coords = True (default), returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. 
-		Otherwise, the eigenvalues and eigenvectors can be returned as-is. 
-	'''
-	X = np.atleast_2d(X)
-	assert is_point_cloud(X), "Input should be a point cloud, not a distance matrix."
-	if center: 
-		X -= X.mean(axis = 0)
-	evals, evecs = np.linalg.eigh(np.cov(X, rowvar=False))
-	idx = np.argsort(evals)[::-1] # descending order to pick the largest components first 
-	if coords:
-		return(np.dot(X, evecs[:,idx[range(d)]]))
-	else: 
-		return(evals[idx[range(d)]], evecs[:,idx[range(d)]])
 
 # def neighborhood_graph(X: np.ndarray, r: float, ind = None):
 # 	"""Constructs an 'r'-neighborhood graph on the point cloud 'X' at the given indices 'ind'
@@ -122,15 +53,15 @@ def pca(X: ArrayLike, d: int = 2, center: bool = False, coords: bool = True) -> 
 # 	return G.tocsc()
 
 def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray = None) -> dict:
-	"""Estimates the tangent bundle of 'M' via local PCA on neighborhoods in 'X'
+	"""Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`.
 
-	This function estimates the d-dimensional tangent spaces of neighborhoods in 'X' given by columns in 'M'.
+	This function estimates the `d`-dimensional tangent spaces of neighborhoods in `X` given by columns in `M`.
 	
 	Parameters: 
-		M = Adjacency list, given as a sparse matrix
-		X = coordinates of the vertices of 'G'
-		d = dimension of the tangent space
-		centers = points to center the tangent space estimates. If None, each neighborhoods is centered around its average. 
+		M: Adjacency list, given as a sparse matrix
+		X: coordinates of the vertices of 'G'
+		d: dimension of the tangent space
+		centers: points to center the tangent space estimates. If None, each neighborhoods is centered around its average. 
 	"""
 	# assert isinstance(M, csr_matrix) or isinstance(M, csr_array), "Adjacency must be a CSR matrix."
 	if centers is not None:
@@ -158,7 +89,6 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 
 def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLike = None):
 	"""Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle.
-
 	"""
 	A = M.tocoo()
 	assert method in ['distance', 'cosine', 'angle'], f"Invalid method '{str(method)}' supplied"
@@ -169,7 +99,7 @@ def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLik
 		## The cosine distance is taken as the minimum to each tangent vector and its opposite  
 		base_points = np.array([p for p,v in TM]) # n x D
 		tangent_vec = np.array([v.T.flatten() for p,v in TM]) # n x D x d
-		cosine_dist_sgn = lambda j: np.min(cdist(tangent_vec[[j,j]] * np.array([[1],[-1]]), tangent_vec[A.row[A.col == j]], 'cosine'), axis=0)
+		cosine_dist_sgn = lambda j: np.min(cdist(tangent_vec[[j,j]] * np.array([[1],[-1]]), tangent_vec[A.row[A.col == j]], 'cosine'), axis=0) # noqa: E731
 		cosine_dist = [cosine_dist_sgn(j) for j in range(M.shape[1])]
 		weights = np.array([stat_f(cd) for cd in cosine_dist])
 		return weights 
@@ -205,6 +135,7 @@ def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLik
 		return weights
 
 def neighbor_graph_ball(X: ArrayLike, radius: float, batch: int = 15, metric: str = "euclidean", weighted: bool = False, **kwargs):
+	"""Empty."""
 	from array import array
 	n = len(X)
 	R, C = array('I'), array('I')
@@ -221,6 +152,7 @@ def neighbor_graph_ball(X: ArrayLike, radius: float, batch: int = 15, metric: st
 	return to_canonical(G, form="csc", diag=True, symmetrize=False)
 
 def neighbor_graph_knn(X: ArrayLike, k: int, batch: int = 15, metric: str = "euclidean", weighted: bool = False, diag: bool = False, **kwargs):
+	"""Empty."""
 	from array import array
 	n = len(X)
 	R, C = array('I'), array('I')
@@ -238,21 +170,21 @@ def neighbor_graph_knn(X: ArrayLike, k: int, batch: int = 15, metric: str = "euc
 	return to_canonical(G, form="csc", diag=True, symmetrize=False)
 
 def neighbor_graph_del(X: ArrayLike, weighted: bool = False, **kwargs):
+	"""Empty."""
 	from array import array
 	n = len(X)
 	dt = Delaunay(X)
 	R,C = array('I'), array('I')
-	for I, J in combinations(dt.simplices.T, 2):
-		R.extend(I)
-		C.extend(J)
+	for I_ind, J_ind in combinations(dt.simplices.T, 2):
+		R.extend(I_ind)
+		C.extend(J_ind)
 	V = np.ones(len(R)) if not weighted else np.linalg.norm(X[R] - X[C], axis=1)
 	dtype = np.bool if not weighted else np.float32
 	G = coo_array((V, (R,C)), shape=(n,n), dtype=dtype)
 	return to_canonical(G, form="csc", diag=True, symmetrize=False)
 
 def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
-	''' 
-	Constructs an r-neighborhood graph on the point cloud 'X' at the given indices 'ind', and then computes an orthogonal basis 
+	"""Constructs an r-neighborhood graph on the point cloud 'X' at the given indices 'ind', and then computes an orthogonal basis
 	which approximates the d-dimensional tangent space around each of those points. 
 
 	Parameters: 
@@ -261,10 +193,10 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 		r = radius around each point determining the neighborhood from which to compute the tangent vector
 		ind = indices to approximate the neighborhoods at. If not specified, will use every point. 
 
-	Returns: 
+	Returns:
 		G = the neighborhood graph, given as an (n x len(ind)) incidence matrix
 		weights = len(ind)-length array 
-	'''
+	"""
 	ind = np.array(range(X.shape[0])) if ind is None else ind
 	m = len(ind)
 	r,c,v = find(cdist(X, X[ind,:]) <= r*2)
@@ -291,30 +223,3 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind = None):
 	G = coo_matrix((v, (r,c)), shape=(X.shape[0], len(ind)), dtype=bool)
 	return(G.tocsc(), weights, tangents)
 	#return(weights, tangents)
-
-# https://people.brunel.ac.uk/~mastjjb/jeb/orlib/scpinfo.html
-## https://algnotes.info/on/obliv/lagrangian/set-cover-fractional/
-def coverage(A: csc_array, ind: np.ndarray = None) -> np.ndarray:
-	"""Returns the amount covered by each subset in the set of cover indices provided."""
-	# A.tolil()[:,np.flatnonzero(soln)].sum(axis=1) # equiv, 5.9s
-	# lili approach: 1.4s
-	A = to_canonical(A, "coo")
-	covered = np.zeros(A.shape[0], dtype=np.int64)
-	if ind is None:
-		np.add.at(covered, A.row, 1)
-	else: 
-		np.add.at(covered, A.row[np.isin(A.col, ind)], 1)
-	return covered
-
-def valid_cover(A: csc_array, ind: np.ndarray = None) -> bool:
-	"""Determines whether given sets form a valid or *feasible* cover over the universe."""
-	return np.min(coverage(A, ind)) > 0
-
-	# n, J = A.shape
-	# subset_splits = np.split(A.indices, A.indptr)[1:-1]
-	# assert len(subset_splits) == J, "Splitting of cover array failed. Are there empty columns?"
-	# if ind is not None:
-	# 	ind = np.array(ind).astype(int) 
-	# 	subset_splits = [subset_splits[i] for i in ind]
-	# covered_ind = sortednp.kway_merge(*subset_splits, assume_sorted=True, duplicates=4)
-	# return len(covered_ind) == n

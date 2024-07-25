@@ -1,7 +1,7 @@
 import numpy as np
 import re
 from array import array
-from scipy.sparse import coo_array, csc_matrix, csc_array
+from scipy.sparse import coo_array
 from urllib.request import urlopen
 
 from .csgraph import to_canonical

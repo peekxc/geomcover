@@ -1,0 +1,46 @@
+project:
+  type: website
+  output-dir: ../docs
+
+website:
+  navbar:
+    background: primary
+    search: false
+    left: 
+      - text: "Geomcover"
+        href: index.qmd 
+    tools: 
+      - icon: github
+        href: https://github.com/peekxc/geomcover
+
+metadata-files:
+  - _sidebar.yml
+
+format:
+  html:
+    css: styles.css
+
+quartodoc:
+  package: geomcover
+  dir: .
+  title: API Reference
+  parser: google
+  sidebar: _sidebar.yml
+  render_interlinks: False
+  sections:
+    - title: Set Cover
+      desc: Functions to find minimum weight set covers.
+      contents:
+        - cover.wset_cover_RR
+        - cover.wset_cover_greedy
+        - cover.wset_cover_ILP
+    - title: Linear Algebra
+      desc: Standard linear algebra algorithms. 
+      contents: 
+        - linalg.pca 
+        - linalg.cmds
+    - title: Geometry 
+      desc: Algorithms for computing information on manifolds. 
+      contents: 
+        - geometry.tangent_bundle
+        - geometry.bundle_weights

@@ -1,0 +1,19 @@
+website:
+  sidebar:
+  - contents:
+    - ./index.qmd
+    - contents:
+      - ./cover.wset_cover_RR.qmd
+      - ./cover.wset_cover_greedy.qmd
+      - ./cover.wset_cover_ILP.qmd
+      section: Set Cover
+    - contents:
+      - ./linalg.pca.qmd
+      - ./linalg.cmds.qmd
+      section: Linear Algebra
+    - contents:
+      - ./geometry.tangent_bundle.qmd
+      - ./geometry.bundle_weights.qmd
+      section: Geometry
+    id: .
+  - id: dummy-sidebar
