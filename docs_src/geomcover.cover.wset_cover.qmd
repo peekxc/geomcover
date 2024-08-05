@@ -1,0 +1,5 @@
+# wset_cover { #geomcover.cover.wset_cover }
+
+`cover.wset_cover(subsets, weights, method='RR', **kwargs)`
+
+Computes an approximate solution to the weighted set cover problem using a supplied method.

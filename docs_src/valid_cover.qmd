@@ -1,0 +1,5 @@
+# valid_cover { #geomcover.valid_cover }
+
+`valid_cover(A, ind=None)`
+
+Determines whether given sets form a valid or *feasible* cover over the universe.

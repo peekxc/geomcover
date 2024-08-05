@@ -1,14 +1,25 @@
 # API Reference {.doc .doc-index}
 
+## Set Cover 2
+
+Functions to find minimum weight set covers.
+
+| | |
+| --- | --- |
+| [cover](cover.qmd#geomcover.cover) |  |
+
 ## Set Cover
 
 Functions to find minimum weight set covers.
 
 | | |
 | --- | --- |
-| [cover.wset_cover_RR](cover.wset_cover_RR.qmd#geomcover.cover.wset_cover_RR) | Computes an approximate solution to the weighted set cover problem via randomized rounding. |
-| [cover.wset_cover_greedy](cover.wset_cover_greedy.qmd#geomcover.cover.wset_cover_greedy) | Computes an approximate solution to the weighted set cover problem via a greedy approach. |
-| [cover.wset_cover_ILP](cover.wset_cover_ILP.qmd#geomcover.cover.wset_cover_ILP) | Computes an approximate solution to the weighted set cover problem via *integer linear programming*. |
+| [wset_cover_RR](wset_cover_RR.qmd#geomcover.wset_cover_RR) | Approximates the weighted set cover problem via _randomized rounding_. |
+| [wset_cover_greedy](wset_cover_greedy.qmd#geomcover.wset_cover_greedy) | Computes an approximate solution to the weighted set cover problem via a greedy approach. |
+| [wset_cover_ILP](wset_cover_ILP.qmd#geomcover.wset_cover_ILP) | Computes an approximate solution to the weighted set cover problem via *integer linear programming*. |
+| [to_canonical](to_canonical.qmd#geomcover.to_canonical) |  |
+| [coverage](coverage.qmd#geomcover.coverage) | Returns the amount covered by each subset in the set of cover indices provided. |
+| [valid_cover](valid_cover.qmd#geomcover.valid_cover) | Determines whether given sets form a valid or *feasible* cover over the universe. |
 
 ## Linear Algebra
 
@@ -16,8 +27,8 @@ Standard linear algebra algorithms.
 
 | | |
 | --- | --- |
-| [linalg.pca](linalg.pca.qmd#geomcover.linalg.pca) | Projects `X` onto a d-dimensional linear subspace via Principal Component Analysis. |
-| [linalg.cmds](linalg.cmds.qmd#geomcover.linalg.cmds) | Generates a d-dimensional a gram matrix 'G' onto  embedding via Classical (Torgerson's) Multi-Dimensional Scaling. |
+| [linalg.pca](linalg.pca.qmd#geomcover.linalg.pca) | Projects `X` onto a `d`-dimensional linear subspace via Principal Component Analysis. |
+| [linalg.cmds](linalg.cmds.qmd#geomcover.linalg.cmds) | Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling. |
 
 ## Geometry
 

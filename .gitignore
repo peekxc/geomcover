@@ -4,6 +4,7 @@ build
 excess 
 .vscode 
 .benchmarks
+.zed 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

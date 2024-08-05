@@ -4,11 +4,8 @@ import numpy as np
 from numpy import pi
 from bokeh.io import output_notebook
 from bokeh.plotting import figure, show
-from set_cover.csgraph import path_graph, cycle_graph
-from scipy.sparse import dia_array
-from set_cover.covers import tangent_bundle, neighbor_graph_ball
+from set_cover.covers import tangent_bundle
 from set_cover.plotting import plot_tangent_bundle
-from landmark import landmarks
 output_notebook()
 
 # %% Simple dataset with two parts of a spiral
@@ -26,7 +23,7 @@ p.scatter(*X.T, size=4, color='red', line_color='gray')
 show(p)
 
 # %% First step: tangent bundle estimation
-from set_cover.covers import neighbor_graph_ball, neighbor_graph_knn
+from set_cover.covers import neighbor_graph_knn
 
 ## Our manifold will be the r-neighborhood graph
 n = len(X)
@@ -44,7 +41,7 @@ show(p)
 
 # %% Step 2: choose a bundle weighting scheme
 from set_cover.covers import bundle_weights
-from map2color import map2hex, map2rgb
+from map2color import map2hex
 
 # TW = bundle_weights(M, TM, method="cosine", reduce=np.mean) # lambda x: np.ptp(x/2.0)
 # TW = bundle_weights(M, TM, method="distance", reduce=np.max)

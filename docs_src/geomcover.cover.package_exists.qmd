@@ -1,0 +1,5 @@
+# package_exists { #geomcover.cover.package_exists }
+
+`cover.package_exists(package)`
+
+Checks whether a package exists via importlib.

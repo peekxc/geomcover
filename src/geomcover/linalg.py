@@ -5,30 +5,58 @@ from numpy.typing import ArrayLike
 from scipy.spatial.distance import squareform
 
 ## Classical MDS 
-def cmds(G: ArrayLike, d: int = 2, coords: bool = True) -> np.ndarray:
+def cmds(D: ArrayLike, d: int = 2, coords: bool = True) -> np.ndarray:
 	"""Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling.
 
-	CMDS is a linear dimensionality reduction algorithm that projects a double-centered symmetric \
-	inner product (gram) matrix 'G' to a lower dimensional space whose coordinates minimize the  \
-	reconstruction error of centered scalar products, or 'strain'.
-
-	CMDS is dual to PCA in the sense that the covariance-derived projection produced by PCA minimizes the 
-	same inner-product-derived 'strain' objective minimized by CMDS. 
+	CMDS is a coordinatization algorithm that generates `d`-dimensional coordinates from a Euclidean \
+	distance matrix `D`. Algorithmically, `D` is converted into a Gram matrix `G`, \
+	whose eigen decomposition is used to produce coordinates minimizing a notion of 'strain'.
 
 	Parameters: 
-		G: set of pairwise inner products or a squared Euclidean distance matrix. 
+		D: Squared Euclidean distance matrix, or set of (squared) pairwise distances. 
 		d: dimension of the embedding to produce.
 		coords: whether to return the embedding (default = True), or just return the eigenvectors
 	
 	Returns:
-		if coords = True, returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. Otherwise, 
-		the eigenvalues and eigenvectors can be returned as-is. 
+		if `coords = True`, the coordinates from the largest `d` eigenvectors of `G`'s eigendecomposition. Otherwise, \
+		the eigenvalues and eigenvectors are returned. See the Examples section for more details. 
+	
+	Notes:
+		PCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from `X` \
+		satisfies the same reconstruction loss as with PCA. In particular, when `X` comes from Euclidean space, \
+		the output of pca(...) will match the output of cmds(...) exactly up to rotation and translation. 
+	
+	See Also:
+		- [CMDS](https://en.wikipedia.org/wiki/Multidimensional_scaling)
+		- [Euclidean distance matrix](https://en.wikipedia.org/wiki/Euclidean_distance_matrix)
+	
+	Examples:
+		```{python}
+		import numpy as np 
+		from geomcover.linalg import pca, cmds
+
+		## Start with a random set of points in R^3 + its distance matrix
+		X = np.random.uniform(size=(50,3))
+		D = np.linalg.norm(X - X[:,np.newaxis], axis=2)
+		
+		## Note that CMDS takes as input *squared* distances
+		Y_pca = pca(X, d=2)
+		Y_mds = cmds(D**2, d=2)
+
+		## Get distance matrices for both embeddings
+		Y_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)
+		Y_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)
+		
+		## Up to rotation and translation, the coordinates are identical
+		all_close = np.allclose(Y_pca_D, Y_mds_D)
+		print(f"PCA and MDS coord. distances identical? {all_close}")
+		```
 	""" 
-	G = np.asarray(G)
-	G = squareform(G) if G.ndim == 1 else G
-	n = G.shape[0]
-	G_center = G.mean(axis=0)
-	G = -0.50 * (G  - G_center - G_center.reshape((n,1)) + G_center.mean())
+	D = np.asarray(D)
+	D = squareform(D) if D.ndim == 1 else D
+	n = D.shape[0]
+	D_center = D.mean(axis=0)
+	G = -0.50 * (D  - D_center - D_center.reshape((n,1)) + D_center.mean())
 	evals, evecs = np.linalg.eigh(G)
 	evals, evecs = evals[(n-d):n], evecs[:,(n-d):n]
 
@@ -44,24 +72,48 @@ def cmds(G: ArrayLike, d: int = 2, coords: bool = True) -> np.ndarray:
 		evals[ni] = 0.0
 		return(evals, evecs)
 
-def pca(X: ArrayLike, d: int = 2, center: bool = False, coords: bool = True) -> np.ndarray:
-	"""Projects `X` onto a d-dimensional linear subspace via Principal Component Analysis.
+def pca(X: ArrayLike, d: int = 2, center: bool = True, coords: bool = True) -> np.ndarray:
+	"""Projects `X` onto a `d`-dimensional linear subspace via Principal Component Analysis.
 
-	PCA is a linear dimensionality reduction algorithm that projects a point set 'X' onto a lower dimensional space 
+	PCA is a linear dimensionality reduction algorithm that projects a point set `X` onto a lower dimensional space \
 	using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix. 
-
-	PCA is dual to CMDS in the sense that the d-dimensional embedding produced by CMDS on the gram matrix of squared \
-	Euclidean distances from 'X' satisfies the same reconstruction as the d-dimensional projection of 'X' with PCA. 
 
 	Parameters: 
 		X: (n x D) point cloud / design matrix of n points in D dimensions. 
 		d: dimension of the embedding to produce.
-		center: whether to center the data prior to computing eigenvectors.
-		coords: whether to return the embedding (default), or just return the eigenvectors.
+		center: whether to center the data prior to computing eigenvectors. Defaults to True. 
+		coords: whether to return the embedding or the eigenvectors. Defaults to the embedding. 
 	
 	Returns:
-		if coords = True (default), returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. 
+		if coords = True (default), returns the projection of `X` onto the largest `d` eigenvectors of `X`s covariance matrix. \
 		Otherwise, the eigenvalues and eigenvectors can be returned as-is. 
+
+	Notes:
+		PCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from `X` \
+		satisfies the same reconstruction loss as with PCA. In particular, when `X` comes from Euclidean space, \
+		the output of pca(...) will match the output of cmds(...) exactly up to rotation and translation. 
+	
+	Examples:
+		```{python}
+		import numpy as np 
+		from geomcover.linalg import pca, cmds
+
+		## Start with a random set of points in R^3 + its distance matrix
+		X = np.random.uniform(size=(50,3))
+		D = np.linalg.norm(X - X[:,np.newaxis], axis=2)
+		
+		## Note that CMDS takes as input *squared* distances
+		Y_pca = pca(X, d=2)
+		Y_mds = cmds(D**2, d=2)
+
+		## Get distance matrices for both embeddings
+		Y_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)
+		Y_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)
+		
+		## Up to rotation and translation, the coordinates are identical
+		all_close = np.allclose(Y_pca_D, Y_mds_D)
+		print(f"PCA and MDS coord. distances identical? {all_close}")
+		```
 	"""
 	X = np.atleast_2d(X)
 	if center: 

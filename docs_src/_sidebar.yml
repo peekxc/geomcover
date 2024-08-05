@@ -3,9 +3,15 @@ website:
   - contents:
     - ./index.qmd
     - contents:
-      - ./cover.wset_cover_RR.qmd
-      - ./cover.wset_cover_greedy.qmd
-      - ./cover.wset_cover_ILP.qmd
+      - ./cover.qmd
+      section: Set Cover 2
+    - contents:
+      - ./wset_cover_RR.qmd
+      - ./wset_cover_greedy.qmd
+      - ./wset_cover_ILP.qmd
+      - ./to_canonical.qmd
+      - ./coverage.qmd
+      - ./valid_cover.qmd
       section: Set Cover
     - contents:
       - ./linalg.pca.qmd

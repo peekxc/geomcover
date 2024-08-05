@@ -1,26 +1,53 @@
 # linalg.cmds { #geomcover.linalg.cmds }
 
-`linalg.cmds(G, d=2, coords=True)`
+`linalg.cmds(D, d=2, coords=True)`
 
-Generates a d-dimensional a gram matrix 'G' onto  embedding via Classical (Torgerson's) Multi-Dimensional Scaling.
+Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling.
 
-CMDS is a linear dimensionality reduction algorithm that projects a double-centered symmetric inner product (gram) matrix 'G' to a 
-lower dimensional space whose coordinates minimize the reconstruction error of centered scalar products, or 'strain'.
-
-CMDS is dual to PCA in the sense that the d-dimensional covariance-derived projection produced by PCA minimizes the 
-same inner-product-derived 'strain' objective minimized by CMDS. 
+CMDS is a coordinatization algorithm that generates `d`-dimensional coordinates from a Euclidean        distance matrix `D`. Algorithmically, `D` is converted into a Gram matrix `G`,  whose eigen decomposition is used to produce coordinates minimizing a notion of 'strain'.
 
 ## Parameters
 
 | Name     | Type      | Description                                                                       | Default    |
 |----------|-----------|-----------------------------------------------------------------------------------|------------|
-| `G`      | ArrayLike | set of pairwise inner products or a squared Euclidean distance matrix.            | _required_ |
+| `D`      | ArrayLike | Squared Euclidean distance matrix, or set of (squared) pairwise distances.        | _required_ |
 | `d`      | int       | dimension of the embedding to produce.                                            | `2`        |
 | `coords` | bool      | whether to return the embedding (default = True), or just return the eigenvectors | `True`     |
 
 ## Returns
 
-| Type       | Description                                                                                                            |
-|------------|------------------------------------------------------------------------------------------------------------------------|
-| np.ndarray | if coords = True, returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. Otherwise, |
-| np.ndarray | the eigenvalues and eigenvectors can be returned as-is.                                                                |
+| Type       | Description                                                                                                                                                                                                       |
+|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| np.ndarray | if `coords = True`, the coordinates from the largest `d` eigenvectors of `G`'s eigendecomposition. Otherwise,           the eigenvalues and eigenvectors are returned. See the Examples section for more details. |
+
+## Notes
+
+PCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from `X`          satisfies the same reconstruction loss as with PCA. In particular, when `X` comes from Euclidean space,                 the output of pca(...) will match the output of cmds(...) exactly up to rotation and translation. 
+
+## See Also
+
+- [CMDS](https://en.wikipedia.org/wiki/Multidimensional_scaling)
+- [Euclidean distance matrix](https://en.wikipedia.org/wiki/Euclidean_distance_matrix)
+
+## Examples
+
+```{python}
+import numpy as np 
+from geomcover.linalg import pca, cmds
+
+## Start with a random set of points in R^3 + its distance matrix
+X = np.random.uniform(size=(50,3))
+D = np.linalg.norm(X - X[:,np.newaxis], axis=2)
+
+## Note that CMDS takes as input *squared* distances
+Y_pca = pca(X, d=2)
+Y_mds = cmds(D**2, d=2)
+
+## Get distance matrices for both embeddings
+Y_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)
+Y_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)
+
+## Up to rotation and translation, the coordinates are identical
+all_close = np.allclose(Y_pca_D, Y_mds_D)
+print(f"PCA and MDS coord. distances identical? {all_close}")
+```

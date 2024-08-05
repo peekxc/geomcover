@@ -2,22 +2,6 @@ import numpy as np
 from itertools import islice, cycle, chain, combinations
 from typing import Iterable, Generator
 from scipy.sparse import coo_array
-
-def to_canonical(A, form: str = "csc", diag: bool = False, symmetrize: bool = False, copy: bool = False):
-  assert isinstance(form, str) and form.lower() in ['csc', 'csr', 'lil', 'dok', 'coo'], f"Invalid form '{form}'; must be a format supported by SciPy."
-  A = getattr(A, 'to' + form)()
-  if symmetrize: 
-    A += A.T
-  if diag: 
-    A.setdiag(True)
-  if hasattr(A, 'has_sorted_indices'):
-    ## https://stackoverflow.com/questions/28428063/what-does-csr-matrix-sort-indices-do
-    A.has_sorted_indices = False
-  for clean_op in ['sort_indices', 'eliminate_zeros', 'sum_duplicates', 'prune']:
-    if hasattr(A, clean_op):
-      getattr(A, clean_op)()
-  assert A.has_canonical_format, "Failed to convert sparse matrix to canonical form"
-  return A.copy() if copy else A
   
 def sliding_window(S: Iterable, n: int = 2) -> Generator:
   """Generates a sliding window of width n from the iterable.

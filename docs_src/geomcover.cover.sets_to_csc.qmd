@@ -1,0 +1,20 @@
+# sets_to_csc { #geomcover.cover.sets_to_csc }
+
+`cover.sets_to_csc(S, reindex=False)`
+
+Converts a collection of sets into a sparse CSC array.
+
+This function converts a collection of integer-valued sets into a sparse matrix, where  each column represents a set and each row represents an element. Optionally, if         the sets themselves do not represent 0-based indices, you can set `reindex=True`        to map the elements to the base index set {0, 1, ..., n - 1}.
+
+## Parameters
+
+| Name      | Type                   | Description                                                          | Default    |
+|-----------|------------------------|----------------------------------------------------------------------|------------|
+| `S`       | Collection\[Iterable\] | Collection of set indices representing subsets.                      | _required_ |
+| `reindex` | bool                   | whether to reindex the sets to the base index set. Default to False. | `False`    |
+
+## Returns
+
+| Type      | Description                                 |
+|-----------|---------------------------------------------|
+| csc_array | sparse boolean CSC array in canonical form. |

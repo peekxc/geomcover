@@ -253,3 +253,31 @@ P, _ = landmarks(S, S.shape[0])
 w2 = (np.argsort(P)+1)*0.005*weights
 cover_subset, cover_cost = wset_cover_LP(G, w2)
 print(f"LP produced a {np.sum(cover_subset)}-set cover with cost {np.sum(weights[cover_subset])}")
+
+
+
+
+from geomcover.plotting import plot_cover
+from geomcover.cover import to_canonical, wset_cover_ILP
+from geomcover.geometry import neighbor_graph_ball
+from scipy.sparse import csc_array
+
+X = np.random.uniform(size=(50,2))
+A = neighbor_graph_ball(X, radius=0.10)
+weights = np.ones(A.shape[1])
+
+subsets = np.split(A.indices, A.indptr)[1:-1]
+
+show(plot_cover(subsets, X, offset=0.05))
+
+soln, cost = wset_cover_ILP(A, weights)
+
+show(plot_cover([subsets[j] for j, inc in enumerate(soln) if inc], X, width=500, height=500, offset=0.05))
+
+
+
+# A = to_canonical(csc_array(np.loadtxt("camera_stadium.txt").astype(bool)), "csc")
+# weights = np.ones(A.shape[1])
+
+# plot_cover(np.split(A.indices, A.indptr)[1:-1], pos=)
+

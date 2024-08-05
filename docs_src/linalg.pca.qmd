@@ -1,26 +1,49 @@
 # linalg.pca { #geomcover.linalg.pca }
 
-`linalg.pca(X, d=2, center=False, coords=True)`
+`linalg.pca(X, d=2, center=True, coords=True)`
 
-Projects `X` onto a d-dimensional linear subspace via Principal Component Analysis.
+Projects `X` onto a `d`-dimensional linear subspace via Principal Component Analysis.
 
-PCA is a linear dimensionality reduction algorithm that projects a point set 'X' onto a lower dimensional space 
-using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix. 
-
-PCA is dual to CMDS in the sense that the d-dimensional embedding produced by CMDS on the gram matrix of squared   Euclidean distances from 'X' satisfies the same reconstruction as the d-dimensional projection of 'X' with PCA. 
+PCA is a linear dimensionality reduction algorithm that projects a point set `X` onto a lower dimensional space         using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix. 
 
 ## Parameters
 
-| Name     | Type      | Description                                                                 | Default    |
-|----------|-----------|-----------------------------------------------------------------------------|------------|
-| `X`      | ArrayLike | (n x D) point cloud / design matrix of n points in D dimensions.            | _required_ |
-| `d`      | int       | dimension of the embedding to produce.                                      | `2`        |
-| `center` | bool      | whether to center the data prior to computing eigenvectors.                 | `False`    |
-| `coords` | bool      | whether to return the embedding (default), or just return the eigenvectors. | `True`     |
+| Name     | Type      | Description                                                                     | Default    |
+|----------|-----------|---------------------------------------------------------------------------------|------------|
+| `X`      | ArrayLike | (n x D) point cloud / design matrix of n points in D dimensions.                | _required_ |
+| `d`      | int       | dimension of the embedding to produce.                                          | `2`        |
+| `center` | bool      | whether to center the data prior to computing eigenvectors. Defaults to True.   | `True`     |
+| `coords` | bool      | whether to return the embedding or the eigenvectors. Defaults to the embedding. | `True`     |
 
 ## Returns
 
-| Type       | Description                                                                                                           |
-|------------|-----------------------------------------------------------------------------------------------------------------------|
-| np.ndarray | if coords = True (default), returns the projection of 'X' onto the largest 'd' eigenvectors of X's covariance matrix. |
-| np.ndarray | Otherwise, the eigenvalues and eigenvectors can be returned as-is.                                                    |
+| Type       | Description                                                                                                                                                                                        |
+|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| np.ndarray | if coords = True (default), returns the projection of `X` onto the largest `d` eigenvectors of `X`s covariance matrix.          Otherwise, the eigenvalues and eigenvectors can be returned as-is. |
+
+## Notes
+
+PCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from `X`          satisfies the same reconstruction loss as with PCA. In particular, when `X` comes from Euclidean space,                 the output of pca(...) will match the output of cmds(...) exactly up to rotation and translation. 
+
+## Examples
+
+```{python}
+import numpy as np 
+from geomcover.linalg import pca, cmds
+
+## Start with a random set of points in R^3 + its distance matrix
+X = np.random.uniform(size=(50,3))
+D = np.linalg.norm(X - X[:,np.newaxis], axis=2)
+
+## Note that CMDS takes as input *squared* distances
+Y_pca = pca(X, d=2)
+Y_mds = cmds(D**2, d=2)
+
+## Get distance matrices for both embeddings
+Y_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)
+Y_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)
+
+## Up to rotation and translation, the coordinates are identical
+all_close = np.allclose(Y_pca_D, Y_mds_D)
+print(f"PCA and MDS coord. distances identical? {all_close}")
+```

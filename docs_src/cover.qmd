@@ -1,0 +1,20 @@
+# cover { #geomcover.cover }
+
+`cover`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [ask_package_install](geomcover.cover.ask_package_install.qmd#geomcover.cover.ask_package_install) | Checks whether a package exists via importlib, and if not raises an exception. |
+| [coverage](geomcover.cover.coverage.qmd#geomcover.cover.coverage) | Returns the amount covered by each subset in the set of cover indices provided. |
+| [package_exists](geomcover.cover.package_exists.qmd#geomcover.cover.package_exists) | Checks whether a package exists via importlib. |
+| [sets_to_csc](geomcover.cover.sets_to_csc.qmd#geomcover.cover.sets_to_csc) | Converts a collection of sets into a sparse CSC array. |
+| [valid_cover](geomcover.cover.valid_cover.qmd#geomcover.cover.valid_cover) | Determines whether given sets form a valid or *feasible* cover over the universe. |
+| [wset_cover](geomcover.cover.wset_cover.qmd#geomcover.cover.wset_cover) | Computes an approximate solution to the weighted set cover problem using a supplied method. |
+| [wset_cover_ILP](geomcover.cover.wset_cover_ILP.qmd#geomcover.cover.wset_cover_ILP) | Computes an approximate solution to the weighted set cover problem via *integer linear programming*. |
+| [wset_cover_RR](geomcover.cover.wset_cover_RR.qmd#geomcover.cover.wset_cover_RR) | Approximates the weighted set cover problem via _randomized rounding_. |
+| [wset_cover_greedy](geomcover.cover.wset_cover_greedy.qmd#geomcover.cover.wset_cover_greedy) | Computes an approximate solution to the weighted set cover problem via a greedy approach. |
+| [wset_cover_sat](geomcover.cover.wset_cover_sat.qmd#geomcover.cover.wset_cover_sat) | Computes an approximate solution to the weighted set cover problem via *weighted MaxSAT*. |

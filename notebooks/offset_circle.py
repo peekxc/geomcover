@@ -1,15 +1,13 @@
 
 # %% Imports
 import numpy as np
-from numpy import pi
 from bokeh.io import output_notebook
 from bokeh.plotting import figure, show
 from bokeh.layouts import row, column
-from landmark import landmarks
 output_notebook()
 
 # %%
-from scipy.stats import expon, norm, uniform
+from scipy.stats import norm
 np.random.seed(1234)
 dom = norm(loc=0, scale=1).rvs(size=500)
 # dom = uniform(loc=0, scale=1).rvs(size=200)
@@ -30,7 +28,7 @@ show(p)
 
 
 from dreimac import CircularCoords
-from map2color.color import map2hex, _lerp_palette, BokehColorPalette
+from map2color.color import map2hex, BokehColorPalette
 viridis = BokehColorPalette().lookup('viridis')
 palette = viridis # _lerp_palette(np.append(viridis, np.flip(viridis)), 256)
 
@@ -57,7 +55,6 @@ show(row(p, q))
 
 # %% Sw1Pers example
 from pbsig.persistence import sw_parameters, sliding_window
-from scipy.spatial.distance import pdist,cdist, squareform
 from set_cover.covers import pca
 
 np.random.seed(1236)
@@ -83,7 +80,7 @@ for nl in [50,100,150,200,250,300,350,400]:
   p.title.align = 'center'
   figs.append(p)
 
-p = figure(width=300, height=300, match_aspect=True, title=f"SW1Pers CC (ground truth)")
+p = figure(width=300, height=300, match_aspect=True, title="SW1Pers CC (ground truth)")
 p.scatter(*emb.T, color=map2hex(cc, palette), size=5.0)
 p.xaxis.visible = False 
 p.yaxis.visible = False
@@ -112,7 +109,6 @@ show(p)
 
 # %% Make a slidding window embedding
 from pbsig.linalg import pca
-from pbsig.color import bin_color
 N, M = 150, 23 # num of points, dimension 
 X_delay = SW(n=N, d=M, L=6) ## should be the perfect period
 

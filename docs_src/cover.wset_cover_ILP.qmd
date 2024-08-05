@@ -6,11 +6,11 @@ Computes an approximate solution to the weighted set cover problem via *integer 
 
 ## Parameters
 
-| Name      | Type       | Description                                                                 | Default    |
-|-----------|------------|-----------------------------------------------------------------------------|------------|
-| `subsets` | csc_matrix | (n x J) sparse matrix of J subsets whose union forms a cover over n points. | _required_ |
-| `weights` | ArrayLike  | (J)-length array of subset weights.                                         | _required_ |
-| `solver`  | str        | which MILP solver to use. Defaults to the HiGHS solver in SciPy.            | `'highs'`  |
+| Name      | Type      | Description                                                                 | Default    |
+|-----------|-----------|-----------------------------------------------------------------------------|------------|
+| `subsets` | sparray   | (n x J) sparse matrix of J subsets whose union forms a cover over n points. | _required_ |
+| `weights` | ArrayLike | (J)-length array of subset weights.                                         | _required_ |
+| `solver`  | str       | which MILP solver to use. Defaults to the HiGHS solver in SciPy.            | `'highs'`  |
 
 ## Returns
 

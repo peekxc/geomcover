@@ -6,21 +6,25 @@
 # row i followed by a list of the columns which cover row i
 
 # np.loadtxt("https://people.brunel.ac.uk/~mastjjb/jeb/orlib/files/CCNFP10g1b.txt")
-import numpy as np 
-from scipy.sparse import csc_array, coo_array
+import numpy as np
+from scipy.sparse import csc_array
 
-from set_cover import load_set_cover_instance
-from set_cover import wset_cover_ILP, wset_cover_RR, wset_cover_greedy, wset_cover_sat
-from set_cover.covers import valid_cover, coverage, to_canonical
+from geomcover import load_set_cover
+from geomcover import set_cover_ILP, set_cover_RR, set_cover_greedy, set_cover_sat
+from geomcover.cover import valid_cover, coverage, to_canonical
+from geomcover.loaders import OR_TEST_FILES
 
-A, weights = load_set_cover_instance("/Users/mpiekenbrock/set_cover/notebooks/scp41.txt")
+benchmarks = {}
+for test_file in OR_TEST_FILES:
+  A, weights = load_set_cover_instance(test_file)
+  benchmarks[test_file] = {
+    'greedy' : wset_cover_greedy(A, weights),
+    'RR' : wset_cover_RR(A, weights),
+    'ILP' : wset_cover_ILP(A, weights),
+    'SAT' : wset_cover_sat(A, weights)
+  }
+  print(test_file)
 
-soln, cost = wset_cover_RR(A, weights)
-soln, cost = wset_cover_greedy(A, weights)
-soln, cost = wset_cover_sat(A, weights)
-soln, cost = wset_cover_ILP(A, weights)
-
-# wset_cover_greedy2(A, weights) # 27x faster !
 
 import timeit
 timeit.timeit(lambda: wset_cover_greedy(A, weights), number=150)
@@ -30,30 +34,29 @@ assert valid_cover(A, np.flatnonzero(soln))
 
 ## accidents = benchmark at 4-45 seconds, solution from 181-245
 freq_item_sets = ["mushroom.dat"]
-with open("/Users/mpiekenbrock/set_cover/notebooks/accidents.dat", 'r') as f:
+with open("/Users/mpiekenbrock/geomcover/notebooks/accidents.dat", 'r') as f:
   x = list(f.readlines())
 
 # https://people.brunel.ac.uk/~mastjjb/jeb/orlib/scpinfo.html
 # http://dimacs.rutgers.edu/~graham/pubs/papers/ckw.pdf
-from scipy.sparse import csc_array
 sets = [list(map(int, l.replace('\n', '').strip().split(' '))) for l in x]
 col_ind = np.concatenate([np.repeat(i, len(s)) for i,s in enumerate(sets)])
 row_ind = np.concatenate(sets) - 1
 assert np.all(np.unique(row_ind) == np.arange(np.max(row_ind)+1))
 
-A = csc_array((np.ones(len(row_ind)), (row_ind, col_ind)), shape=(np.max(row_ind)+1, len(sets)))
-A = to_canonical(A, "csc")
+subsets = csc_array((np.ones(len(row_ind)), (row_ind, col_ind)), shape=(np.max(row_ind)+1, len(sets)))
+subsets = to_canonical(subsets, "csc")
 
-weights = np.ones(A.shape[1])
-soln, cost = wset_cover_greedy(A, weights)  # 3.2s, 181 cost
-soln, cost = wset_cover_RR(A, weights)      # 10s, 158 cost
-soln, cost = wset_cover_ILP(A, weights)     # 13.5s, 158 cost 
-soln, cost = wset_cover_sat(A, weights)     # 80.7s, 158 cost 
+weights = np.ones(subsets.shape[1])
+soln, cost = wset_cover_greedy(subsets, weights)  # 3.2s, 181 cost
+soln, cost = wset_cover_RR(subsets, weights)      # 10s, 158 cost
+soln, cost = wset_cover_ILP(subsets, weights)     # 13.5s, 158 cost
+soln, cost = wset_cover_sat(subsets, weights)     # 80.7s, 158 cost
 
-np.min(coverage(A))
+np.min(coverage(subsets))
 
 # BAsed on: https://algnotes.info/on/obliv/lagrangian/set-cover-fractional/
-## simply doesn't work! 
+## simply doesn't work!
 # C = 1
 # c = np.ones(A.shape[1])#weights
 # eps = 0.5
@@ -67,14 +70,18 @@ np.min(coverage(A))
 #   xs[opt_s] -= 1
 #   print(opt_s)
 #   ii += 1
-#   if ii == 15: 
-#     break 
+#   if ii == 15:
+#     break
 
 coverage(A, xs)
 
 A = np.ones(shape=(10000,10000))
 timeit.timeit(lambda: eval("partial(lambda j, A: A[:,j], A=A)(0)"), number=1500)
 timeit.timeit(lambda: eval("(lambda j: A[:,j])(0)"), number=1500)
+
+
+
+subsets.astype(int).todense()[0,:]
 
 
 from set_cover.wset_cover import _cover, wset_cover_ILP
@@ -92,7 +99,6 @@ valid_cover(A, ind)
 len(np.flatnonzero(soln))
 
 from ortools.linear_solver import pywraplp
-from ortools.sat.python import cp_model
 from set_cover.loaders import to_canonical
 
 
@@ -145,7 +151,7 @@ A.indices
 solver.IntVar(0, 1, "")
 solver.Sum()
 
-## Define variables 
+## Define variables
 x = {}
 for j in range(data["num_vars"]):
   x[j] = solver.IntVar(0, infinity, "x[%i]" % j)
@@ -191,10 +197,10 @@ np.flatnonzero(soln) + 1
 # N = [z for z in np.split(B.indices+1, B.indptr)[1:-1]]
 # wcnf.extend(N, weights=None)
 
-# ## Soft constraint: encourage less subsets by accumulating negative variables 
+# ## Soft constraint: encourage less subsets by accumulating negative variables
 # wcnf.extend(-(np.arange(J)+1)[:,np.newaxis], weights=list(np.ones(J)))
 
-# # ## Now add negative weights for each cover subset 
+# # ## Now add negative weights for each cover subset
 # # for j in range(J):
 # #   wcnf.append([-(j+1)], weight=1)
 
@@ -235,7 +241,7 @@ np.flatnonzero(soln) + 1
 # for subset in np.split(subsets.indices, subsets.indptr)[1:-1]:
 #   wcnf.append(list((subset+1).astype(int)), weight=None)
 
-# for j, w in enumerate(np.ones(subsets.shape[0])): 
+# for j, w in enumerate(np.ones(subsets.shape[0])):
 #   wcnf.append([-int(j+1)], weight=int(w))
 
 # print(wcnf.to_dimacs())
@@ -256,3 +262,55 @@ np.flatnonzero(soln) + 1
 # cnf.append([1], weight=10.0)
 # cnf.append([-2], weight=20.0)
 # RC2(cnf)
+
+
+
+##
+import random
+num_sets = 100000
+set_size = 40
+elements = list(range(500))
+U = set(elements)
+R = U
+S = []
+for i in range(num_sets):
+    random.shuffle(elements)
+    S.append(set(elements[:set_size]))
+w = [random.randint(1,100) for i in range(100)]
+
+
+
+def greedy_set_cover_simple(U, S, w):
+  assert len(w) == len(S)
+  C = []
+  costs = []
+  def findMin(S, R):
+    minCost = 99999.0
+    minElement = -1
+    for i, s in enumerate(S):
+      try:
+        cost = w[i]/(len(s.intersection(R)))
+        if cost < minCost:
+            minCost = cost
+            minElement = i
+      except:
+        # Division by zero, ignore
+        pass
+    return S[minElement], w[minElement]
+  R = U
+  while len(R) != 0:
+    S_i, cost = findMin(S, R)
+    C.append(S_i)
+    R = R.difference(S_i)
+    costs.append(cost)
+  return C, costs
+
+## 4.8 seconds
+w = np.random.choice(range(1, 101), size=len(S)) #np.array(w)
+
+timeit.timeit(lambda: greedy_set_cover_simple(U, S, w), number=15)
+soln, cost =
+
+from geomcover.cover import wset_cover_greedy, sets_to_csc
+A = sets_to_csc(S)      # 0.6s
+wset_cover_greedy(A, w) # 0.4s
