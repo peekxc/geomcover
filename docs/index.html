@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index</title>
+<title>Geomcover</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,6 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./cover.coverage.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -71,7 +72,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-sidebar floating nav-fixed fullcontent">
+<body class="nav-sidebar floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -85,7 +86,11 @@ ul.task-list li input[type="checkbox"] {
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">Geomcover</span></a>
+<span class="menu-text">Package overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./reference.html"> 
+<span class="menu-text">API Reference</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -99,7 +104,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">API Reference</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Geomcover</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -114,13 +119,13 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">API Reference</span></a>
+ <span class="menu-text">Geomcover</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Set Cover 2</span></a>
+ <span class="menu-text">Set Cover (<code>cover</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -128,8 +133,38 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cover.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">cover</span></a>
+  <a href="./cover.coverage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.valid_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.valid_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_greedy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_greedy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_rr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_rr</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_ilp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_ilp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_sat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_sat</span></a>
   </div>
 </li>
       </ul>
@@ -137,59 +172,12 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Set Cover</span></a>
+ <span class="menu-text">Linear Algebra (<code>linalg</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./wset_cover_RR.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">wset_cover_RR</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./wset_cover_greedy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">wset_cover_greedy</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./wset_cover_ILP.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">wset_cover_ILP</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./to_canonical.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">to_canonical</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./coverage.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">coverage</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./valid_cover.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">valid_cover</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Linear Algebra</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./linalg.pca.html" class="sidebar-item-text sidebar-link">
@@ -206,13 +194,13 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Geometry</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geometry (<code>geometry</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./geometry.tangent_bundle.html" class="sidebar-item-text sidebar-link">
@@ -227,99 +215,81 @@ ul.task-list li input[type="checkbox"] {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.load_set_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.to_canonical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.to_canonical</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.sets_to_sparse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.sets_to_sparse</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.sparse_to_sets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.sparse_to_sets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.reindex_sparse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.reindex_sparse</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.md"><i class="bi bi-file-code"></i>Github (GFM)</a></li></ul></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Geomcover</h1>
+</div>
 
 
 
-<section id="api-reference" class="level1 doc doc-index">
-<h1 class="doc doc-index">API Reference</h1>
-<section id="set-cover-2" class="level2">
-<h2 class="anchored" data-anchor-id="set-cover-2">Set Cover 2</h2>
-<p>Functions to find minimum weight set covers.</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="./cover.html#geomcover.cover">cover</a></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="set-cover" class="level2">
-<h2 class="anchored" data-anchor-id="set-cover">Set Cover</h2>
-<p>Functions to find minimum weight set covers.</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="./wset_cover_RR.html#geomcover.wset_cover_RR">wset_cover_RR</a></td>
-<td>Approximates the weighted set cover problem via <em>randomized rounding</em>.</td>
-</tr>
-<tr class="even">
-<td><a href="./wset_cover_greedy.html#geomcover.wset_cover_greedy">wset_cover_greedy</a></td>
-<td>Computes an approximate solution to the weighted set cover problem via a greedy approach.</td>
-</tr>
-<tr class="odd">
-<td><a href="./wset_cover_ILP.html#geomcover.wset_cover_ILP">wset_cover_ILP</a></td>
-<td>Computes an approximate solution to the weighted set cover problem via <em>integer linear programming</em>.</td>
-</tr>
-<tr class="even">
-<td><a href="./to_canonical.html#geomcover.to_canonical">to_canonical</a></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td><a href="./coverage.html#geomcover.coverage">coverage</a></td>
-<td>Returns the amount covered by each subset in the set of cover indices provided.</td>
-</tr>
-<tr class="even">
-<td><a href="./valid_cover.html#geomcover.valid_cover">valid_cover</a></td>
-<td>Determines whether given sets form a valid or <em>feasible</em> cover over the universe.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="linear-algebra" class="level2">
-<h2 class="anchored" data-anchor-id="linear-algebra">Linear Algebra</h2>
-<p>Standard linear algebra algorithms.</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="./linalg.pca.html#geomcover.linalg.pca">linalg.pca</a></td>
-<td>Projects <code>X</code> onto a <code>d</code>-dimensional linear subspace via Principal Component Analysis.</td>
-</tr>
-<tr class="even">
-<td><a href="./linalg.cmds.html#geomcover.linalg.cmds">linalg.cmds</a></td>
-<td>Projects <code>G</code> onto a <code>d</code>-dimensional linear subspace via Classical Multi-Dimensional Scaling.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="geometry" class="level2">
-<h2 class="anchored" data-anchor-id="geometry">Geometry</h2>
-<p>Algorithms for computing information on manifolds.</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><a href="./geometry.tangent_bundle.html#geomcover.geometry.tangent_bundle">geometry.tangent_bundle</a></td>
-<td>Estimates the tangent bundle of ‘M’ via local PCA on neighborhoods in <code>X</code>.</td>
-</tr>
-<tr class="even">
-<td><a href="./geometry.bundle_weights.html#geomcover.geometry.bundle_weights">geometry.bundle_weights</a></td>
-<td>Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle.</td>
-</tr>
-</tbody>
-</table>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
-</section>
-</section>
+</header>
+
+
+<p><code>geomcover</code> is a Python package built to simplify constructing geometric set covers over a variety of geometric objects, such as metric graphs and manifolds. Such covers can be used for simplifying surfaces, constructing fiber bundles, or summarizing point cloud data.</p>
+<p><code>geomcover</code> can be used natively with manifolds from the geomstats package to produce high-coverage bundle parameterizations of the manifold.</p>
+
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -742,6 +712,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./cover.coverage.html" class="pagination-link" aria-label="cover.coverage">
+        <span class="nav-page-text">cover.coverage</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

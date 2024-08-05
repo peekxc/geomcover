@@ -1,25 +1,30 @@
 website:
   sidebar:
   - contents:
-    - ./index.qmd
-    - contents:
-      - ./cover.qmd
-      section: Set Cover 2
-    - contents:
-      - ./wset_cover_RR.qmd
-      - ./wset_cover_greedy.qmd
-      - ./wset_cover_ILP.qmd
-      - ./to_canonical.qmd
-      - ./coverage.qmd
-      - ./valid_cover.qmd
-      section: Set Cover
-    - contents:
-      - ./linalg.pca.qmd
-      - ./linalg.cmds.qmd
-      section: Linear Algebra
-    - contents:
-      - ./geometry.tangent_bundle.qmd
-      - ./geometry.bundle_weights.qmd
-      section: Geometry
+    - name: Geomcover
+      href: ./index.qmd
+    - section: Set Cover (`cover`)
+      contents:
+        - ./cover.coverage.qmd
+        - ./cover.valid_cover.qmd
+        - ./cover.set_cover_greedy.qmd
+        - ./cover.set_cover_rr.qmd
+        - ./cover.set_cover_ilp.qmd
+        - ./cover.set_cover_sat.qmd
+    - section: Linear Algebra (`linalg`)
+      contents:
+        - ./linalg.pca.qmd
+        - ./linalg.cmds.qmd      
+    - section: Geometry (`geometry`)
+      contents:
+        - ./geometry.tangent_bundle.qmd
+        - ./geometry.bundle_weights.qmd
+    - section: I/O (`io`)
+      contents:
+        - ./io.load_set_cover.qmd
+        - ./io.to_canonical.qmd
+        - ./io.sets_to_sparse.qmd
+        - ./io.sparse_to_sets.qmd
+        - ./io.reindex_sparse.qmd
     id: .
   - id: dummy-sidebar

@@ -1,417 +1,13 @@
 [
   {
-    "objectID": "cover.wset_cover_RR.html",
-    "href": "cover.wset_cover_RR.html",
-    "title": "cover.wset_cover_RR",
-    "section": "",
-    "text": "cover.wset_cover_RR(subsets, weights, maxiter='default', sparsity=1.0, seed=None)\nApproximates the weighted set cover problem via randomized rounding.\nThis function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.\nThe minimum-cost fractional cover is obtained by solving the following linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in [0, 1], \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in [0, 1]\\) is a real number indicating the strength of the membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The randomized rounding procedure iteratively adds sets \\(S_j\\) with probability \\(c \\cdot s_j\\) until a feasible cover is found.\nIf not supplied, maxiter defaults to \\((2 / c) \\log(n)\\) where \\(c\\) is given by the sparsity argument. Supplying sparsity values lower than 1 allows choosing fewer subsets per iteration, which can result in sparser or lower weight covers at the cost of more iterations.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_RR.html#parameters",
-    "href": "cover.wset_cover_RR.html#parameters",
-    "title": "cover.wset_cover_RR",
-    "section": "Parameters",
-    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nmaxiter\nint\nnumber of iterations to repeat the sampling process. See details.\n'default'\n\n\nsparsity\nfloat\nconstant used to emphasize sparsity between (0, 1]. See details.\n1.0\n\n\nseed\nint\nseed for the random number generator. Use an integer for deterministic computation.\nNone",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_RR.html#returns",
-    "href": "cover.wset_cover_RR.html#returns",
-    "title": "cover.wset_cover_RR",
-    "section": "Returns",
-    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating set-cover and c its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_RR.html#see-also",
-    "href": "cover.wset_cover_RR.html#see-also",
-    "title": "cover.wset_cover_RR",
-    "section": "See Also",
-    "text": "See Also\n\nnumpy.maximum\nreference",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_RR.html#notes",
-    "href": "cover.wset_cover_RR.html#notes",
-    "title": "cover.wset_cover_RR",
-    "section": "Notes",
-    "text": "Notes\nThis function requires subsets to be a sparse matrix in canonical CSC form. If subsets is not in this form, a copy of the subsets is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_RR.html#examples",
-    "href": "cover.wset_cover_RR.html#examples",
-    "title": "cover.wset_cover_RR",
-    "section": "Examples",
-    "text": "Examples\n\n        1 + 1\n\n2",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "linalg.cmds.html",
-    "href": "linalg.cmds.html",
-    "title": "linalg.cmds",
-    "section": "",
-    "text": "linalg.cmds(D, d=2, coords=True)\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\nCMDS is a coordinatization algorithm that generates d-dimensional coordinates from a Euclidean distance matrix D. Algorithmically, D is converted into a Gram matrix G, whose eigen decomposition is used to produce coordinates minimizing a notion of ‘strain’.",
-    "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
-      "linalg.cmds"
-    ]
-  },
-  {
-    "objectID": "linalg.cmds.html#parameters",
-    "href": "linalg.cmds.html#parameters",
-    "title": "linalg.cmds",
-    "section": "Parameters",
-    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nD\nArrayLike\nSquared Euclidean distance matrix, or set of (squared) pairwise distances.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncoords\nbool\nwhether to return the embedding (default = True), or just return the eigenvectors\nTrue",
-    "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
-      "linalg.cmds"
-    ]
-  },
-  {
-    "objectID": "linalg.cmds.html#returns",
-    "href": "linalg.cmds.html#returns",
-    "title": "linalg.cmds",
-    "section": "Returns",
-    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nnp.ndarray\nif coords = True, the coordinates from the largest d eigenvectors of G’s eigendecomposition. Otherwise, the eigenvalues and eigenvectors are returned. See the Examples section for more details.",
-    "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
-      "linalg.cmds"
-    ]
-  },
-  {
-    "objectID": "linalg.cmds.html#notes",
-    "href": "linalg.cmds.html#notes",
-    "title": "linalg.cmds",
-    "section": "Notes",
-    "text": "Notes\nPCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.",
-    "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
-      "linalg.cmds"
-    ]
-  },
-  {
-    "objectID": "linalg.cmds.html#see-also",
-    "href": "linalg.cmds.html#see-also",
-    "title": "linalg.cmds",
-    "section": "See Also",
-    "text": "See Also\n\nCMDS\nEuclidean distance matrix",
-    "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
-      "linalg.cmds"
-    ]
-  },
-  {
-    "objectID": "linalg.cmds.html#examples",
-    "href": "linalg.cmds.html#examples",
-    "title": "linalg.cmds",
-    "section": "Examples",
-    "text": "Examples\n\nimport numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
-    "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
-      "linalg.cmds"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_greedy.html",
-    "href": "cover.wset_cover_greedy.html",
-    "title": "cover.wset_cover_greedy",
-    "section": "",
-    "text": "cover.wset_cover_greedy(subsets, weights)\nComputes an approximate solution to the weighted set cover problem via a greedy approach.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_greedy"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_greedy.html#parameters",
-    "href": "cover.wset_cover_greedy.html#parameters",
-    "title": "cover.wset_cover_greedy",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_greedy"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_greedy.html#returns",
-    "href": "cover.wset_cover_greedy.html#returns",
-    "title": "cover.wset_cover_greedy",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_greedy"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "API Reference",
-    "section": "",
-    "text": "Functions to find minimum weight set covers.\n\n\n\ncover\n\n\n\n\n\n\n\nFunctions to find minimum weight set covers.\n\n\n\nwset_cover_RR\nApproximates the weighted set cover problem via randomized rounding.\n\n\nwset_cover_greedy\nComputes an approximate solution to the weighted set cover problem via a greedy approach.\n\n\nwset_cover_ILP\nComputes an approximate solution to the weighted set cover problem via integer linear programming.\n\n\nto_canonical\n\n\n\ncoverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\nvalid_cover\nDetermines whether given sets form a valid or feasible cover over the universe.\n\n\n\n\n\n\nStandard linear algebra algorithms.\n\n\n\nlinalg.pca\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\n\n\nlinalg.cmds\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\n\n\n\n\n\n\nAlgorithms for computing information on manifolds.\n\n\n\ngeometry.tangent_bundle\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\n\n\ngeometry.bundle_weights\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle.",
-    "crumbs": [
-      "Geomcover",
-      "API Reference"
-    ]
-  },
-  {
-    "objectID": "index.html#set-cover",
-    "href": "index.html#set-cover",
-    "title": "API Reference",
-    "section": "",
-    "text": "Functions to find minimum weight set covers.\n\n\n\nwset_cover_RR\nApproximates the weighted set cover problem via randomized rounding.\n\n\nwset_cover_greedy\nComputes an approximate solution to the weighted set cover problem via a greedy approach.\n\n\nwset_cover_ILP\nComputes an approximate solution to the weighted set cover problem via integer linear programming.\n\n\nto_canonical\n\n\n\ncoverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\nvalid_cover\nDetermines whether given sets form a valid or feasible cover over the universe.",
-    "crumbs": [
-      "Geomcover",
-      "API Reference"
-    ]
-  },
-  {
-    "objectID": "index.html#linear-algebra",
-    "href": "index.html#linear-algebra",
-    "title": "API Reference",
-    "section": "",
-    "text": "Standard linear algebra algorithms.\n\n\n\nlinalg.pca\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\n\n\nlinalg.cmds\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.",
-    "crumbs": [
-      "Geomcover",
-      "API Reference"
-    ]
-  },
-  {
-    "objectID": "index.html#geometry",
-    "href": "index.html#geometry",
-    "title": "API Reference",
-    "section": "",
-    "text": "Algorithms for computing information on manifolds.\n\n\n\ngeometry.tangent_bundle\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\n\n\ngeometry.bundle_weights\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle.",
-    "crumbs": [
-      "Geomcover",
-      "API Reference"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_ILP.html",
-    "href": "cover.wset_cover_ILP.html",
-    "title": "cover.wset_cover_ILP",
-    "section": "",
-    "text": "cover.wset_cover_ILP(subsets, weights, solver='highs')\nComputes an approximate solution to the weighted set cover problem via integer linear programming.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_ILP"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_ILP.html#parameters",
-    "href": "cover.wset_cover_ILP.html#parameters",
-    "title": "cover.wset_cover_ILP",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_ILP"
-    ]
-  },
-  {
-    "objectID": "cover.wset_cover_ILP.html#returns",
-    "href": "cover.wset_cover_ILP.html#returns",
-    "title": "cover.wset_cover_ILP",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.wset_cover_ILP"
-    ]
-  },
-  {
-    "objectID": "geometry.tangent_bundle.html",
-    "href": "geometry.tangent_bundle.html",
-    "title": "geometry.tangent_bundle",
-    "section": "",
-    "text": "geometry.tangent_bundle(M, X, d=2, centers=None)\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\nThis function estimates the d-dimensional tangent spaces of neighborhoods in X given by columns in M.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nM\ncsr_array\nAdjacency list, given as a sparse matrix\nrequired\n\n\nX\nnp.ndarray\ncoordinates of the vertices of ‘G’\nrequired\n\n\nd\nint\ndimension of the tangent space\n2\n\n\ncenters\nnp.ndarray\npoints to center the tangent space estimates. If None, each neighborhoods is centered around its average.\nNone",
-    "crumbs": [
-      "Geomcover",
-      "Geometry",
-      "geometry.tangent_bundle"
-    ]
-  },
-  {
-    "objectID": "geometry.tangent_bundle.html#parameters",
-    "href": "geometry.tangent_bundle.html#parameters",
-    "title": "geometry.tangent_bundle",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nM\ncsr_array\nAdjacency list, given as a sparse matrix\nrequired\n\n\nX\nnp.ndarray\ncoordinates of the vertices of ‘G’\nrequired\n\n\nd\nint\ndimension of the tangent space\n2\n\n\ncenters\nnp.ndarray\npoints to center the tangent space estimates. If None, each neighborhoods is centered around its average.\nNone",
-    "crumbs": [
-      "Geomcover",
-      "Geometry",
-      "geometry.tangent_bundle"
-    ]
-  },
-  {
-    "objectID": "wset_cover_RR.html",
-    "href": "wset_cover_RR.html",
-    "title": "wset_cover_RR",
-    "section": "",
-    "text": "wset_cover_RR(subsets, weights, maxiter='default', sparsity=1.0, seed=None)\nApproximates the weighted set cover problem via randomized rounding.\nThis function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.\nThe minimum-cost fractional cover is obtained by solving the following linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in [0, 1], \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in [0, 1]\\) is a real number indicating the strength of the membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The randomized rounding procedure iteratively adds sets \\(S_j\\) with probability \\(c \\cdot s_j\\) until a feasible cover is found.\nIf not supplied, maxiter defaults to \\((2 / c) \\log(n)\\) where \\(c\\) is given by the sparsity argument. Supplying sparsity values lower than 1 allows choosing fewer subsets per iteration, which can result in sparser or lower weight covers at the cost of more iterations.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "wset_cover_RR.html#parameters",
-    "href": "wset_cover_RR.html#parameters",
-    "title": "wset_cover_RR",
-    "section": "Parameters",
-    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nmaxiter\nint\nnumber of iterations to repeat the sampling process. See details.\n'default'\n\n\nsparsity\nfloat\nconstant used to emphasize sparsity between (0, 1]. See details.\n1.0\n\n\nseed\nint\nseed for the random number generator. Use an integer for deterministic computation.\nNone",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "wset_cover_RR.html#returns",
-    "href": "wset_cover_RR.html#returns",
-    "title": "wset_cover_RR",
-    "section": "Returns",
-    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating set-cover and c its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_RR"
-    ]
-  },
-  {
-    "objectID": "geometry.bundle_weights.html",
-    "href": "geometry.bundle_weights.html",
-    "title": "geometry.bundle_weights",
-    "section": "",
-    "text": "geometry.bundle_weights\ngeometry.bundle_weights(M, TM, method, reduce, X=None)\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle.",
-    "crumbs": [
-      "Geomcover",
-      "Geometry",
-      "geometry.bundle_weights"
-    ]
-  },
-  {
-    "objectID": "wset_cover_greedy.html",
-    "href": "wset_cover_greedy.html",
-    "title": "wset_cover_greedy",
-    "section": "",
-    "text": "wset_cover_greedy(subsets, weights)\nComputes an approximate solution to the weighted set cover problem via a greedy approach.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_greedy"
-    ]
-  },
-  {
-    "objectID": "wset_cover_greedy.html#parameters",
-    "href": "wset_cover_greedy.html#parameters",
-    "title": "wset_cover_greedy",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_greedy"
-    ]
-  },
-  {
-    "objectID": "wset_cover_greedy.html#returns",
-    "href": "wset_cover_greedy.html#returns",
-    "title": "wset_cover_greedy",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_greedy"
-    ]
-  },
-  {
-    "objectID": "wset_cover_ILP.html",
-    "href": "wset_cover_ILP.html",
-    "title": "wset_cover_ILP",
-    "section": "",
-    "text": "wset_cover_ILP(subsets, weights, solver='highs')\nComputes an approximate solution to the weighted set cover problem via integer linear programming.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_ILP"
-    ]
-  },
-  {
-    "objectID": "wset_cover_ILP.html#parameters",
-    "href": "wset_cover_ILP.html#parameters",
-    "title": "wset_cover_ILP",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_ILP"
-    ]
-  },
-  {
-    "objectID": "wset_cover_ILP.html#returns",
-    "href": "wset_cover_ILP.html#returns",
-    "title": "wset_cover_ILP",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_ILP"
-    ]
-  },
-  {
     "objectID": "linalg.pca.html",
     "href": "linalg.pca.html",
     "title": "linalg.pca",
     "section": "",
     "text": "linalg.pca(X, d=2, center=True, coords=True)\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\nPCA is a linear dimensionality reduction algorithm that projects a point set X onto a lower dimensional space using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix.",
     "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
+      "Package overview",
+      "Linear Algebra (`linalg`)",
       "linalg.pca"
     ]
   },
@@ -422,8 +18,8 @@
     "section": "Parameters",
     "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nX\nArrayLike\n(n x D) point cloud / design matrix of n points in D dimensions.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncenter\nbool\nwhether to center the data prior to computing eigenvectors. Defaults to True.\nTrue\n\n\ncoords\nbool\nwhether to return the embedding or the eigenvectors. Defaults to the embedding.\nTrue",
     "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
+      "Package overview",
+      "Linear Algebra (`linalg`)",
       "linalg.pca"
     ]
   },
@@ -434,8 +30,8 @@
     "section": "Returns",
     "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nnp.ndarray\nif coords = True (default), returns the projection of X onto the largest d eigenvectors of Xs covariance matrix. Otherwise, the eigenvalues and eigenvectors can be returned as-is.",
     "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
+      "Package overview",
+      "Linear Algebra (`linalg`)",
       "linalg.pca"
     ]
   },
@@ -446,8 +42,8 @@
     "section": "Notes",
     "text": "Notes\nPCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.",
     "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
+      "Package overview",
+      "Linear Algebra (`linalg`)",
       "linalg.pca"
     ]
   },
@@ -458,21 +54,343 @@
     "section": "Examples",
     "text": "Examples\n\nimport numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
     "crumbs": [
-      "Geomcover",
-      "Linear Algebra",
+      "Package overview",
+      "Linear Algebra (`linalg`)",
       "linalg.pca"
     ]
   },
   {
-    "objectID": "cover.valid_cover.html",
-    "href": "cover.valid_cover.html",
-    "title": "cover.valid_cover",
+    "objectID": "io.load_set_cover.html",
+    "href": "io.load_set_cover.html",
+    "title": "io.load_set_cover",
     "section": "",
-    "text": "cover.valid_cover\ncover.valid_cover(A, ind=None)\nDetermines whether given sets form a valid or feasible cover over the universe.",
+    "text": "io.load_set_cover(test_set)\nLoads an instance of for testing weighted set cover algorithms.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\ntest_set\nstr\nname of the available test sets. See details.\nrequired\n\n\n\n\n\n\nThe following test sets are available for testing. - ‘toy’: - ‘camera_stadium’: - ‘mushroom’: https://archive.ics.uci.edu/dataset/73/mushroom - ’scp*’: Set cover problem instance from OR library.",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.valid_cover"
+      "Package overview",
+      "I/O (`io`)",
+      "io.load_set_cover"
+    ]
+  },
+  {
+    "objectID": "io.load_set_cover.html#parameters",
+    "href": "io.load_set_cover.html#parameters",
+    "title": "io.load_set_cover",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\ntest_set\nstr\nname of the available test sets. See details.\nrequired",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.load_set_cover"
+    ]
+  },
+  {
+    "objectID": "io.load_set_cover.html#test-sets",
+    "href": "io.load_set_cover.html#test-sets",
+    "title": "io.load_set_cover",
+    "section": "",
+    "text": "The following test sets are available for testing. - ‘toy’: - ‘camera_stadium’: - ‘mushroom’: https://archive.ics.uci.edu/dataset/73/mushroom - ’scp*’: Set cover problem instance from OR library.",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.load_set_cover"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Geomcover",
+    "section": "",
+    "text": "geomcover is a Python package built to simplify constructing geometric set covers over a variety of geometric objects, such as metric graphs and manifolds. Such covers can be used for simplifying surfaces, constructing fiber bundles, or summarizing point cloud data.\ngeomcover can be used natively with manifolds from the geomstats package to produce high-coverage bundle parameterizations of the manifold.",
+    "crumbs": [
+      "Package overview",
+      "Geomcover"
+    ]
+  },
+  {
+    "objectID": "geometry.bundle_weights.html",
+    "href": "geometry.bundle_weights.html",
+    "title": "geometry.bundle_weights",
+    "section": "",
+    "text": "geometry.bundle_weights\ngeometry.bundle_weights(M, TM, method, reduce, X=None)\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle.",
+    "crumbs": [
+      "Package overview",
+      "Geometry (`geometry`)",
+      "geometry.bundle_weights"
+    ]
+  },
+  {
+    "objectID": "reference.html",
+    "href": "reference.html",
+    "title": "API Reference",
+    "section": "",
+    "text": "Functions to find minimum weight set covers.\n\n\n\ncover.coverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\ncover.valid_cover\nDetermines whether given sets form a feasible cover over the universe.\n\n\ncover.set_cover_greedy\nApproximates the weighted set cover problem via greedy steps.\n\n\ncover.set_cover_rr\nApproximates the weighted set cover problem via randomized rounding.\n\n\ncover.set_cover_ilp\nApproximates the weighted set cover problem via integer linear programming.\n\n\ncover.set_cover_sat\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT.\n\n\n\n\n\n\nStandard linear algebra algorithms.\n\n\n\nlinalg.pca\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\n\n\nlinalg.cmds\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\n\n\n\n\n\n\nAlgorithms for computing information on manifolds.\n\n\n\ngeometry.tangent_bundle\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\n\n\ngeometry.bundle_weights\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle.\n\n\n\n\n\n\nAlgorithms for loading, parsing, and cleaning set cover data sets.\n\n\n\nio.load_set_cover\nLoads an instance of for testing weighted set cover algorithms.\n\n\nio.to_canonical\nConverts a sparse array into a supplied form, gauranteeing canonical format.\n\n\nio.sets_to_sparse\nConverts a collection of sets into a sparse CSC array.\n\n\nio.sparse_to_sets\nConverts a collection of sets into a sparse CSC array.\n\n\nio.reindex_sparse\nReindexes the indices of a given sparse array to the base index set."
+  },
+  {
+    "objectID": "reference.html#set-cover-cover",
+    "href": "reference.html#set-cover-cover",
+    "title": "API Reference",
+    "section": "",
+    "text": "Functions to find minimum weight set covers.\n\n\n\ncover.coverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\ncover.valid_cover\nDetermines whether given sets form a feasible cover over the universe.\n\n\ncover.set_cover_greedy\nApproximates the weighted set cover problem via greedy steps.\n\n\ncover.set_cover_rr\nApproximates the weighted set cover problem via randomized rounding.\n\n\ncover.set_cover_ilp\nApproximates the weighted set cover problem via integer linear programming.\n\n\ncover.set_cover_sat\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT."
+  },
+  {
+    "objectID": "reference.html#linear-algebra-linalg",
+    "href": "reference.html#linear-algebra-linalg",
+    "title": "API Reference",
+    "section": "",
+    "text": "Standard linear algebra algorithms.\n\n\n\nlinalg.pca\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\n\n\nlinalg.cmds\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling."
+  },
+  {
+    "objectID": "reference.html#geometry-geometry",
+    "href": "reference.html#geometry-geometry",
+    "title": "API Reference",
+    "section": "",
+    "text": "Algorithms for computing information on manifolds.\n\n\n\ngeometry.tangent_bundle\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\n\n\ngeometry.bundle_weights\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle."
+  },
+  {
+    "objectID": "reference.html#io-io",
+    "href": "reference.html#io-io",
+    "title": "API Reference",
+    "section": "",
+    "text": "Algorithms for loading, parsing, and cleaning set cover data sets.\n\n\n\nio.load_set_cover\nLoads an instance of for testing weighted set cover algorithms.\n\n\nio.to_canonical\nConverts a sparse array into a supplied form, gauranteeing canonical format.\n\n\nio.sets_to_sparse\nConverts a collection of sets into a sparse CSC array.\n\n\nio.sparse_to_sets\nConverts a collection of sets into a sparse CSC array.\n\n\nio.reindex_sparse\nReindexes the indices of a given sparse array to the base index set."
+  },
+  {
+    "objectID": "cover.set_cover_greedy.html",
+    "href": "cover.set_cover_greedy.html",
+    "title": "cover.set_cover_greedy",
+    "section": "",
+    "text": "cover.set_cover_greedy(subsets, weights=None)\nApproximates the weighted set cover problem via greedy steps.\nThis function iteratively constructs a set cover by choosing the set that covers the largest number of yet uncovered elements. This greedy strategy is known to multiplicative \\(\\log(d + 1)\\)-approximation to the weighted set cover problem.\nRelative to other algorithms, the greedy strategy tends to be the most computationally efficient, though certain types of inputs can lead to arbitrarily bad covers.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_greedy"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_greedy.html#parameters",
+    "href": "cover.set_cover_greedy.html#parameters",
+    "title": "cover.set_cover_greedy",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_greedy"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_greedy.html#returns",
+    "href": "cover.set_cover_greedy.html#returns",
+    "title": "cover.set_cover_greedy",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_greedy"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_ilp.html",
+    "href": "cover.set_cover_ilp.html",
+    "title": "cover.set_cover_ilp",
+    "section": "",
+    "text": "cover.set_cover_ilp(subsets, weights=None, solver='highs')\nApproximates the weighted set cover problem via integer linear programming.\nThis function attempts to directly solve weighted set cover problem by reducing it to the following mixed-integer linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j \\cdot w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in {0, 1}, \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in \\{0, 1\\}\\) is a indicator of set membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The algorithm is deterministic, and it typically finds the global optimum of moderately challenging mixed-integer linear programs (when it exists).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.\n\n\n\n\n\n\n\nMixed-integer program",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_ilp"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_ilp.html#parameters",
+    "href": "cover.set_cover_ilp.html#parameters",
+    "title": "cover.set_cover_ilp",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_ilp"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_ilp.html#returns",
+    "href": "cover.set_cover_ilp.html#returns",
+    "title": "cover.set_cover_ilp",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_ilp"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_ilp.html#see-also",
+    "href": "cover.set_cover_ilp.html#see-also",
+    "title": "cover.set_cover_ilp",
+    "section": "",
+    "text": "Mixed-integer program",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_ilp"
+    ]
+  },
+  {
+    "objectID": "io.sets_to_sparse.html",
+    "href": "io.sets_to_sparse.html",
+    "title": "io.sets_to_sparse",
+    "section": "",
+    "text": "io.sets_to_sparse(S, reindex=False)\nConverts a collection of sets into a sparse CSC array.\nThis function converts a Collection of integer-valued sequences into a sparse matrix, where each column represents a set and each row represents an element. Optionally, if the sets themselves do not represent 0-based indices, you can set reindex=True to map the elements to the base index set \\([n] = {0, 1, ..., n - 1}\\).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nS\nCollection\nCollection of indices representing subsets.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ncsc_array\nsparse boolean CSC array in canonical form.",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.sets_to_sparse"
+    ]
+  },
+  {
+    "objectID": "io.sets_to_sparse.html#parameters",
+    "href": "io.sets_to_sparse.html#parameters",
+    "title": "io.sets_to_sparse",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nS\nCollection\nCollection of indices representing subsets.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.sets_to_sparse"
+    ]
+  },
+  {
+    "objectID": "io.sets_to_sparse.html#returns",
+    "href": "io.sets_to_sparse.html#returns",
+    "title": "io.sets_to_sparse",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\ncsc_array\nsparse boolean CSC array in canonical form.",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.sets_to_sparse"
+    ]
+  },
+  {
+    "objectID": "io.reindex_sparse.html",
+    "href": "io.reindex_sparse.html",
+    "title": "io.reindex_sparse",
+    "section": "",
+    "text": "io.reindex_sparse\nio.reindex_sparse(subsets)\nReindexes the indices of a given sparse array to the base index set.",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.reindex_sparse"
+    ]
+  },
+  {
+    "objectID": "io.to_canonical.html",
+    "href": "io.to_canonical.html",
+    "title": "io.to_canonical",
+    "section": "",
+    "text": "io.to_canonical\nio.to_canonical(A, form='csc', copy=False)\nConverts a sparse array into a supplied form, gauranteeing canonical format.",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.to_canonical"
+    ]
+  },
+  {
+    "objectID": "geometry.tangent_bundle.html",
+    "href": "geometry.tangent_bundle.html",
+    "title": "geometry.tangent_bundle",
+    "section": "",
+    "text": "geometry.tangent_bundle(M, X, d=2, centers=None)\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\nThis function estimates the d-dimensional tangent spaces of neighborhoods in X given by columns in M.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nM\nsparray\nAdjacency list, given as a sparse matrix\nrequired\n\n\nX\nnp.ndarray\ncoordinates of the vertices of ‘G’\nrequired\n\n\nd\nint\ndimension of the tangent space\n2\n\n\ncenters\nnp.ndarray\npoints to center the tangent space estimates. If None, each neighborhoods is centered around its average.\nNone",
+    "crumbs": [
+      "Package overview",
+      "Geometry (`geometry`)",
+      "geometry.tangent_bundle"
+    ]
+  },
+  {
+    "objectID": "geometry.tangent_bundle.html#parameters",
+    "href": "geometry.tangent_bundle.html#parameters",
+    "title": "geometry.tangent_bundle",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nM\nsparray\nAdjacency list, given as a sparse matrix\nrequired\n\n\nX\nnp.ndarray\ncoordinates of the vertices of ‘G’\nrequired\n\n\nd\nint\ndimension of the tangent space\n2\n\n\ncenters\nnp.ndarray\npoints to center the tangent space estimates. If None, each neighborhoods is centered around its average.\nNone",
+    "crumbs": [
+      "Package overview",
+      "Geometry (`geometry`)",
+      "geometry.tangent_bundle"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_rr.html",
+    "href": "cover.set_cover_rr.html",
+    "title": "cover.set_cover_rr",
+    "section": "",
+    "text": "cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)\nApproximates the weighted set cover problem via randomized rounding.\nThis function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.\nThe minimum-cost fractional cover is obtained by solving the following linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j \\cdot w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in [0, 1], \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in [0, 1]\\) is a real number indicating the strength of the membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The randomized rounding procedure iteratively adds sets \\(S_j\\) with probability \\(c \\cdot s_j\\) until a feasible cover is found.\nIf not supplied, maxiter defaults to \\((2 / c) \\log(n)\\) where \\(c\\) is given by the sparsity argument. Supplying sparsity values lower than 1 allows choosing fewer subsets per iteration, which can result in sparser or lower weight covers at the cost of more iterations.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_rr"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_rr.html#parameters",
+    "href": "cover.set_cover_rr.html#parameters",
+    "title": "cover.set_cover_rr",
+    "section": "Parameters",
+    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nmaxiter\nint\nnumber of iterations to repeat the sampling process. See details.\n'default'\n\n\nsparsity\nfloat\nconstant used to emphasize sparsity between (0, 1]. See details.\n1.0\n\n\nseed\nOptional[int]\nseed for the random number generator. Use an integer for deterministic computation.\nNone",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_rr"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_rr.html#returns",
+    "href": "cover.set_cover_rr.html#returns",
+    "title": "cover.set_cover_rr",
+    "section": "Returns",
+    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_rr"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_rr.html#see-also",
+    "href": "cover.set_cover_rr.html#see-also",
+    "title": "cover.set_cover_rr",
+    "section": "See Also",
+    "text": "See Also\n\nSparse arrays\nreference",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_rr"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_rr.html#notes",
+    "href": "cover.set_cover_rr.html#notes",
+    "title": "cover.set_cover_rr",
+    "section": "Notes",
+    "text": "Notes\nThis function requires subsets to be a sparse matrix in canonical CSC form. If subsets is not in this form, a copy of the subsets is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_rr"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_rr.html#examples",
+    "href": "cover.set_cover_rr.html#examples",
+    "title": "cover.set_cover_rr",
+    "section": "Examples",
+    "text": "Examples\n\nfrom geomcover.cover import set_cover_rr\nfrom geomcover.io import load_set_cover\n\nsubsets, weights = load_set_cover(\"mushroom\")\nsoln, cost = set_cover_rr(subsets, weights)\nn, J = subsets.shape\n\nprint(\"Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.\")\n\nSet family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_rr"
     ]
   },
   {
@@ -482,289 +400,189 @@
     "section": "",
     "text": "cover.coverage\ncover.coverage(subsets, ind=None)\nReturns the amount covered by each subset in the set of cover indices provided.",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
+      "Package overview",
+      "Set Cover (`cover`)",
       "cover.coverage"
     ]
   },
   {
-    "objectID": "cover.to_canonical.html",
-    "href": "cover.to_canonical.html",
-    "title": "cover.to_canonical",
+    "objectID": "io.sparse_to_sets.html",
+    "href": "io.sparse_to_sets.html",
+    "title": "io.sparse_to_sets",
     "section": "",
-    "text": "cover.to_canonical\ncover.to_canonical(A, form='csc', diag=False, symmetrize=False, copy=False)",
+    "text": "io.sparse_to_sets(subsets, reindex=False)\nConverts a collection of sets into a sparse CSC array.\nThis function converts a a sparse matrix into list of integer-valued arrays, where each array represents a subset. Optionally, if the sets themselves do not represent 0-based indices, you can set reindex=True to map the rows and columns to the base index set \\([n] = {0, 1, ..., n - 1}\\).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\nsparse array in canonical form.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ncsc_array\nCollection of indices representing subsets.",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "cover.to_canonical"
+      "Package overview",
+      "I/O (`io`)",
+      "io.sparse_to_sets"
     ]
   },
   {
-    "objectID": "to_canonical.html",
-    "href": "to_canonical.html",
-    "title": "to_canonical",
+    "objectID": "io.sparse_to_sets.html#parameters",
+    "href": "io.sparse_to_sets.html#parameters",
+    "title": "io.sparse_to_sets",
     "section": "",
-    "text": "to_canonical\nto_canonical(A, form='csc', diag=False, symmetrize=False, copy=False)",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\nsparse array in canonical form.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "to_canonical"
+      "Package overview",
+      "I/O (`io`)",
+      "io.sparse_to_sets"
     ]
   },
   {
-    "objectID": "wset_cover_RR.html#see-also",
-    "href": "wset_cover_RR.html#see-also",
-    "title": "wset_cover_RR",
-    "section": "See Also",
-    "text": "See Also\n\nnumpy.maximum\nreference",
+    "objectID": "io.sparse_to_sets.html#returns",
+    "href": "io.sparse_to_sets.html#returns",
+    "title": "io.sparse_to_sets",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\ncsc_array\nCollection of indices representing subsets.",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_RR"
+      "Package overview",
+      "I/O (`io`)",
+      "io.sparse_to_sets"
     ]
   },
   {
-    "objectID": "wset_cover_RR.html#notes",
-    "href": "wset_cover_RR.html#notes",
-    "title": "wset_cover_RR",
-    "section": "Notes",
-    "text": "Notes\nThis function requires subsets to be a sparse matrix in canonical CSC form. If subsets is not in this form, a copy of the subsets is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.",
+    "objectID": "cover.set_cover_sat.html",
+    "href": "cover.set_cover_sat.html",
+    "title": "cover.set_cover_sat",
+    "section": "",
+    "text": "cover.set_cover_sat(subsets, weights=None, full_output=False, **kwargs)\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT.\nThis function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance, which is known to achieve at least an (8/7)-approximation of the optimal solution.\nThe default solver is the Relaxed Cardinality Constraint solver (RC2), with Boolean lexicographic optimization (BLO) stratification options turned on. RC2 requires python-sat to be installed.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nreturn_solver\n\nwhether to return the SAT-solver instance. Defaults to False.\nrequired\n\n\n**kwargs\n\nadditional keyword arguments to pass to the solver.\n{}\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_RR"
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_sat"
     ]
   },
   {
-    "objectID": "wset_cover_RR.html#examples",
-    "href": "wset_cover_RR.html#examples",
-    "title": "wset_cover_RR",
-    "section": "Examples",
-    "text": "Examples\n\n        1 + 1\n\n2",
+    "objectID": "cover.set_cover_sat.html#parameters",
+    "href": "cover.set_cover_sat.html#parameters",
+    "title": "cover.set_cover_sat",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nreturn_solver\n\nwhether to return the SAT-solver instance. Defaults to False.\nrequired\n\n\n**kwargs\n\nadditional keyword arguments to pass to the solver.\n{}",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "wset_cover_RR"
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_sat"
     ]
   },
   {
-    "objectID": "coverage.html",
-    "href": "coverage.html",
-    "title": "coverage",
+    "objectID": "cover.set_cover_sat.html#returns",
+    "href": "cover.set_cover_sat.html#returns",
+    "title": "cover.set_cover_sat",
     "section": "",
-    "text": "coverage\ncoverage(subsets, ind=None)\nReturns the amount covered by each subset in the set of cover indices provided.",
+    "text": "Type\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "coverage"
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_sat"
     ]
   },
   {
-    "objectID": "valid_cover.html",
-    "href": "valid_cover.html",
-    "title": "valid_cover",
+    "objectID": "linalg.cmds.html",
+    "href": "linalg.cmds.html",
+    "title": "linalg.cmds",
     "section": "",
-    "text": "valid_cover\nvalid_cover(A, ind=None)\nDetermines whether given sets form a valid or feasible cover over the universe.",
+    "text": "linalg.cmds(D, d=2, coords=True)\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\nCMDS is a coordinatization algorithm that generates d-dimensional coordinates from a Euclidean distance matrix D. Algorithmically, D is converted into a Gram matrix G, whose eigen decomposition is used to produce coordinates minimizing a notion of ‘strain’.",
     "crumbs": [
-      "Geomcover",
-      "Set Cover",
-      "valid_cover"
+      "Package overview",
+      "Linear Algebra (`linalg`)",
+      "linalg.cmds"
     ]
   },
   {
-    "objectID": "geomcover.cover.package_exists.html",
-    "href": "geomcover.cover.package_exists.html",
-    "title": "package_exists",
-    "section": "",
-    "text": "package_exists\ncover.package_exists(package)\nChecks whether a package exists via importlib."
-  },
-  {
-    "objectID": "cover.html",
-    "href": "cover.html",
-    "title": "cover",
-    "section": "",
-    "text": "cover\n\n\n\n\n\nName\nDescription\n\n\n\n\nask_package_install\nChecks whether a package exists via importlib, and if not raises an exception.\n\n\ncoverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\npackage_exists\nChecks whether a package exists via importlib.\n\n\nsets_to_csc\nConverts a collection of sets into a sparse CSC array.\n\n\nvalid_cover\nDetermines whether given sets form a valid or feasible cover over the universe.\n\n\nwset_cover\nComputes an approximate solution to the weighted set cover problem using a supplied method.\n\n\nwset_cover_ILP\nComputes an approximate solution to the weighted set cover problem via integer linear programming.\n\n\nwset_cover_RR\nApproximates the weighted set cover problem via randomized rounding.\n\n\nwset_cover_greedy\nComputes an approximate solution to the weighted set cover problem via a greedy approach.\n\n\nwset_cover_sat\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover 2",
-      "cover"
-    ]
-  },
-  {
-    "objectID": "cover.html#functions",
-    "href": "cover.html#functions",
-    "title": "cover",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\nask_package_install\nChecks whether a package exists via importlib, and if not raises an exception.\n\n\ncoverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\npackage_exists\nChecks whether a package exists via importlib.\n\n\nsets_to_csc\nConverts a collection of sets into a sparse CSC array.\n\n\nvalid_cover\nDetermines whether given sets form a valid or feasible cover over the universe.\n\n\nwset_cover\nComputes an approximate solution to the weighted set cover problem using a supplied method.\n\n\nwset_cover_ILP\nComputes an approximate solution to the weighted set cover problem via integer linear programming.\n\n\nwset_cover_RR\nApproximates the weighted set cover problem via randomized rounding.\n\n\nwset_cover_greedy\nComputes an approximate solution to the weighted set cover problem via a greedy approach.\n\n\nwset_cover_sat\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT.",
-    "crumbs": [
-      "Geomcover",
-      "Set Cover 2",
-      "cover"
-    ]
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_greedy.html",
-    "href": "geomcover.cover.wset_cover_greedy.html",
-    "title": "wset_cover_greedy",
-    "section": "",
-    "text": "cover.wset_cover_greedy(subsets, weights)\nComputes an approximate solution to the weighted set cover problem via a greedy approach.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_greedy.html#parameters",
-    "href": "geomcover.cover.wset_cover_greedy.html#parameters",
-    "title": "wset_cover_greedy",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired"
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_greedy.html#returns",
-    "href": "geomcover.cover.wset_cover_greedy.html#returns",
-    "title": "wset_cover_greedy",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost."
-  },
-  {
-    "objectID": "index.html#set-cover-2",
-    "href": "index.html#set-cover-2",
-    "title": "API Reference",
-    "section": "",
-    "text": "Functions to find minimum weight set covers.\n\n\n\ncover",
-    "crumbs": [
-      "Geomcover",
-      "API Reference"
-    ]
-  },
-  {
-    "objectID": "geomcover.cover.sets_to_csc.html",
-    "href": "geomcover.cover.sets_to_csc.html",
-    "title": "sets_to_csc",
-    "section": "",
-    "text": "cover.sets_to_csc(S, reindex=False)\nConverts a collection of sets into a sparse CSC array.\nThis function converts a collection of integer-valued sets into a sparse matrix, where each column represents a set and each row represents an element. Optionally, if the sets themselves do not represent 0-based indices, you can set reindex=True to map the elements to the base index set {0, 1, …, n - 1}.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nS\nCollection[Iterable]\nCollection of set indices representing subsets.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ncsc_array\nsparse boolean CSC array in canonical form."
-  },
-  {
-    "objectID": "geomcover.cover.sets_to_csc.html#parameters",
-    "href": "geomcover.cover.sets_to_csc.html#parameters",
-    "title": "sets_to_csc",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nS\nCollection[Iterable]\nCollection of set indices representing subsets.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse"
-  },
-  {
-    "objectID": "geomcover.cover.sets_to_csc.html#returns",
-    "href": "geomcover.cover.sets_to_csc.html#returns",
-    "title": "sets_to_csc",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ncsc_array\nsparse boolean CSC array in canonical form."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_ILP.html",
-    "href": "geomcover.cover.wset_cover_ILP.html",
-    "title": "wset_cover_ILP",
-    "section": "",
-    "text": "cover.wset_cover_ILP(subsets, weights, solver='highs')\nComputes an approximate solution to the weighted set cover problem via integer linear programming.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_ILP.html#parameters",
-    "href": "geomcover.cover.wset_cover_ILP.html#parameters",
-    "title": "wset_cover_ILP",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'"
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_ILP.html#returns",
-    "href": "geomcover.cover.wset_cover_ILP.html#returns",
-    "title": "wset_cover_ILP",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost."
-  },
-  {
-    "objectID": "geomcover.cover.ask_package_install.html",
-    "href": "geomcover.cover.ask_package_install.html",
-    "title": "ask_package_install",
-    "section": "",
-    "text": "ask_package_install\ncover.ask_package_install(package)\nChecks whether a package exists via importlib, and if not raises an exception."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover.html",
-    "href": "geomcover.cover.wset_cover.html",
-    "title": "wset_cover",
-    "section": "",
-    "text": "wset_cover\ncover.wset_cover(subsets, weights, method='RR', **kwargs)\nComputes an approximate solution to the weighted set cover problem using a supplied method."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_sat.html",
-    "href": "geomcover.cover.wset_cover_sat.html",
-    "title": "wset_cover_sat",
-    "section": "",
-    "text": "cover.wset_cover_sat(subsets, weights, return_solver=False, **kwargs)\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT.\nThis function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance, which is known to achieve at least an (8/7)-approximation of the optimal solution. The solver instance used here is the Relaxed Cardinality Constraint solver (RC2) with Boolean lexicographic optimization (BLO) and stratification (which requires python-sat to be installed).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nreturn_solver\nbool\nwhether to return the SAT-solver instance. Defaults to False.\nFalse\n\n\n**kwargs\n\nadditional keyword arguments to pass to the solver.\n{}\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_sat.html#parameters",
-    "href": "geomcover.cover.wset_cover_sat.html#parameters",
-    "title": "wset_cover_sat",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nreturn_solver\nbool\nwhether to return the SAT-solver instance. Defaults to False.\nFalse\n\n\n**kwargs\n\nadditional keyword arguments to pass to the solver.\n{}"
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_sat.html#returns",
-    "href": "geomcover.cover.wset_cover_sat.html#returns",
-    "title": "wset_cover_sat",
-    "section": "",
-    "text": "Type\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating which subsets are in the cover and c is its cost."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_RR.html",
-    "href": "geomcover.cover.wset_cover_RR.html",
-    "title": "wset_cover_RR",
-    "section": "",
-    "text": "cover.wset_cover_RR(subsets, weights, maxiter='default', sparsity=1.0, seed=None)\nApproximates the weighted set cover problem via randomized rounding.\nThis function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.\nThe minimum-cost fractional cover is obtained by solving the following linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in [0, 1], \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in [0, 1]\\) is a real number indicating the strength of the membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The randomized rounding procedure iteratively adds sets \\(S_j\\) with probability \\(c \\cdot s_j\\) until a feasible cover is found.\nIf not supplied, maxiter defaults to \\((2 / c) \\log(n)\\) where \\(c\\) is given by the sparsity argument. Supplying sparsity values lower than 1 allows choosing fewer subsets per iteration, which can result in sparser or lower weight covers at the cost of more iterations."
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_RR.html#parameters",
-    "href": "geomcover.cover.wset_cover_RR.html#parameters",
-    "title": "wset_cover_RR",
+    "objectID": "linalg.cmds.html#parameters",
+    "href": "linalg.cmds.html#parameters",
+    "title": "linalg.cmds",
     "section": "Parameters",
-    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nArrayLike\n(J)-length array of subset weights.\nrequired\n\n\nmaxiter\nint\nnumber of iterations to repeat the sampling process. See details.\n'default'\n\n\nsparsity\nfloat\nconstant used to emphasize sparsity between (0, 1]. See details.\n1.0\n\n\nseed\nint\nseed for the random number generator. Use an integer for deterministic computation.\nNone"
+    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nD\nArrayLike\nSquared Euclidean distance matrix, or set of (squared) pairwise distances.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncoords\nbool\nwhether to return the embedding (default = True), or just return the eigenvectors\nTrue",
+    "crumbs": [
+      "Package overview",
+      "Linear Algebra (`linalg`)",
+      "linalg.cmds"
+    ]
   },
   {
-    "objectID": "geomcover.cover.wset_cover_RR.html#returns",
-    "href": "geomcover.cover.wset_cover_RR.html#returns",
-    "title": "wset_cover_RR",
+    "objectID": "linalg.cmds.html#returns",
+    "href": "linalg.cmds.html#returns",
+    "title": "linalg.cmds",
     "section": "Returns",
-    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\n(s, c) where s is a boolean array indicating set-cover and c its cost."
+    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nnp.ndarray\nif coords = True, the coordinates from the largest d eigenvectors of G’s eigendecomposition. Otherwise, the eigenvalues and eigenvectors are returned. See the Examples section for more details.",
+    "crumbs": [
+      "Package overview",
+      "Linear Algebra (`linalg`)",
+      "linalg.cmds"
+    ]
   },
   {
-    "objectID": "geomcover.cover.wset_cover_RR.html#see-also",
-    "href": "geomcover.cover.wset_cover_RR.html#see-also",
-    "title": "wset_cover_RR",
-    "section": "See Also",
-    "text": "See Also\n\nnumpy.maximum\nreference"
-  },
-  {
-    "objectID": "geomcover.cover.wset_cover_RR.html#notes",
-    "href": "geomcover.cover.wset_cover_RR.html#notes",
-    "title": "wset_cover_RR",
+    "objectID": "linalg.cmds.html#notes",
+    "href": "linalg.cmds.html#notes",
+    "title": "linalg.cmds",
     "section": "Notes",
-    "text": "Notes\nThis function requires subsets to be a sparse matrix in canonical CSC form. If subsets is not in this form, a copy of the subsets is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first."
+    "text": "Notes\nPCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.",
+    "crumbs": [
+      "Package overview",
+      "Linear Algebra (`linalg`)",
+      "linalg.cmds"
+    ]
   },
   {
-    "objectID": "geomcover.cover.wset_cover_RR.html#examples",
-    "href": "geomcover.cover.wset_cover_RR.html#examples",
-    "title": "wset_cover_RR",
+    "objectID": "linalg.cmds.html#see-also",
+    "href": "linalg.cmds.html#see-also",
+    "title": "linalg.cmds",
+    "section": "See Also",
+    "text": "See Also\n\nCMDS\nEuclidean distance matrix",
+    "crumbs": [
+      "Package overview",
+      "Linear Algebra (`linalg`)",
+      "linalg.cmds"
+    ]
+  },
+  {
+    "objectID": "linalg.cmds.html#examples",
+    "href": "linalg.cmds.html#examples",
+    "title": "linalg.cmds",
     "section": "Examples",
-    "text": "Examples\n\n        1 + 1\n\n2"
+    "text": "Examples\n\nimport numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
+    "crumbs": [
+      "Package overview",
+      "Linear Algebra (`linalg`)",
+      "linalg.cmds"
+    ]
   },
   {
-    "objectID": "geomcover.cover.coverage.html",
-    "href": "geomcover.cover.coverage.html",
-    "title": "coverage",
+    "objectID": "cover.valid_cover.html",
+    "href": "cover.valid_cover.html",
+    "title": "cover.valid_cover",
     "section": "",
-    "text": "coverage\ncover.coverage(subsets, ind=None)\nReturns the amount covered by each subset in the set of cover indices provided."
+    "text": "cover.valid_cover(subsets, ind=None)\nDetermines whether given sets form a feasible cover over the universe.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix describing J sets covering n elements.\nrequired\n\n\nind\nOptional[np.ndarray]\nindex vector indicating which sets to check for cover feasibility. Defaults to all sets.\nNone\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nbool\na boolean indicating whether the subsets indexed by ind cover every element.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.valid_cover"
+    ]
   },
   {
-    "objectID": "geomcover.cover.valid_cover.html",
-    "href": "geomcover.cover.valid_cover.html",
-    "title": "valid_cover",
+    "objectID": "cover.valid_cover.html#parameters",
+    "href": "cover.valid_cover.html#parameters",
+    "title": "cover.valid_cover",
     "section": "",
-    "text": "valid_cover\ncover.valid_cover(A, ind=None)\nDetermines whether given sets form a valid or feasible cover over the universe."
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix describing J sets covering n elements.\nrequired\n\n\nind\nOptional[np.ndarray]\nindex vector indicating which sets to check for cover feasibility. Defaults to all sets.\nNone",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.valid_cover"
+    ]
+  },
+  {
+    "objectID": "cover.valid_cover.html#returns",
+    "href": "cover.valid_cover.html#returns",
+    "title": "cover.valid_cover",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\nbool\na boolean indicating whether the subsets indexed by ind cover every element.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.valid_cover"
+    ]
   }
 ]

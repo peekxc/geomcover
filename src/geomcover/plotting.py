@@ -1,11 +1,11 @@
 import numpy as np
+from scipy.spatial import ConvexHull
 
 
 def plot_cover(H, pos, offset: float = 0.15, **kwargs):
-	from bokeh.plotting import figure
-	from scipy.spatial import ConvexHull
-	from shapely.geometry import Polygon
-	from shapely import offset_curve
+	from bokeh.plotting import figure  # noqa: PLC0415
+	from shapely import offset_curve  # noqa: PLC0415
+	from shapely.geometry import Polygon  # noqa: PLC0415
 
 	h, w = kwargs.pop("height", 150), kwargs.pop("width", 150)
 	p = figure(height=h, width=w, **kwargs)
@@ -31,7 +31,7 @@ def plot_cover(H, pos, offset: float = 0.15, **kwargs):
 
 def plot_tangent_bundle(TM, c: float = 1.0, data: bool = False, **kwargs):
 	"""Plots a 1D or 2D tangent bundle for 2D data."""
-	from bokeh.plotting import figure
+	from bokeh.plotting import figure  # noqa: PLC0415
 
 	xs = [np.ravel((pt[0] - c * v[0, 0], pt[0] + c * v[0, 0])) for pt, v in TM]
 	ys = [np.ravel((pt[1] - c * v[1, 0], pt[1] + c * v[1, 0])) for pt, v in TM]
@@ -49,7 +49,7 @@ def plot_tangent_bundle(TM, c: float = 1.0, data: bool = False, **kwargs):
 
 def plot_nerve(M, X, **kwargs):
 	"""Plots the nerve of a given cover."""
-	from bokeh.plotting import figure
+	from bokeh.plotting import figure  # noqa: PLC0415
 
 	A = M.tocoo()
 	# st = SimplexTree(zip(A.row, A.col))

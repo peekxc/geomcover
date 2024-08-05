@@ -1,16 +1,21 @@
 import numpy as np
-from geomcover.cover import set_cover_greedy, set_cover_ILP, valid_cover, to_canonical
+from geomcover.cover import coverage, set_cover, set_cover_greedy, set_cover_ILP, to_canonical, valid_cover
 from geomcover.io import load_set_cover
-from geomcover.cover import coverage
 
 
 def test_setcover():
-	subsets, weights = load_set_cover("scp41")
+	subsets, weights = load_set_cover("mushroom")
 	assert subsets.has_canonical_format, "Not in canonical format"
 
-	soln, cost = set_cover_greedy(subsets, weights)
-	assert isinstance(cost, float) and cost < 470
-	assert isinstance(soln, np.ndarray) and soln.size == subsets.shape[1]
+	for method in ["RR", "greedy", "ILP"]:
+		set_cover(subsets, weights, method=method)
+		soln, cost = set_cover_greedy(subsets, weights)
+		cov = coverage(subsets, soln)
+		assert len(cov) == subsets.shape[0]
+		assert isinstance(cost, float) and cost == 22.0
+		assert isinstance(soln, np.ndarray) and soln.size == subsets.shape[1]
+		assert valid_cover(subsets, np.flatnonzero(soln))
+		assert np.all(coverage(subsets, soln) == coverage(subsets, np.flatnonzero(soln)))
 
 
 # https://archive.ics.uci.edu/dataset/73/mushroom

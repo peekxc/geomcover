@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "geomcover"
-version = "0.1.2"
+version = "0.1.3"
 authors = [{ name = "Matt Piekenbrock", email = "matt.piekenbrock@gmail.com" }]
 description = "Geometrically-oriented cover estimation using reductions to weighted set cover."
 readme = "README.md"

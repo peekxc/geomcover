@@ -1,5 +1,0 @@
-# ask_package_install { #geomcover.cover.ask_package_install }
-
-`cover.ask_package_install(package)`
-
-Checks whether a package exists via importlib, and if not raises an exception.

@@ -1,5 +1,18 @@
 # cover.valid_cover { #geomcover.cover.valid_cover }
 
-`cover.valid_cover(A, ind=None)`
+`cover.valid_cover(subsets, ind=None)`
 
-Determines whether given sets form a valid or *feasible* cover over the universe.
+Determines whether given sets form a *feasible* cover over the universe.
+
+## Parameters
+
+| Name      | Type                   | Description                                                                              | Default    |
+|-----------|------------------------|------------------------------------------------------------------------------------------|------------|
+| `subsets` | sparray                | (n x J) sparse matrix describing `J` sets covering `n` elements.                         | _required_ |
+| `ind`     | Optional\[np.ndarray\] | index vector indicating which sets to check for cover feasibility. Defaults to all sets. | `None`     |
+
+## Returns
+
+| Type   | Description                                                                    |
+|--------|--------------------------------------------------------------------------------|
+| bool   | a boolean indicating whether the subsets indexed by `ind` cover every element. |

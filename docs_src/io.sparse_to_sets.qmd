@@ -1,0 +1,23 @@
+# io.sparse_to_sets { #geomcover.io.sparse_to_sets }
+
+`io.sparse_to_sets(subsets, reindex=False)`
+
+Converts a collection of sets into a sparse CSC array.
+
+This function converts a a sparse matrix into list of integer-valued arrays, where
+each array represents a subset. Optionally, if the sets themselves do not represent
+0-based indices, you can set `reindex=True` to map the rows and columns to the base index
+set $[n] = {0, 1, ..., n - 1}$.
+
+## Parameters
+
+| Name      | Type    | Description                                                          | Default    |
+|-----------|---------|----------------------------------------------------------------------|------------|
+| `subsets` | sparray | sparse array in canonical form.                                      | _required_ |
+| `reindex` | bool    | whether to reindex the sets to the base index set. Default to False. | `False`    |
+
+## Returns
+
+| Type      | Description                                 |
+|-----------|---------------------------------------------|
+| csc_array | Collection of indices representing subsets. |

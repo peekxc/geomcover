@@ -1,4 +1,0 @@
-# cover.to_canonical { #geomcover.cover.to_canonical }
-
-`cover.to_canonical(A, form='csc', diag=False, symmetrize=False, copy=False)`
-

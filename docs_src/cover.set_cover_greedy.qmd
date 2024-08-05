@@ -1,0 +1,30 @@
+---
+breadtitle: cover.set_cover_greedy
+bread-crumbs: true
+---
+
+# cover.set_cover_greedy { #geomcover.cover.set_cover_greedy }
+
+`cover.set_cover_greedy(subsets, weights=None)`
+
+Approximates the weighted set cover problem via _greedy steps_.
+
+This function iteratively constructs a set cover by choosing the set that covers the largest number
+of yet uncovered elements. This greedy strategy is known to multiplicative $\log(d + 1)$-approximation
+to the weighted set cover problem.
+
+Relative to other algorithms, the greedy strategy tends to be the most computationally efficient, though
+certain types of inputs can lead to arbitrarily bad covers.
+
+## Parameters
+
+| Name      | Type                  | Description                                                                         | Default    |
+|-----------|-----------------------|-------------------------------------------------------------------------------------|------------|
+| `subsets` | sparray               | (n x J) sparse matrix of ``J`` subsets whose union forms a cover over ``n`` points. | _required_ |
+| `weights` | Optional\[ArrayLike\] | (J)-length array of subset weights.                                                 | `None`     |
+
+## Returns
+
+| Type   | Description                                                                         |
+|--------|-------------------------------------------------------------------------------------|
+| tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |

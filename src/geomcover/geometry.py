@@ -8,7 +8,7 @@ from typing import Callable, Union
 import numpy as np
 from combin import inverse_choose
 from numpy.typing import ArrayLike
-from scipy.sparse import coo_array, coo_matrix, csr_array, find
+from scipy.sparse import coo_array, coo_matrix, csr_array, find, sparray
 from scipy.spatial import Delaunay
 from scipy.spatial.distance import cdist
 
@@ -58,7 +58,7 @@ def is_point_cloud(x: ArrayLike) -> bool:
 # 	return G.tocsc()
 
 
-def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray = None) -> dict:
+def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: np.ndarray = None) -> dict:
 	"""Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`.
 
 	This function estimates the `d`-dimensional tangent spaces of neighborhoods in `X` given by columns in `M`.
@@ -69,7 +69,7 @@ def tangent_bundle(M: csr_array, X: np.ndarray, d: int = 2, centers: np.ndarray 
 		d: dimension of the tangent space
 		centers: points to center the tangent space estimates. If None, each neighborhoods is centered around its average.
 	"""
-	assert "csc" in type(M).__name__, "Adjacency matrix 'M' must be a sparse matrix in CSC format"
+	M = to_canonical(M, "csr")
 	if centers is not None:
 		centers = np.atleast_2d(centers)
 		assert centers.shape[1] == X.shape[1], "Centers must have same dimension as 'X'"

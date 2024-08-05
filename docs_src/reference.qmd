@@ -1,0 +1,44 @@
+# API Reference {.doc .doc-index}
+
+## Set Cover (`cover`)
+
+Functions to find minimum weight set covers.
+
+| | |
+| --- | --- |
+| [cover.coverage](cover.coverage.qmd#geomcover.cover.coverage) | Returns the amount covered by each subset in the set of cover indices provided. |
+| [cover.valid_cover](cover.valid_cover.qmd#geomcover.cover.valid_cover) | Determines whether given sets form a *feasible* cover over the universe. |
+| [cover.set_cover_greedy](cover.set_cover_greedy.qmd#geomcover.cover.set_cover_greedy) | Approximates the weighted set cover problem via _greedy steps_. |
+| [cover.set_cover_rr](cover.set_cover_rr.qmd#geomcover.cover.set_cover_rr) | Approximates the weighted set cover problem via _randomized rounding_. |
+| [cover.set_cover_ilp](cover.set_cover_ilp.qmd#geomcover.cover.set_cover_ilp) | Approximates the weighted set cover problem via _integer linear programming_. |
+| [cover.set_cover_sat](cover.set_cover_sat.qmd#geomcover.cover.set_cover_sat) | Computes an approximate solution to the weighted set cover problem via *weighted MaxSAT*. |
+
+## Linear Algebra (`linalg`)
+
+Standard linear algebra algorithms.
+
+| | |
+| --- | --- |
+| [linalg.pca](linalg.pca.qmd#geomcover.linalg.pca) | Projects `X` onto a `d`-dimensional linear subspace via Principal Component Analysis. |
+| [linalg.cmds](linalg.cmds.qmd#geomcover.linalg.cmds) | Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling. |
+
+## Geometry (`geometry`)
+
+Algorithms for computing information on manifolds.
+
+| | |
+| --- | --- |
+| [geometry.tangent_bundle](geometry.tangent_bundle.qmd#geomcover.geometry.tangent_bundle) | Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`. |
+| [geometry.bundle_weights](geometry.bundle_weights.qmd#geomcover.geometry.bundle_weights) | Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle. |
+
+## I/O (`io`)
+
+Algorithms for loading, parsing, and cleaning set cover data sets.
+
+| | |
+| --- | --- |
+| [io.load_set_cover](io.load_set_cover.qmd#geomcover.io.load_set_cover) | Loads an instance of for testing weighted set cover algorithms. |
+| [io.to_canonical](io.to_canonical.qmd#geomcover.io.to_canonical) | Converts a sparse array into a supplied form, gauranteeing canonical format. |
+| [io.sets_to_sparse](io.sets_to_sparse.qmd#geomcover.io.sets_to_sparse) | Converts a collection of sets into a sparse CSC array. |
+| [io.sparse_to_sets](io.sparse_to_sets.qmd#geomcover.io.sparse_to_sets) | Converts a collection of sets into a sparse CSC array. |
+| [io.reindex_sparse](io.reindex_sparse.qmd#geomcover.io.reindex_sparse) | Reindexes the indices of a given sparse array to the base index set. |

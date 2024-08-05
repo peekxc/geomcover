@@ -3,12 +3,16 @@ project:
   output-dir: ../docs
 
 website:
+  bread-crumbs: true
+  page-navigation: true
   navbar:
     background: primary
     search: false
     left: 
-      - text: "Geomcover"
-        href: index.qmd 
+      - text: "Package overview"
+        file: index.qmd
+      - text: API Reference
+        file: reference.qmd
     tools: 
       - icon: github
         href: https://github.com/peekxc/geomcover
@@ -34,19 +38,20 @@ quartodoc:
   package: geomcover
   dir: .
   title: API Reference
+  out_index: reference.qmd
   parser: google
-  sidebar: _sidebar.yml
+  # sidebar: _sidebar.yml
   render_interlinks: False
   sections:
     - title: Set Cover (`cover`)
       desc: Functions to find minimum weight set covers.
       contents:
-        - cover.wset_cover_RR
-        - cover.wset_cover_greedy
-        - cover.wset_cover_ILP
-        - cover.to_canonical
         - cover.coverage
         - cover.valid_cover
+        - cover.set_cover_greedy
+        - cover.set_cover_rr
+        - cover.set_cover_ilp
+        - cover.set_cover_sat
     - title: Linear Algebra (`linalg`)
       desc: Standard linear algebra algorithms. 
       contents: 
@@ -57,3 +62,11 @@ quartodoc:
       contents: 
         - geometry.tangent_bundle
         - geometry.bundle_weights
+    - title: I/O (`io`)
+      desc: Algorithms for loading, parsing, and cleaning set cover data sets.
+      contents: 
+        - io.load_set_cover
+        - io.to_canonical
+        - io.sets_to_sparse
+        - io.sparse_to_sets
+        - io.reindex_sparse

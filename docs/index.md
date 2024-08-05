@@ -1,0 +1,11 @@
+# Geomcover
+
+
+`geomcover` is a Python package built to simplify constructing geometric
+set covers over a variety of geometric objects, such as metric graphs
+and manifolds. Such covers can be used for simplifying surfaces,
+constructing fiber bundles, or summarizing point cloud data.
+
+`geomcover` can be used natively with manifolds from the geomstats
+package to produce high-coverage bundle parameterizations of the
+manifold.

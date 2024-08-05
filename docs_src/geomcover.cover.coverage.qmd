@@ -1,5 +1,0 @@
-# coverage { #geomcover.cover.coverage }
-
-`cover.coverage(subsets, ind=None)`
-
-Returns the amount covered by each subset in the set of cover indices provided.

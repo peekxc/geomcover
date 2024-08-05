@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>geomcover.cover.wset_cover</title>
+<title>cover.set_cover_rr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,6 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./cover.set_cover_ilp.html" rel="next">
+<link href="./cover.set_cover_greedy.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -67,11 +103,40 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-sidebar floating nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -84,8 +149,12 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Geomcover</span></a>
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Package overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./reference.html"> 
+<span class="menu-text">API Reference</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -94,22 +163,298 @@ ul.task-list li input[type="checkbox"] {
 </div>
       </div> <!-- /container-fluid -->
     </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.coverage.html">Set Cover (<code>cover</code>)</a></li><li class="breadcrumb-item"><a href="./cover.set_cover_rr.html">cover.set_cover_rr</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geomcover</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Set Cover (<code>cover</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.coverage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.valid_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.valid_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_greedy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_greedy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_rr.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">cover.set_cover_rr</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_ilp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_ilp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_sat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_sat</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Linear Algebra (<code>linalg</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./linalg.pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">linalg.pca</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./linalg.cmds.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">linalg.cmds</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geometry (<code>geometry</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./geometry.tangent_bundle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">geometry.tangent_bundle</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./geometry.bundle_weights.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">geometry.bundle_weights</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.load_set_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.to_canonical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.to_canonical</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.sets_to_sparse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.sets_to_sparse</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.sparse_to_sets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.sparse_to_sets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.reindex_sparse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.reindex_sparse</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.coverage.html">Set Cover (<code>cover</code>)</a></li><li class="breadcrumb-item"><a href="./cover.set_cover_rr.html">cover.set_cover_rr</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">cover.set_cover_rr</h1>
+</div>
 
 
 
-<section id="geomcover.cover.wset_cover" class="level1">
-<h1>wset_cover</h1>
-<p><code>cover.wset_cover(subsets, weights, method='RR', **kwargs)</code></p>
-<p>Computes an approximate solution to the weighted set cover problem using a supplied method.</p>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><code>cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)</code></p>
+<p>Approximates the weighted set cover problem via <em>randomized rounding</em>.</p>
+<p>This function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.</p>
+<p>The minimum-cost fractional cover is obtained by solving the following linear program:</p>
+<p><span class="math display">\[\begin{align*}\text{minimize} \quad &amp; \sum\limits_{j \in C} s_j \cdot w_j  \\
+\text{s.t.} \quad &amp; \sum\limits_{j \in N_i}  s_j  \geq 1, \quad \forall \, i \in [n] \\
+&amp; s_j \in [0, 1], \quad \forall \, j \in [J]\end{align*}\]</span></p>
+<p>where <span class="math inline">\(s_j \in [0, 1]\)</span> is a real number indicating the strength of the membership <span class="math inline">\(S_j \in \mathcal{S}\)</span> and <span class="math inline">\(N_i\)</span> represents the subsets of <span class="math inline">\(S\)</span> that the element <span class="math inline">\(x_i\)</span> intersects. The randomized rounding procedure iteratively adds sets <span class="math inline">\(S_j\)</span> with probability <span class="math inline">\(c \cdot s_j\)</span> until a feasible cover is found.</p>
+<p>If not supplied, <code>maxiter</code> defaults to <span class="math inline">\((2 / c) \log(n)\)</span> where <span class="math inline">\(c\)</span> is given by the <code>sparsity</code> argument. Supplying <code>sparsity</code> values lower than 1 allows choosing fewer subsets per iteration, which can result in sparser or lower weight covers at the cost of more iterations.</p>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 17%">
+<col style="width: 63%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>subsets</code></td>
+<td>sparray</td>
+<td>(n x J) sparse matrix of J subsets whose union forms a cover over n points.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>weights</code></td>
+<td>Optional[ArrayLike]</td>
+<td>(J)-length array of subset weights.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>maxiter</code></td>
+<td>int</td>
+<td>number of iterations to repeat the sampling process. See details.</td>
+<td><code>'default'</code></td>
+</tr>
+<tr class="even">
+<td><code>sparsity</code></td>
+<td>float</td>
+<td>constant used to emphasize sparsity between (0, 1]. See details.</td>
+<td><code>1.0</code></td>
+</tr>
+<tr class="odd">
+<td><code>seed</code></td>
+<td>Optional[int]</td>
+<td>seed for the random number generator. Use an integer for deterministic computation.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level2">
+<h2 class="anchored" data-anchor-id="returns">Returns</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 91%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tuple</td>
+<td>pair (s, c) where <code>s</code> is an array indicating cover membership and <code>c</code> its cost.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See Also</h2>
+<ul>
+<li><code>Sparse arrays</code></li>
+<li><a href="./index.html">reference</a></li>
+</ul>
+</section>
+<section id="notes" class="level2">
+<h2 class="anchored" data-anchor-id="notes">Notes</h2>
+<p>This function requires <code>subsets</code> to be a sparse matrix in <a href="https://docs.scipy.org/doc/scipy/tutorial/sparse.html#canonical-formats">canonical</a> CSC form. If <code>subsets</code> is not in this form, a copy of the <code>subsets</code> is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.</p>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<div id="3c181357" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.cover <span class="im">import</span> set_cover_rr</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.io <span class="im">import</span> load_set_cover</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>subsets, weights <span class="op">=</span> load_set_cover(<span class="st">"mushroom"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>soln, cost <span class="op">=</span> set_cover_rr(subsets, weights)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n, J <span class="op">=</span> subsets.shape</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Set family with </span><span class="sc">{n}</span><span class="st"> elements and </span><span class="sc">{J}</span><span class="st"> sets can be covered with {np.sum(soln)} sets with cost </span><span class="sc">{cost}</span><span class="st">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.</code></pre>
+</div>
+</div>
 
 
 </section>
@@ -535,6 +880,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./cover.set_cover_greedy.html" class="pagination-link" aria-label="cover.set_cover_greedy">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">cover.set_cover_greedy</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./cover.set_cover_ilp.html" class="pagination-link" aria-label="cover.set_cover_ilp">
+        <span class="nav-page-text">cover.set_cover_ilp</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

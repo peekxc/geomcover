@@ -3,15 +3,16 @@
 # %% Imports
 import numpy as np
 import scipy as sp
-# from geomcover.csgraph import path_graph
-# from geomcover.geometry import tangent_bundle
-# from geomcover.plotting import plot_nerve, plot_tangent_bundle
-# from geomcover.geometry import bundle_weights
+from geomcover.csgraph import path_graph
+from geomcover.geometry import tangent_bundle
+from geomcover.plotting import plot_nerve, plot_tangent_bundle
+from geomcover.geometry import bundle_weights
 
-# from geomcover.cover import set_cover
-# from map2color import map2hex
+from geomcover.cover import set_cover
+from map2color import map2hex
 from bokeh.io import output_notebook
 from bokeh.plotting import figure, show
+
 output_notebook(hide_banner=True, verbose=False)
 
 # %% Data set
@@ -51,7 +52,7 @@ show(p)
 
 # %% Step 3: form the minimal weight set cover
 # cover, cover_weight = wset_cover(M, np.ones(len(TW)), "greedy")
-cover, cover_weight = wset_cover(M, TW, "sat")
+cover, cover_weight = set_cover(M, TW, "ILP")
 cover_ind = np.flatnonzero(cover)
 
 p = figure(width=450, height=150)

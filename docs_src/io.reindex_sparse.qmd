@@ -1,0 +1,5 @@
+# io.reindex_sparse { #geomcover.io.reindex_sparse }
+
+`io.reindex_sparse(subsets)`
+
+Reindexes the indices of a given sparse array to the base index set.

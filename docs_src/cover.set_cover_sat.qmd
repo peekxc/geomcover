@@ -1,0 +1,24 @@
+# cover.set_cover_sat { #geomcover.cover.set_cover_sat }
+
+`cover.set_cover_sat(subsets, weights=None, full_output=False, **kwargs)`
+
+Computes an approximate solution to the weighted set cover problem via *weighted MaxSAT*.
+
+This function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance,         which is known to achieve at least an (8/7)-approximation of the optimal solution.
+
+The default solver is the Relaxed Cardinality Constraint solver (RC2), with Boolean lexicographic optimization  (BLO) stratification options turned on. RC2 requires `python-sat` to be installed.
+
+## Parameters
+
+| Name            | Type                  | Description                                                                 | Default    |
+|-----------------|-----------------------|-----------------------------------------------------------------------------|------------|
+| `subsets`       | sparray               | (n x J) sparse matrix of J subsets whose union forms a cover over n points. | _required_ |
+| `weights`       | Optional\[ArrayLike\] | (J)-length array of subset weights.                                         | `None`     |
+| `return_solver` |                       | whether to return the SAT-solver instance. Defaults to False.               | _required_ |
+| `**kwargs`      |                       | additional keyword arguments to pass to the solver.                         | `{}`       |
+
+## Returns
+
+| Type   | Description                                                                         |
+|--------|-------------------------------------------------------------------------------------|
+| tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |

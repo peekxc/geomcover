@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>cover</title>
+<title>cover.set_cover_sat</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,6 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./linalg.pca.html" rel="next">
+<link href="./cover.set_cover_ilp.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -85,7 +87,11 @@ ul.task-list li input[type="checkbox"] {
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">Geomcover</span></a>
+<span class="menu-text">Package overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./reference.html"> 
+<span class="menu-text">API Reference</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -99,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.html">Set Cover 2</a></li><li class="breadcrumb-item"><a href="./cover.html">cover</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.coverage.html">Set Cover (<code>cover</code>)</a></li><li class="breadcrumb-item"><a href="./cover.set_cover_sat.html">cover.set_cover_sat</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -114,13 +120,13 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">API Reference</span></a>
+ <span class="menu-text">Geomcover</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Set Cover 2</span></a>
+ <span class="menu-text">Set Cover (<code>cover</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -128,8 +134,38 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cover.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">cover</span></a>
+  <a href="./cover.coverage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.valid_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.valid_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_greedy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_greedy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_rr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_rr</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_ilp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover_ilp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover_sat.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">cover.set_cover_sat</span></a>
   </div>
 </li>
       </ul>
@@ -137,59 +173,12 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Set Cover</span></a>
+ <span class="menu-text">Linear Algebra (<code>linalg</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./wset_cover_RR.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">wset_cover_RR</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./wset_cover_greedy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">wset_cover_greedy</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./wset_cover_ILP.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">wset_cover_ILP</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./to_canonical.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">to_canonical</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./coverage.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">coverage</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./valid_cover.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">valid_cover</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Linear Algebra</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./linalg.pca.html" class="sidebar-item-text sidebar-link">
@@ -206,13 +195,13 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Geometry</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Geometry (<code>geometry</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./geometry.tangent_bundle.html" class="sidebar-item-text sidebar-link">
@@ -223,6 +212,47 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="./geometry.bundle_weights.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">geometry.bundle_weights</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.load_set_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.to_canonical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.to_canonical</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.sets_to_sparse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.sets_to_sparse</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.sparse_to_sets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.sparse_to_sets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./io.reindex_sparse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">io.reindex_sparse</span></a>
   </div>
 </li>
       </ul>
@@ -239,58 +269,74 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="geomcover.cover" class="level1">
-<h1>cover</h1>
-<p><code>cover</code></p>
-<section id="functions" class="level2">
-<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<section id="geomcover.cover.set_cover_sat" class="level1">
+<h1>cover.set_cover_sat</h1>
+<p><code>cover.set_cover_sat(subsets, weights=None, full_output=False, **kwargs)</code></p>
+<p>Computes an approximate solution to the weighted set cover problem via <em>weighted MaxSAT</em>.</p>
+<p>This function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance, which is known to achieve at least an (8/7)-approximation of the optimal solution.</p>
+<p>The default solver is the Relaxed Cardinality Constraint solver (RC2), with Boolean lexicographic optimization (BLO) stratification options turned on. RC2 requires <code>python-sat</code> to be installed.</p>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 17%">
+<col style="width: 59%">
+<col style="width: 9%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>subsets</code></td>
+<td>sparray</td>
+<td>(n x J) sparse matrix of J subsets whose union forms a cover over n points.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>weights</code></td>
+<td>Optional[ArrayLike]</td>
+<td>(J)-length array of subset weights.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>return_solver</code></td>
+<td></td>
+<td>whether to return the SAT-solver instance. Defaults to False.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>**kwargs</code></td>
+<td></td>
+<td>additional keyword arguments to pass to the solver.</td>
+<td><code>{}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level2">
+<h2 class="anchored" data-anchor-id="returns">Returns</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 91%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="./geomcover.cover.ask_package_install.html#geomcover.cover.ask_package_install">ask_package_install</a></td>
-<td>Checks whether a package exists via importlib, and if not raises an exception.</td>
-</tr>
-<tr class="even">
-<td><a href="./geomcover.cover.coverage.html#geomcover.cover.coverage">coverage</a></td>
-<td>Returns the amount covered by each subset in the set of cover indices provided.</td>
-</tr>
-<tr class="odd">
-<td><a href="./geomcover.cover.package_exists.html#geomcover.cover.package_exists">package_exists</a></td>
-<td>Checks whether a package exists via importlib.</td>
-</tr>
-<tr class="even">
-<td><a href="./geomcover.cover.sets_to_csc.html#geomcover.cover.sets_to_csc">sets_to_csc</a></td>
-<td>Converts a collection of sets into a sparse CSC array.</td>
-</tr>
-<tr class="odd">
-<td><a href="./geomcover.cover.valid_cover.html#geomcover.cover.valid_cover">valid_cover</a></td>
-<td>Determines whether given sets form a valid or <em>feasible</em> cover over the universe.</td>
-</tr>
-<tr class="even">
-<td><a href="./geomcover.cover.wset_cover.html#geomcover.cover.wset_cover">wset_cover</a></td>
-<td>Computes an approximate solution to the weighted set cover problem using a supplied method.</td>
-</tr>
-<tr class="odd">
-<td><a href="./geomcover.cover.wset_cover_ILP.html#geomcover.cover.wset_cover_ILP">wset_cover_ILP</a></td>
-<td>Computes an approximate solution to the weighted set cover problem via <em>integer linear programming</em>.</td>
-</tr>
-<tr class="even">
-<td><a href="./geomcover.cover.wset_cover_RR.html#geomcover.cover.wset_cover_RR">wset_cover_RR</a></td>
-<td>Approximates the weighted set cover problem via <em>randomized rounding</em>.</td>
-</tr>
-<tr class="odd">
-<td><a href="./geomcover.cover.wset_cover_greedy.html#geomcover.cover.wset_cover_greedy">wset_cover_greedy</a></td>
-<td>Computes an approximate solution to the weighted set cover problem via a greedy approach.</td>
-</tr>
-<tr class="even">
-<td><a href="./geomcover.cover.wset_cover_sat.html#geomcover.cover.wset_cover_sat">wset_cover_sat</a></td>
-<td>Computes an approximate solution to the weighted set cover problem via <em>weighted MaxSAT</em>.</td>
+<td>tuple</td>
+<td>pair (s, c) where <code>s</code> is an array indicating cover membership and <code>c</code> its cost.</td>
 </tr>
 </tbody>
 </table>
@@ -720,6 +766,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./cover.set_cover_ilp.html" class="pagination-link" aria-label="cover.set_cover_ilp">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">cover.set_cover_ilp</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./linalg.pca.html" class="pagination-link" aria-label="linalg.pca">
+        <span class="nav-page-text">linalg.pca</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

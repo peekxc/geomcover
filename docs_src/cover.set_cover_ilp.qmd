@@ -1,0 +1,35 @@
+# cover.set_cover_ilp { #geomcover.cover.set_cover_ilp }
+
+`cover.set_cover_ilp(subsets, weights=None, solver='highs')`
+
+Approximates the weighted set cover problem via _integer linear programming_.
+
+This function attempts to directly solve weighted set cover problem by reducing it to 
+the following mixed-integer linear program:
+
+$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in C} s_j \cdot w_j  \\
+\text{s.t.} \quad & \sum\limits_{j \in N_i}  s_j  \geq 1, \quad \forall \, i \in [n] \\
+& s_j \in {0, 1}, \quad \forall \, j \in [J]\end{align*}$$
+
+where $s_j \in \{0, 1\}$ is a indicator of set membership $S_j \in \mathcal{S}$ and $N_i$
+represents the subsets of $S$ that the element $x_i$ intersects. The algorithm is deterministic,
+and it typically finds the global optimum of moderately challenging mixed-integer linear programs
+(when it exists).
+
+## Parameters
+
+| Name      | Type                  | Description                                                                 | Default    |
+|-----------|-----------------------|-----------------------------------------------------------------------------|------------|
+| `subsets` | sparray               | (n x J) sparse matrix of J subsets whose union forms a cover over n points. | _required_ |
+| `weights` | Optional\[ArrayLike\] | (J)-length array of subset weights.                                         | `None`     |
+| `solver`  | str                   | which MILP solver to use. Defaults to the HiGHS solver in SciPy.            | `'highs'`  |
+
+## Returns
+
+| Type   | Description                                                                         |
+|--------|-------------------------------------------------------------------------------------|
+| tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |
+
+## See Also
+
+- [Mixed-integer program](scipy.optimize.milp)

@@ -11,16 +11,10 @@ import numpy as np
 from scipy.sparse import coo_array, csc_array, issparse, sparray
 
 
-def to_canonical(
-	A: sparray, form: str = "csc", diag: bool = False, symmetrize: bool = False, copy: bool = False
-) -> sparray:
-	"""Converts a sparse array into a supplied canonical format"""
+def to_canonical(A: sparray, form: str = "csc", copy: bool = False) -> sparray:
+	"""Converts a sparse array into a supplied form, gauranteeing canonical format."""
 	assert isinstance(form, str) and form.lower() in {'csc', 'csr', 'lil', 'dok', 'coo'}, f"Invalid form '{form}'; must be a format supported by SciPy."  # fmt: skip
 	A = getattr(A, "to" + form)()
-	if symmetrize:
-		A += A.T
-	if diag:
-		A.setdiag(True)
 	if hasattr(A, "has_sorted_indices"):
 		## https://stackoverflow.com/questions/28428063/what-does-csr-matrix-sort-indices-do
 		A.has_sorted_indices = False
@@ -31,7 +25,7 @@ def to_canonical(
 	return A.copy() if copy else A
 
 
-def sets_to_sparse(S: Collection[Iterable], reindex: bool = False) -> csc_array:
+def sets_to_sparse(S: Collection, reindex: bool = False) -> csc_array:
 	r"""Converts a collection of sets into a sparse CSC array.
 
 	This function converts a `Collection` of integer-valued sequences into a sparse matrix, where
@@ -68,6 +62,18 @@ def sets_to_sparse(S: Collection[Iterable], reindex: bool = False) -> csc_array:
 	return A
 
 
+def reindex_sparse(subsets: sparray) -> None:
+	"""Reindexes the indices of a given sparse array to the base index set."""
+	class_name = type(subsets).__name__.lower()
+	if "coo" in class_name:
+		subsets.row = np.unique(subsets.row, return_inverse=True)[1]
+		subsets.col = np.unique(subsets.col, return_inverse=True)[1]
+	elif "csc" in class_name or "csr" in class_name:
+		subsets.indices = np.unique(subsets.indices, return_inverse=True)[1]
+	else:
+		raise NotImplementedError("Haven't implemented reindexing from non-COO, CSR, or CSC arrays.")
+
+
 def sparse_to_sets(subsets: sparray, reindex: bool = False) -> csc_array:
 	r"""Converts a collection of sets into a sparse CSC array.
 
@@ -85,12 +91,11 @@ def sparse_to_sets(subsets: sparray, reindex: bool = False) -> csc_array:
 	"""
 	if hasattr(subsets, "row") and hasattr(subsets, "col"):
 		if reindex:
-			subsets.row = np.unique(subsets.row, return_inverse=True)[1]
-			subsets.col = np.unique(subsets.col, return_inverse=True)[1]
+			reindex_sparse(subsets)
 		return [subsets.row[subsets.col == j] for j in range(subsets.shape[1])]
 	elif "csc" in type(subsets).__name__.lower():
 		if reindex:
-			subsets.indices = np.unique(subsets.indices, return_inverse=True)[1]
+			reindex_sparse(subsets)
 		return np.split(subsets.indices, subsets.indptr[1:-1])
 	else:
 		assert issparse(subsets), "Must be a sparse array"
@@ -142,7 +147,20 @@ TOYSET1 = np.array([
 
 
 ## To load data sets from: https://people.brunel.ac.uk/~mastjjb/jeb/orlib/files/
-def load_set_cover(test_set: str):
+def load_set_cover(test_set: str) -> tuple:
+	"""Loads an instance of for testing weighted set cover algorithms.
+
+	Parameters:
+		test_set: name of the available test sets. See details.
+
+	Test Sets:
+		The following test sets are available for testing.
+		- 'toy':
+		- 'camera_stadium':
+		- 'mushroom': https://archive.ics.uci.edu/dataset/73/mushroom
+		- 'scp*': Set cover problem instance from OR library.
+
+	"""
 	if test_set.lower() in {"camera_stadium", "camera stadium"}:
 		A = csc_array(CAMERA_STADIUM.reshape((15, 8)))
 		set_weights = np.ones(A.shape[1])
@@ -152,7 +170,8 @@ def load_set_cover(test_set: str):
 	elif test_set.lower() == "mushroom":
 		with resources.path("geomcover.data", "mushroom.dat") as fn:
 			sets = np.loadtxt(fn)
-			A = sets_to_sparse(sets)
+			A = sets_to_sparse(sets, reindex=True)
+			set_weights = np.ones(A.shape[1])
 	elif test_set.lower() in OR_TEST_FILES:
 		data = urlopen(f"https://people.brunel.ac.uk/~mastjjb/jeb/orlib/files/{test_set.lower()}.txt")
 		lines = data.readlines()
@@ -184,7 +203,7 @@ def _package_exists(package: str) -> bool:
 	return pkg_spec is not None
 
 
-def _ask_package_install(package: str):
+def _ask_package_install(package: str) -> None:
 	"""Checks whether a package exists via importlib, and if not raises an exception."""
 	if not (_package_exists(package)):
 		raise RuntimeError(f"Module {package} not installed. To use this function, please install {package}.")
