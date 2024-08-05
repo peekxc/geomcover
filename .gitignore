@@ -5,6 +5,8 @@ excess
 .vscode 
 .benchmarks
 .zed 
+**/*.dat
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
