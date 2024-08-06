@@ -2,8 +2,6 @@
 title: geometry.tangent_bundle
 bread-crumbs: true
 ---
-# geometry.tangent_bundle { #geomcover.geometry.tangent_bundle }
-
 `geometry.tangent_bundle(M, X, d=2, centers=None)`
 
 Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`.
@@ -17,4 +15,4 @@ This function estimates the `d`-dimensional tangent spaces of neighborhoods in `
 | `M`       | sparray    | Adjacency list, given as a sparse matrix                                                                  | _required_ |
 | `X`       | np.ndarray | coordinates of the vertices of 'G'                                                                        | _required_ |
 | `d`       | int        | dimension of the tangent space                                                                            | `2`        |
-| `centers` | np.ndarray | points to center the tangent space estimates. If None, each neighborhoods is centered around its average. | `None`     |
+| `centers` | np.ndarray | points to center the tangent space estimates. If None, each neighborhoods is centered around its average. | `None`     |e`     |

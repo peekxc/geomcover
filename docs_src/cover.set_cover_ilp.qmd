@@ -2,8 +2,6 @@
 title: cover.set_cover_ilp
 bread-crumbs: true
 ---
-# cover.set_cover_ilp { #geomcover.cover.set_cover_ilp }
-
 `cover.set_cover_ilp(subsets, weights=None, solver='highs')`
 
 Approximates the weighted set cover problem via _integer linear programming_.
@@ -36,4 +34,4 @@ and it typically finds the global optimum of moderately challenging mixed-intege
 
 ## See Also
 
-- [Mixed-integer program](scipy.optimize.milp)
+- [Mixed-integer program](scipy.optimize.milp)ilp)

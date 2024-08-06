@@ -2,8 +2,6 @@
 title: linalg.cmds
 bread-crumbs: true
 ---
-# linalg.cmds { #geomcover.linalg.cmds }
-
 `linalg.cmds(D, d=2, coords=True)`
 
 Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling.

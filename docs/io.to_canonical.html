@@ -285,8 +285,6 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="geomcover.io.to_canonical" class="level1">
-<h1>io.to_canonical</h1>
 <p><code>io.to_canonical(A, form='csc', copy=False)</code></p>
 <p>Converts a sparse array into a supplied form, gauranteeing canonical format.</p>
 <p>This function converts a given SciPy sparse array into a canonical form respecting <a href="">has_canonical_format</a>. Here, a sparse array <code>A</code> is said to be in <em>canonical form</em> if all of the properties below hold (where relevent): 1. Indices are sorted in non-descending order, where eligible. 2. Zero entries are removed. 3. Duplicate entries are merged (via summation). 4. Padding between strides is pruned. If <code>A</code> is in canonical format to begin with, it is returned unmodified. Otherwise, <code>A</code> is modified in-place and its reference is returned, unless <code>copy=False</code>.</p>
@@ -347,7 +345,6 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

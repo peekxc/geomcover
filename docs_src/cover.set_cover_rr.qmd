@@ -2,8 +2,6 @@
 title: cover.set_cover_rr
 bread-crumbs: true
 ---
-# cover.set_cover_rr { #geomcover.cover.set_cover_rr }
-
 `cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)`
 
 Approximates the weighted set cover problem via _randomized rounding_.
@@ -64,4 +62,4 @@ soln, cost = set_cover_rr(subsets, weights)
 n, J = subsets.shape
 
 print("Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.")
-```
+``````

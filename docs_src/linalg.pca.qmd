@@ -2,8 +2,6 @@
 title: linalg.pca
 bread-crumbs: true
 ---
-# linalg.pca { #geomcover.linalg.pca }
-
 `linalg.pca(X, d=2, center=True, coords=True)`
 
 Projects `X` onto a `d`-dimensional linear subspace via Principal Component Analysis.
