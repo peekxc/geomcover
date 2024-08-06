@@ -1,15 +1,16 @@
+# %%
 import numpy as np
-from geomcover.cover import coverage, set_cover, set_cover_greedy, set_cover_ILP, to_canonical, valid_cover
+from geomcover.cover import coverage, set_cover, to_canonical, valid_cover
 from geomcover.io import load_set_cover
 
 
+# %%
 def test_setcover():
 	subsets, weights = load_set_cover("mushroom")
 	assert subsets.has_canonical_format, "Not in canonical format"
 
 	for method in ["RR", "greedy", "ILP"]:
-		set_cover(subsets, weights, method=method)
-		soln, cost = set_cover_greedy(subsets, weights)
+		soln, cost = set_cover(subsets, weights, method=method)
 		cov = coverage(subsets, soln)
 		assert len(cov) == subsets.shape[0]
 		assert isinstance(cost, float) and cost == 22.0
@@ -42,8 +43,12 @@ def test_coverage():
 	assert np.all(coverage(subsets) == subsets.sum(axis=1))
 	assert np.all(coverage(subsets, ind=[0, 1, 2]) == subsets.todense()[:, [0, 1, 2]].sum(axis=1))
 	assert np.min(coverage(subsets)) <= 1
-	soln, cost = set_cover_ILP(subsets, weights)
+	soln, cost = set_cover(subsets, weights, "ilp")
 	soln_ind = np.flatnonzero(soln)
 	assert cost == 4
 	assert np.min(coverage(subsets, soln_ind)) >= 1
 	assert np.all(soln_ind == np.array([1, 2, 3, 4])) or np.all(soln_ind == np.array([0, 2, 4, 5]))
+
+
+def test_medium():
+	pass

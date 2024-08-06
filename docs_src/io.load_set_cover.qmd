@@ -1,3 +1,7 @@
+---
+title: io.load_set_cover
+bread-crumbs: true
+---
 # io.load_set_cover { #geomcover.io.load_set_cover }
 
 `io.load_set_cover(test_set)`

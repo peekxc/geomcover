@@ -1,3 +1,7 @@
+---
+title: linalg.pca
+bread-crumbs: true
+---
 # linalg.pca { #geomcover.linalg.pca }
 
 `linalg.pca(X, d=2, center=True, coords=True)`

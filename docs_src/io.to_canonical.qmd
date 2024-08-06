@@ -1,5 +1,32 @@
+---
+title: io.to_canonical
+bread-crumbs: true
+---
 # io.to_canonical { #geomcover.io.to_canonical }
 
 `io.to_canonical(A, form='csc', copy=False)`
 
 Converts a sparse array into a supplied form, gauranteeing canonical format.
+
+This function converts a given SciPy sparse array into a canonical form respecting [has_canonical_format]().
+Here, a sparse array `A` is said to be in *canonical form* if all of the properties below hold (where relevent):
+        1. Indices are sorted in non-descending order, where eligible.
+        2. Zero entries are removed.
+        3. Duplicate entries are merged (via summation).
+        4. Padding between strides is pruned. 
+If `A` is in canonical format to begin with, it is returned unmodified. Otherwise, `A` is modified in-place 
+and its reference is returned, unless `copy=False`.  
+
+## Parameters
+
+| Name   | Type    | Description                                                                  | Default    |
+|--------|---------|------------------------------------------------------------------------------|------------|
+| `A`    | sparray | sparse array.                                                                | _required_ |
+| `form` | str     | target form to convert `A`, such as "csc", "csr", "coo", etc.                | `'csc'`    |
+| `copy` | bool    | whether to return a copy of array. By default, `A` is modified by reference. | `False`    |
+
+## Returns
+
+| Type    | Description                     |
+|---------|---------------------------------|
+| sparray | sparse array in canonical form. |

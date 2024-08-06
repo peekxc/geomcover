@@ -1,3 +1,7 @@
+---
+title: cover.set_cover_ilp
+bread-crumbs: true
+---
 # cover.set_cover_ilp { #geomcover.cover.set_cover_ilp }
 
 `cover.set_cover_ilp(subsets, weights=None, solver='highs')`
@@ -9,7 +13,7 @@ the following mixed-integer linear program:
 
 $$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in C} s_j \cdot w_j  \\
 \text{s.t.} \quad & \sum\limits_{j \in N_i}  s_j  \geq 1, \quad \forall \, i \in [n] \\
-& s_j \in {0, 1}, \quad \forall \, j \in [J]\end{align*}$$
+& s_j \in \{0, 1\}, \quad \forall \, j \in [J]\end{align*}$$
 
 where $s_j \in \{0, 1\}$ is a indicator of set membership $S_j \in \mathcal{S}$ and $N_i$
 represents the subsets of $S$ that the element $x_i$ intersects. The algorithm is deterministic,

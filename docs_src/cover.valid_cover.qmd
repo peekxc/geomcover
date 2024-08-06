@@ -1,3 +1,7 @@
+---
+title: cover.valid_cover
+bread-crumbs: true
+---
 # cover.valid_cover { #geomcover.cover.valid_cover }
 
 `cover.valid_cover(subsets, ind=None)`

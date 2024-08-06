@@ -185,11 +185,11 @@ def set_cover_greedy(subsets: sparray, weights: Optional[ArrayLike] = None) -> t
 	r"""Approximates the weighted set cover problem via _greedy steps_.
 
 	This function iteratively constructs a set cover by choosing the set that covers the largest number
-	of yet uncovered elements. This greedy strategy is known to multiplicative $\log(d + 1)$-approximation
-	to the weighted set cover problem.
+	of yet uncovered elements with the least weight.
 
-	Relative to other algorithms, the greedy strategy tends to be the most computationally efficient, though
-	certain types of inputs can lead to arbitrarily bad covers.
+	The greedy strategy is a very fast SC algorithm, though counter-examples have demonstrated the method
+	can produce poor covers on certain pathological inputs. It has been shown that the algorithm has a
+	worst-case multiplicative $\log(n + 1)$-approximation factor [1].
 
 	Parameters:
 		subsets: (n x J) sparse matrix of ``J`` subsets whose union forms a cover over ``n`` points.
@@ -197,6 +197,14 @@ def set_cover_greedy(subsets: sparray, weights: Optional[ArrayLike] = None) -> t
 
 	Returns:
 		pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost.
+
+	Notes:
+		The algorithm implemented here uses the 'dual-fitting' variant discussed in 5.3 of [2] below, which \
+		can be used used to generate a feasible solution to dual LP. 
+
+	References:
+		1. Feige, Uriel. "A threshold of ln n for approximating set cover." Journal of the ACM (JACM) 45.4 (1998): 634-652.
+		2. [CS 583 notes by Chandra Chekuri](https://courses.grainger.illinois.edu/cs583/sp2018/Notes/covering.pdf)
 	"""
 	subsets, weights = _validate_inputs(subsets, weights)
 	n, J = subsets.shape
@@ -311,7 +319,7 @@ def set_cover_ilp(subsets: sparray, weights: Optional[ArrayLike] = None, solver:
 
 	$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in C} s_j \cdot w_j  \\
 	\text{s.t.} \quad & \sum\limits_{j \in N_i}  s_j  \geq 1, \quad \forall \, i \in [n] \\
-	& s_j \in {0, 1}, \quad \forall \, j \in [J]\end{align*}$$
+	& s_j \in \{0, 1\}, \quad \forall \, j \in [J]\end{align*}$$
 
 	where $s_j \in \{0, 1\}$ is a indicator of set membership $S_j \in \mathcal{S}$ and $N_i$
 	represents the subsets of $S$ that the element $x_i$ intersects. The algorithm is deterministic,

@@ -4,7 +4,7 @@
     "href": "linalg.pca.html",
     "title": "linalg.pca",
     "section": "",
-    "text": "linalg.pca(X, d=2, center=True, coords=True)\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\nPCA is a linear dimensionality reduction algorithm that projects a point set X onto a lower dimensional space using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix.",
+    "text": "linalg.pca(X, d=2, center=True, coords=True)\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\nPCA is a linear dimensionality reduction algorithm that projects a point set X onto a lower dimensional space using an orthogonal projector built from the eigenvalue decomposition of its covariance matrix.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nX\nArrayLike\n(n x D) point cloud / design matrix of n points in D dimensions.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncenter\nbool\nwhether to center the data prior to computing eigenvectors. Defaults to True.\nTrue\n\n\ncoords\nbool\nwhether to return the embedding or the eigenvectors. Defaults to the embedding.\nTrue\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nnp.ndarray\nif coords = True (default), returns the projection of X onto the largest d eigenvectors of Xs covariance matrix. Otherwise, the eigenvalues and eigenvectors can be returned as-is.\n\n\n\n\n\n\nPCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.\n\n\n\n\nimport numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -15,8 +15,8 @@
     "objectID": "linalg.pca.html#parameters",
     "href": "linalg.pca.html#parameters",
     "title": "linalg.pca",
-    "section": "Parameters",
-    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nX\nArrayLike\n(n x D) point cloud / design matrix of n points in D dimensions.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncenter\nbool\nwhether to center the data prior to computing eigenvectors. Defaults to True.\nTrue\n\n\ncoords\nbool\nwhether to return the embedding or the eigenvectors. Defaults to the embedding.\nTrue",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nX\nArrayLike\n(n x D) point cloud / design matrix of n points in D dimensions.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncenter\nbool\nwhether to center the data prior to computing eigenvectors. Defaults to True.\nTrue\n\n\ncoords\nbool\nwhether to return the embedding or the eigenvectors. Defaults to the embedding.\nTrue",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -27,8 +27,8 @@
     "objectID": "linalg.pca.html#returns",
     "href": "linalg.pca.html#returns",
     "title": "linalg.pca",
-    "section": "Returns",
-    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nnp.ndarray\nif coords = True (default), returns the projection of X onto the largest d eigenvectors of Xs covariance matrix. Otherwise, the eigenvalues and eigenvectors can be returned as-is.",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\nnp.ndarray\nif coords = True (default), returns the projection of X onto the largest d eigenvectors of Xs covariance matrix. Otherwise, the eigenvalues and eigenvectors can be returned as-is.",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -39,8 +39,8 @@
     "objectID": "linalg.pca.html#notes",
     "href": "linalg.pca.html#notes",
     "title": "linalg.pca",
-    "section": "Notes",
-    "text": "Notes\nPCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.",
+    "section": "",
+    "text": "PCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -51,8 +51,8 @@
     "objectID": "linalg.pca.html#examples",
     "href": "linalg.pca.html#examples",
     "title": "linalg.pca",
-    "section": "Examples",
-    "text": "Examples\n\nimport numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
+    "section": "",
+    "text": "import numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -123,7 +123,7 @@
     "href": "reference.html",
     "title": "API Reference",
     "section": "",
-    "text": "Functions to find minimum weight set covers.\n\n\n\ncover.coverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\ncover.valid_cover\nDetermines whether given sets form a feasible cover over the universe.\n\n\ncover.set_cover_greedy\nApproximates the weighted set cover problem via greedy steps.\n\n\ncover.set_cover_rr\nApproximates the weighted set cover problem via randomized rounding.\n\n\ncover.set_cover_ilp\nApproximates the weighted set cover problem via integer linear programming.\n\n\ncover.set_cover_sat\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT.\n\n\n\n\n\n\nStandard linear algebra algorithms.\n\n\n\nlinalg.pca\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\n\n\nlinalg.cmds\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\n\n\n\n\n\n\nAlgorithms for computing information on manifolds.\n\n\n\ngeometry.tangent_bundle\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\n\n\ngeometry.bundle_weights\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle.\n\n\n\n\n\n\nAlgorithms for loading, parsing, and cleaning set cover data sets.\n\n\n\nio.load_set_cover\nLoads an instance of for testing weighted set cover algorithms.\n\n\nio.to_canonical\nConverts a sparse array into a supplied form, gauranteeing canonical format.\n\n\nio.sets_to_sparse\nConverts a collection of sets into a sparse CSC array.\n\n\nio.sparse_to_sets\nConverts a collection of sets into a sparse CSC array.\n\n\nio.reindex_sparse\nReindexes the indices of a given sparse array to the base index set."
+    "text": "Functions to find minimum weight set covers.\n\n\n\ncover.coverage\nReturns the amount covered by each subset in the set of cover indices provided.\n\n\ncover.valid_cover\nDetermines whether given sets form a feasible cover over the universe.\n\n\ncover.set_cover_greedy\nApproximates the weighted set cover problem via greedy steps.\n\n\ncover.set_cover_rr\nApproximates the weighted set cover problem via randomized rounding.\n\n\ncover.set_cover_ilp\nApproximates the weighted set cover problem via integer linear programming.\n\n\ncover.set_cover_sat\nComputes an approximate solution to the weighted set cover problem via weighted MaxSAT.\n\n\n\n\n\n\nStandard linear algebra algorithms.\n\n\n\nlinalg.pca\nProjects X onto a d-dimensional linear subspace via Principal Component Analysis.\n\n\nlinalg.cmds\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\n\n\n\n\n\n\nAlgorithms for computing information on manifolds.\n\n\n\ngeometry.tangent_bundle\nEstimates the tangent bundle of ‘M’ via local PCA on neighborhoods in X.\n\n\ngeometry.bundle_weights\nComputes a geometrically informative statistic on each tangent space estimate of a tangent bundle.\n\n\n\n\n\n\nAlgorithms for loading, parsing, and cleaning set cover data sets.\n\n\n\nio.load_set_cover\nLoads an instance of for testing weighted set cover algorithms.\n\n\nio.to_canonical\nConverts a sparse array into a supplied form, gauranteeing canonical format.\n\n\nio.sets_to_sparse\nConverts a collection of sets into a sparse array.\n\n\nio.sparse_to_sets\nConverts a collection of sets into a sparse CSC array.\n\n\nio.reindex_sparse\nReindexes the indices of a given sparse array to the base index set."
   },
   {
     "objectID": "reference.html#set-cover-cover",
@@ -151,14 +151,14 @@
     "href": "reference.html#io-io",
     "title": "API Reference",
     "section": "",
-    "text": "Algorithms for loading, parsing, and cleaning set cover data sets.\n\n\n\nio.load_set_cover\nLoads an instance of for testing weighted set cover algorithms.\n\n\nio.to_canonical\nConverts a sparse array into a supplied form, gauranteeing canonical format.\n\n\nio.sets_to_sparse\nConverts a collection of sets into a sparse CSC array.\n\n\nio.sparse_to_sets\nConverts a collection of sets into a sparse CSC array.\n\n\nio.reindex_sparse\nReindexes the indices of a given sparse array to the base index set."
+    "text": "Algorithms for loading, parsing, and cleaning set cover data sets.\n\n\n\nio.load_set_cover\nLoads an instance of for testing weighted set cover algorithms.\n\n\nio.to_canonical\nConverts a sparse array into a supplied form, gauranteeing canonical format.\n\n\nio.sets_to_sparse\nConverts a collection of sets into a sparse array.\n\n\nio.sparse_to_sets\nConverts a collection of sets into a sparse CSC array.\n\n\nio.reindex_sparse\nReindexes the indices of a given sparse array to the base index set."
   },
   {
     "objectID": "cover.set_cover_greedy.html",
     "href": "cover.set_cover_greedy.html",
     "title": "cover.set_cover_greedy",
     "section": "",
-    "text": "cover.set_cover_greedy(subsets, weights=None)\nApproximates the weighted set cover problem via greedy steps.\nThis function iteratively constructs a set cover by choosing the set that covers the largest number of yet uncovered elements. This greedy strategy is known to multiplicative \\(\\log(d + 1)\\)-approximation to the weighted set cover problem.\nRelative to other algorithms, the greedy strategy tends to be the most computationally efficient, though certain types of inputs can lead to arbitrarily bad covers.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
+    "text": "cover.set_cover_greedy(subsets, weights=None)\nApproximates the weighted set cover problem via greedy steps.\nThis function iteratively constructs a set cover by choosing the set that covers the largest number of yet uncovered elements with the least weight.\nThe greedy strategy is a very fast SC algorithm, though counter-examples have demonstrated the method can produce poor covers on certain pathological inputs. It has been shown that the algorithm has a worst-case multiplicative \\(\\log(n + 1)\\)-approximation factor [1].\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.\n\n\n\n\n\n\nThe algorithm implemented here uses the ‘dual-fitting’ variant discussed in 5.3 of [2] below, which\ncan be used used to generate a feasible solution to dual LP.\n\n\n\n\nFeige, Uriel. “A threshold of ln n for approximating set cover.” Journal of the ACM (JACM) 45.4 (1998): 634-652.\nCS 583 notes by Chandra Chekuri",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -194,7 +194,7 @@
     "href": "cover.set_cover_ilp.html",
     "title": "cover.set_cover_ilp",
     "section": "",
-    "text": "cover.set_cover_ilp(subsets, weights=None, solver='highs')\nApproximates the weighted set cover problem via integer linear programming.\nThis function attempts to directly solve weighted set cover problem by reducing it to the following mixed-integer linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j \\cdot w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in {0, 1}, \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in \\{0, 1\\}\\) is a indicator of set membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The algorithm is deterministic, and it typically finds the global optimum of moderately challenging mixed-integer linear programs (when it exists).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.\n\n\n\n\n\n\n\nMixed-integer program",
+    "text": "cover.set_cover_ilp(subsets, weights=None, solver='highs')\nApproximates the weighted set cover problem via integer linear programming.\nThis function attempts to directly solve weighted set cover problem by reducing it to the following mixed-integer linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j \\cdot w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in \\{0, 1\\}, \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in \\{0, 1\\}\\) is a indicator of set membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The algorithm is deterministic, and it typically finds the global optimum of moderately challenging mixed-integer linear programs (when it exists).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nsolver\nstr\nwhich MILP solver to use. Defaults to the HiGHS solver in SciPy.\n'highs'\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.\n\n\n\n\n\n\n\nMixed-integer program",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -242,7 +242,7 @@
     "href": "io.sets_to_sparse.html",
     "title": "io.sets_to_sparse",
     "section": "",
-    "text": "io.sets_to_sparse(S, reindex=False)\nConverts a collection of sets into a sparse CSC array.\nThis function converts a Collection of integer-valued sequences into a sparse matrix, where each column represents a set and each row represents an element. Optionally, if the sets themselves do not represent 0-based indices, you can set reindex=True to map the elements to the base index set \\([n] = {0, 1, ..., n - 1}\\).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nS\nCollection\nCollection of indices representing subsets.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ncsc_array\nsparse boolean CSC array in canonical form.",
+    "text": "io.sets_to_sparse(S, reindex=False, form='csc')\nConverts a collection of sets into a sparse array.\nThis function converts a Collection of integer-valued sequences into a sparse matrix, where each column represents a set and each row represents an element. Optionally, if the sets themselves do not represent 0-based indices, you can set reindex=True to map the elements to the base index set \\([n] = {0, 1, ..., n - 1}\\).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nS\nCollection\nCollection of indices representing subsets.\nrequired\n\n\nreindex\nbool\nwhether to reindex the sets to the base index set. Default to False.\nFalse\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ncsc_array\nsparse boolean array in canonical form.",
     "crumbs": [
       "Package overview",
       "I/O (`io`)",
@@ -266,7 +266,7 @@
     "href": "io.sets_to_sparse.html#returns",
     "title": "io.sets_to_sparse",
     "section": "",
-    "text": "Type\nDescription\n\n\n\n\ncsc_array\nsparse boolean CSC array in canonical form.",
+    "text": "Type\nDescription\n\n\n\n\ncsc_array\nsparse boolean array in canonical form.",
     "crumbs": [
       "Package overview",
       "I/O (`io`)",
@@ -290,7 +290,7 @@
     "href": "io.to_canonical.html",
     "title": "io.to_canonical",
     "section": "",
-    "text": "io.to_canonical\nio.to_canonical(A, form='csc', copy=False)\nConverts a sparse array into a supplied form, gauranteeing canonical format.",
+    "text": "io.to_canonical(A, form='csc', copy=False)\nConverts a sparse array into a supplied form, gauranteeing canonical format.\nThis function converts a given SciPy sparse array into a canonical form respecting has_canonical_format. Here, a sparse array A is said to be in canonical form if all of the properties below hold (where relevent): 1. Indices are sorted in non-descending order, where eligible. 2. Zero entries are removed. 3. Duplicate entries are merged (via summation). 4. Padding between strides is pruned. If A is in canonical format to begin with, it is returned unmodified. Otherwise, A is modified in-place and its reference is returned, unless copy=False.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nA\nsparray\nsparse array.\nrequired\n\n\nform\nstr\ntarget form to convert A, such as “csc”, “csr”, “coo”, etc.\n'csc'\n\n\ncopy\nbool\nwhether to return a copy of array. By default, A is modified by reference.\nFalse\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nsparray\nsparse array in canonical form.",
     "crumbs": [
       "Package overview",
       "I/O (`io`)",
@@ -326,7 +326,7 @@
     "href": "cover.set_cover_rr.html",
     "title": "cover.set_cover_rr",
     "section": "",
-    "text": "cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)\nApproximates the weighted set cover problem via randomized rounding.\nThis function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.\nThe minimum-cost fractional cover is obtained by solving the following linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j \\cdot w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in [0, 1], \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in [0, 1]\\) is a real number indicating the strength of the membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The randomized rounding procedure iteratively adds sets \\(S_j\\) with probability \\(c \\cdot s_j\\) until a feasible cover is found.\nIf not supplied, maxiter defaults to \\((2 / c) \\log(n)\\) where \\(c\\) is given by the sparsity argument. Supplying sparsity values lower than 1 allows choosing fewer subsets per iteration, which can result in sparser or lower weight covers at the cost of more iterations.",
+    "text": "cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)\nApproximates the weighted set cover problem via randomized rounding.\nThis function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.\nThe minimum-cost fractional cover is obtained by solving the following linear program:\n\\[\\begin{align*}\\text{minimize} \\quad & \\sum\\limits_{j \\in C} s_j \\cdot w_j  \\\\\n\\text{s.t.} \\quad & \\sum\\limits_{j \\in N_i}  s_j  \\geq 1, \\quad \\forall \\, i \\in [n] \\\\\n& s_j \\in [0, 1], \\quad \\forall \\, j \\in [J]\\end{align*}\\]\nwhere \\(s_j \\in [0, 1]\\) is a real number indicating the strength of the membership \\(S_j \\in \\mathcal{S}\\) and \\(N_i\\) represents the subsets of \\(S\\) that the element \\(x_i\\) intersects. The randomized rounding procedure iteratively adds sets \\(S_j\\) with probability \\(c \\cdot s_j\\) until a feasible cover is found.\nIf not supplied, maxiter defaults to \\((2 / c) \\log(n)\\) where \\(c\\) is given by the sparsity argument. Supplying sparsity values lower than 1 allows choosing fewer subsets per iteration, which can result in sparser or lower weight covers at the cost of more iterations.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nmaxiter\nint\nnumber of iterations to repeat the sampling process. See details.\n'default'\n\n\nsparsity\nfloat\nconstant used to emphasize sparsity between (0, 1]. See details.\n1.0\n\n\nseed\nOptional[int]\nseed for the random number generator. Use an integer for deterministic computation.\nNone\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.\n\n\n\n\n\n\n\nSparse arrays\nreference\n\n\n\n\nThis function requires subsets to be a sparse matrix in canonical CSC form. If subsets is not in this form, a copy of the subsets is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.\n\n\n\n\nfrom geomcover.cover import set_cover_rr\nfrom geomcover.io import load_set_cover\n\nsubsets, weights = load_set_cover(\"mushroom\")\nsoln, cost = set_cover_rr(subsets, weights)\nn, J = subsets.shape\n\nprint(\"Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.\")\n\nSet family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -337,8 +337,8 @@
     "objectID": "cover.set_cover_rr.html#parameters",
     "href": "cover.set_cover_rr.html#parameters",
     "title": "cover.set_cover_rr",
-    "section": "Parameters",
-    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nmaxiter\nint\nnumber of iterations to repeat the sampling process. See details.\n'default'\n\n\nsparsity\nfloat\nconstant used to emphasize sparsity between (0, 1]. See details.\n1.0\n\n\nseed\nOptional[int]\nseed for the random number generator. Use an integer for deterministic computation.\nNone",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nsubsets\nsparray\n(n x J) sparse matrix of J subsets whose union forms a cover over n points.\nrequired\n\n\nweights\nOptional[ArrayLike]\n(J)-length array of subset weights.\nNone\n\n\nmaxiter\nint\nnumber of iterations to repeat the sampling process. See details.\n'default'\n\n\nsparsity\nfloat\nconstant used to emphasize sparsity between (0, 1]. See details.\n1.0\n\n\nseed\nOptional[int]\nseed for the random number generator. Use an integer for deterministic computation.\nNone",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -349,8 +349,8 @@
     "objectID": "cover.set_cover_rr.html#returns",
     "href": "cover.set_cover_rr.html#returns",
     "title": "cover.set_cover_rr",
-    "section": "Returns",
-    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\ntuple\npair (s, c) where s is an array indicating cover membership and c its cost.",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -361,8 +361,8 @@
     "objectID": "cover.set_cover_rr.html#see-also",
     "href": "cover.set_cover_rr.html#see-also",
     "title": "cover.set_cover_rr",
-    "section": "See Also",
-    "text": "See Also\n\nSparse arrays\nreference",
+    "section": "",
+    "text": "Sparse arrays\nreference",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -373,8 +373,8 @@
     "objectID": "cover.set_cover_rr.html#notes",
     "href": "cover.set_cover_rr.html#notes",
     "title": "cover.set_cover_rr",
-    "section": "Notes",
-    "text": "Notes\nThis function requires subsets to be a sparse matrix in canonical CSC form. If subsets is not in this form, a copy of the subsets is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.",
+    "section": "",
+    "text": "This function requires subsets to be a sparse matrix in canonical CSC form. If subsets is not in this form, a copy of the subsets is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -385,8 +385,8 @@
     "objectID": "cover.set_cover_rr.html#examples",
     "href": "cover.set_cover_rr.html#examples",
     "title": "cover.set_cover_rr",
-    "section": "Examples",
-    "text": "Examples\n\nfrom geomcover.cover import set_cover_rr\nfrom geomcover.io import load_set_cover\n\nsubsets, weights = load_set_cover(\"mushroom\")\nsoln, cost = set_cover_rr(subsets, weights)\nn, J = subsets.shape\n\nprint(\"Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.\")\n\nSet family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.",
+    "section": "",
+    "text": "from geomcover.cover import set_cover_rr\nfrom geomcover.io import load_set_cover\n\nsubsets, weights = load_set_cover(\"mushroom\")\nsoln, cost = set_cover_rr(subsets, weights)\nn, J = subsets.shape\n\nprint(\"Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.\")\n\nSet family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.",
     "crumbs": [
       "Package overview",
       "Set Cover (`cover`)",
@@ -482,7 +482,7 @@
     "href": "linalg.cmds.html",
     "title": "linalg.cmds",
     "section": "",
-    "text": "linalg.cmds(D, d=2, coords=True)\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\nCMDS is a coordinatization algorithm that generates d-dimensional coordinates from a Euclidean distance matrix D. Algorithmically, D is converted into a Gram matrix G, whose eigen decomposition is used to produce coordinates minimizing a notion of ‘strain’.",
+    "text": "linalg.cmds(D, d=2, coords=True)\nProjects G onto a d-dimensional linear subspace via Classical Multi-Dimensional Scaling.\nCMDS is a coordinatization algorithm that generates d-dimensional coordinates from a Euclidean distance matrix D. Algorithmically, D is converted into a Gram matrix G, whose eigen decomposition is used to produce coordinates minimizing a notion of ‘strain’.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nD\nArrayLike\nSquared Euclidean distance matrix, or set of (squared) pairwise distances.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncoords\nbool\nwhether to return the embedding (default = True), or just return the eigenvectors\nTrue\n\n\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nnp.ndarray\nif coords = True, the coordinates from the largest d eigenvectors of G’s eigendecomposition. Otherwise, the eigenvalues and eigenvectors are returned. See the Examples section for more details.\n\n\n\n\n\n\nPCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.\n\n\n\n\nCMDS\nEuclidean distance matrix\n\n\n\n\n\nimport numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -493,8 +493,8 @@
     "objectID": "linalg.cmds.html#parameters",
     "href": "linalg.cmds.html#parameters",
     "title": "linalg.cmds",
-    "section": "Parameters",
-    "text": "Parameters\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nD\nArrayLike\nSquared Euclidean distance matrix, or set of (squared) pairwise distances.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncoords\nbool\nwhether to return the embedding (default = True), or just return the eigenvectors\nTrue",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nD\nArrayLike\nSquared Euclidean distance matrix, or set of (squared) pairwise distances.\nrequired\n\n\nd\nint\ndimension of the embedding to produce.\n2\n\n\ncoords\nbool\nwhether to return the embedding (default = True), or just return the eigenvectors\nTrue",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -505,8 +505,8 @@
     "objectID": "linalg.cmds.html#returns",
     "href": "linalg.cmds.html#returns",
     "title": "linalg.cmds",
-    "section": "Returns",
-    "text": "Returns\n\n\n\n\n\n\n\nType\nDescription\n\n\n\n\nnp.ndarray\nif coords = True, the coordinates from the largest d eigenvectors of G’s eigendecomposition. Otherwise, the eigenvalues and eigenvectors are returned. See the Examples section for more details.",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\nnp.ndarray\nif coords = True, the coordinates from the largest d eigenvectors of G’s eigendecomposition. Otherwise, the eigenvalues and eigenvectors are returned. See the Examples section for more details.",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -517,8 +517,8 @@
     "objectID": "linalg.cmds.html#notes",
     "href": "linalg.cmds.html#notes",
     "title": "linalg.cmds",
-    "section": "Notes",
-    "text": "Notes\nPCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.",
+    "section": "",
+    "text": "PCA is dual to CMDS in the sense that the embedding produced by CMDS on the Euclidean distance matrix from X satisfies the same reconstruction loss as with PCA. In particular, when X comes from Euclidean space, the output of pca(…) will match the output of cmds(…) exactly up to rotation and translation.",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -529,8 +529,8 @@
     "objectID": "linalg.cmds.html#see-also",
     "href": "linalg.cmds.html#see-also",
     "title": "linalg.cmds",
-    "section": "See Also",
-    "text": "See Also\n\nCMDS\nEuclidean distance matrix",
+    "section": "",
+    "text": "CMDS\nEuclidean distance matrix",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -541,8 +541,8 @@
     "objectID": "linalg.cmds.html#examples",
     "href": "linalg.cmds.html#examples",
     "title": "linalg.cmds",
-    "section": "Examples",
-    "text": "Examples\n\nimport numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
+    "section": "",
+    "text": "import numpy as np \nfrom geomcover.linalg import pca, cmds\n\n## Start with a random set of points in R^3 + its distance matrix\nX = np.random.uniform(size=(50,3))\nD = np.linalg.norm(X - X[:,np.newaxis], axis=2)\n\n## Note that CMDS takes as input *squared* distances\nY_pca = pca(X, d=2)\nY_mds = cmds(D**2, d=2)\n\n## Get distance matrices for both embeddings\nY_pca_D = np.linalg.norm(Y_pca - Y_pca[:,np.newaxis], axis=2)\nY_mds_D = np.linalg.norm(Y_mds - Y_mds[:,np.newaxis], axis=2)\n\n## Up to rotation and translation, the coordinates are identical\nall_close = np.allclose(Y_pca_D, Y_mds_D)\nprint(f\"PCA and MDS coord. distances identical? {all_close}\")\n\nPCA and MDS coord. distances identical? True",
     "crumbs": [
       "Package overview",
       "Linear Algebra (`linalg`)",
@@ -583,6 +583,54 @@
       "Package overview",
       "Set Cover (`cover`)",
       "cover.valid_cover"
+    ]
+  },
+  {
+    "objectID": "io.to_canonical.html#parameters",
+    "href": "io.to_canonical.html#parameters",
+    "title": "io.to_canonical",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nA\nsparray\nsparse array.\nrequired\n\n\nform\nstr\ntarget form to convert A, such as “csc”, “csr”, “coo”, etc.\n'csc'\n\n\ncopy\nbool\nwhether to return a copy of array. By default, A is modified by reference.\nFalse",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.to_canonical"
+    ]
+  },
+  {
+    "objectID": "io.to_canonical.html#returns",
+    "href": "io.to_canonical.html#returns",
+    "title": "io.to_canonical",
+    "section": "",
+    "text": "Type\nDescription\n\n\n\n\nsparray\nsparse array in canonical form.",
+    "crumbs": [
+      "Package overview",
+      "I/O (`io`)",
+      "io.to_canonical"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_greedy.html#notes",
+    "href": "cover.set_cover_greedy.html#notes",
+    "title": "cover.set_cover_greedy",
+    "section": "",
+    "text": "The algorithm implemented here uses the ‘dual-fitting’ variant discussed in 5.3 of [2] below, which\ncan be used used to generate a feasible solution to dual LP.",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_greedy"
+    ]
+  },
+  {
+    "objectID": "cover.set_cover_greedy.html#references",
+    "href": "cover.set_cover_greedy.html#references",
+    "title": "cover.set_cover_greedy",
+    "section": "",
+    "text": "Feige, Uriel. “A threshold of ln n for approximating set cover.” Journal of the ACM (JACM) 45.4 (1998): 634-652.\nCS 583 notes by Chandra Chekuri",
+    "crumbs": [
+      "Package overview",
+      "Set Cover (`cover`)",
+      "cover.set_cover_greedy"
     ]
   }
 ]

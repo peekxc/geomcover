@@ -319,6 +319,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="geomcover.linalg.cmds" class="level1">
+<h1>linalg.cmds</h1>
 <p><code>linalg.cmds(D, d=2, coords=True)</code></p>
 <p>Projects <code>G</code> onto a <code>d</code>-dimensional linear subspace via Classical Multi-Dimensional Scaling.</p>
 <p>CMDS is a coordinatization algorithm that generates <code>d</code>-dimensional coordinates from a Euclidean distance matrix <code>D</code>. Algorithmically, <code>D</code> is converted into a Gram matrix <code>G</code>, whose eigen decomposition is used to produce coordinates minimizing a notion of ‘strain’.</p>
@@ -395,7 +397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="2178d0cb" class="cell" data-execution_count="1">
+<div id="7cf6394f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.linalg <span class="im">import</span> pca, cmds</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -420,6 +422,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -1,3 +1,7 @@
+---
+title: cover.set_cover_rr
+bread-crumbs: true
+---
 # cover.set_cover_rr { #geomcover.cover.set_cover_rr }
 
 `cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)`

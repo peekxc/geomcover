@@ -12,7 +12,25 @@ from scipy.sparse import coo_array, csc_array, issparse, sparray
 
 
 def to_canonical(A: sparray, form: str = "csc", copy: bool = False) -> sparray:
-	"""Converts a sparse array into a supplied form, gauranteeing canonical format."""
+	"""Converts a sparse array into a supplied form, gauranteeing canonical format.
+	
+	This function converts a given SciPy sparse array into a canonical form respecting [has_canonical_format]().
+	Here, a sparse array `A` is said to be in *canonical form* if all of the properties below hold (where relevent):
+		1. Indices are sorted in non-descending order, where eligible.
+		2. Zero entries are removed.
+		3. Duplicate entries are merged (via summation).
+		4. Padding between strides is pruned. 
+	If `A` is in canonical format to begin with, it is returned unmodified. Otherwise, `A` is modified in-place 
+	and its reference is returned, unless `copy=False`.  
+
+	Parameters:
+		A: sparse array.
+		form: target form to convert `A`, such as "csc", "csr", "coo", etc.
+		copy: whether to return a copy of array. By default, `A` is modified by reference. 
+
+	Returns:
+		sparse array in canonical form. 
+	"""
 	assert isinstance(form, str) and form.lower() in {'csc', 'csr', 'lil', 'dok', 'coo'}, f"Invalid form '{form}'; must be a format supported by SciPy."  # fmt: skip
 	A = getattr(A, "to" + form)()
 	if hasattr(A, "has_sorted_indices"):
@@ -25,8 +43,8 @@ def to_canonical(A: sparray, form: str = "csc", copy: bool = False) -> sparray:
 	return A.copy() if copy else A
 
 
-def sets_to_sparse(S: Collection, reindex: bool = False) -> csc_array:
-	r"""Converts a collection of sets into a sparse CSC array.
+def sets_to_sparse(S: Collection, reindex: bool = False, form: str = "csc") -> csc_array:
+	r"""Converts a collection of sets into a sparse array.
 
 	This function converts a `Collection` of integer-valued sequences into a sparse matrix, where
 	each column represents a set and each row represents an element. Optionally, if
@@ -38,7 +56,7 @@ def sets_to_sparse(S: Collection, reindex: bool = False) -> csc_array:
 		reindex: whether to reindex the sets to the base index set. Default to False.
 
 	Returns:
-		sparse boolean CSC array in canonical form.
+		sparse boolean array in canonical form.
 	"""
 	indptr = np.zeros(len(S) + 1, dtype=np.int64)
 	indptr[1:] = [len(s) for s in S]
@@ -58,7 +76,7 @@ def sets_to_sparse(S: Collection, reindex: bool = False) -> csc_array:
 	else:
 		n = np.max(indices) + 1
 	A = csc_array((data, indices, indptr), shape=(n, np.size(indptr) - 1), dtype=bool)
-	A = to_canonical(A, "csc", copy=False)
+	A = to_canonical(A, form, copy=False)
 	return A
 
 
@@ -120,28 +138,14 @@ OR_TEST_FILES = [
 CAMERA_STADIUM = np.array([1,0,0,1,0,0,1,1,0,0,1,1,0,0,1,1,1,0,0,0,1,0,0,0,1,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,0,1,0,0])
 
 ## From: https://www.gcardone.net/2019-08-31-visa-free-travel/
-# TOYSET1 = [
-# 	[0,1,4,5,8,9],
-# 	[5,6,9,10],
-# 	[8,9,10,11],
-# 	[2,4,5,6,7],
-# 	[3,7],
-# 	[0,1,2,3]
-# ]
-TOYSET1 = np.array([
-	[1, 0, 0, 0, 0, 1],
-	[1, 0, 0, 0, 0, 1],
-	[0, 0, 0, 0, 1, 1],
-	[0, 0, 0, 1, 0, 1],
-	[1, 0, 0, 0, 1, 0],
-	[1, 1, 0, 0, 1, 0],
-	[0, 1, 0, 0, 1, 0],
-	[0, 0, 0, 1, 1, 0],
-	[1, 0, 1, 0, 0, 0],
-	[1, 1, 1, 0, 0, 0],
-	[0, 1, 1, 0, 0, 0],
-	[0, 0, 1, 0, 0, 0]]
-)
+TOYSET1 = [
+	[0,1,4,5,8,9],
+	[5,6,9,10],
+	[8,9,10,11],
+	[2,4,5,6,7],
+	[3,7],
+	[0,1,2,3]
+]
 
 # fmt: on
 
@@ -165,7 +169,7 @@ def load_set_cover(test_set: str) -> tuple:
 		A = csc_array(CAMERA_STADIUM.reshape((15, 8)))
 		set_weights = np.ones(A.shape[1])
 	elif test_set.lower() == "toy1":
-		A = csc_array(TOYSET1)
+		A = sets_to_sparse(TOYSET1, reindex=True)
 		set_weights = np.ones(A.shape[1])
 	elif test_set.lower() == "mushroom":
 		with resources.path("geomcover.data", "mushroom.dat") as fn:

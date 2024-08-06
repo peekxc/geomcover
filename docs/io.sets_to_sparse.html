@@ -295,13 +295,29 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./io.load_set_cover.html">I/O (<code>io</code>)</a></li><li class="breadcrumb-item"><a href="./io.sets_to_sparse.html">io.sets_to_sparse</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">io.sets_to_sparse</h1>
+</div>
 
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
 
 
 <section id="geomcover.io.sets_to_sparse" class="level1">
 <h1>io.sets_to_sparse</h1>
-<p><code>io.sets_to_sparse(S, reindex=False)</code></p>
-<p>Converts a collection of sets into a sparse CSC array.</p>
+<p><code>io.sets_to_sparse(S, reindex=False, form='csc')</code></p>
+<p>Converts a collection of sets into a sparse array.</p>
 <p>This function converts a <code>Collection</code> of integer-valued sequences into a sparse matrix, where each column represents a set and each row represents an element. Optionally, if the sets themselves do not represent 0-based indices, you can set <code>reindex=True</code> to map the elements to the base index set <span class="math inline">\([n] = {0, 1, ..., n - 1}\)</span>.</p>
 <section id="parameters" class="level2">
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
@@ -348,7 +364,7 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>csc_array</td>
-<td>sparse boolean CSC array in canonical form.</td>
+<td>sparse boolean array in canonical form.</td>
 </tr>
 </tbody>
 </table>

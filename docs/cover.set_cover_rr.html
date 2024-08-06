@@ -348,6 +348,8 @@ window.Quarto = {
 </header>
 
 
+<section id="geomcover.cover.set_cover_rr" class="level1">
+<h1>cover.set_cover_rr</h1>
 <p><code>cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)</code></p>
 <p>Approximates the weighted set cover problem via <em>randomized rounding</em>.</p>
 <p>This function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.</p>
@@ -442,7 +444,7 @@ window.Quarto = {
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="3c181357" class="cell" data-execution_count="1">
+<div id="1ae21003" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.cover <span class="im">import</span> set_cover_rr</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.io <span class="im">import</span> load_set_cover</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -457,6 +459,7 @@ window.Quarto = {
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

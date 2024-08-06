@@ -10,13 +10,13 @@ import numpy as np
 from scipy.sparse import csc_array
 
 from geomcover import load_set_cover
-from geomcover import set_cover_ILP, set_cover_RR, set_cover_greedy, set_cover_sat
+from geomcover import set_cover_ilp, set_cover_rr, set_cover_greedy, set_cover_sat
 from geomcover.cover import valid_cover, coverage, to_canonical
-from geomcover.loaders import OR_TEST_FILES
+from geomcover.io import OR_TEST_FILES
 
 benchmarks = {}
 for test_file in OR_TEST_FILES:
-  A, weights = load_set_cover_instance(test_file)
+  A, weights = load_set_cover(test_file)
   benchmarks[test_file] = {
     'greedy' : wset_cover_greedy(A, weights),
     'RR' : wset_cover_RR(A, weights),
@@ -26,6 +26,8 @@ for test_file in OR_TEST_FILES:
   print(test_file)
 
 
+A, weights = load_set_cover(test_file)
+
 import timeit
 timeit.timeit(lambda: wset_cover_greedy(A, weights), number=150)
 # timeit.timeit(lambda: wset_cover_greedy2(A, weights), number=150)
@@ -33,7 +35,7 @@ timeit.timeit(lambda: wset_cover_greedy(A, weights), number=150)
 assert valid_cover(A, np.flatnonzero(soln))
 
 ## accidents = benchmark at 4-45 seconds, solution from 181-245
-freq_item_sets = ["mushroom.dat"]
+freq_item_sets = ["mushroom.dat", "accidents.dat"]
 with open("/Users/mpiekenbrock/geomcover/notebooks/accidents.dat", 'r') as f:
   x = list(f.readlines())
 
@@ -48,10 +50,10 @@ subsets = csc_array((np.ones(len(row_ind)), (row_ind, col_ind)), shape=(np.max(r
 subsets = to_canonical(subsets, "csc")
 
 weights = np.ones(subsets.shape[1])
-soln, cost = wset_cover_greedy(subsets, weights)  # 3.2s, 181 cost
-soln, cost = wset_cover_RR(subsets, weights)      # 10s, 158 cost
-soln, cost = wset_cover_ILP(subsets, weights)     # 13.5s, 158 cost
-soln, cost = wset_cover_sat(subsets, weights)     # 80.7s, 158 cost
+soln, cost = set_cover_greedy(subsets, weights)  # 3.2s, 181 cost
+soln, cost = set_cover_rr(subsets, weights)      # 10s, 158 cost
+soln, cost = set_cover_ilp(subsets, weights)     # 13.5s, 158 cost
+soln, cost = set_cover_sat(subsets, weights)     # 80.7s, 158 cost
 
 np.min(coverage(subsets))
 

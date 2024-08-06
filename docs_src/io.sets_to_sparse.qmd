@@ -1,8 +1,12 @@
+---
+title: io.sets_to_sparse
+bread-crumbs: true
+---
 # io.sets_to_sparse { #geomcover.io.sets_to_sparse }
 
-`io.sets_to_sparse(S, reindex=False)`
+`io.sets_to_sparse(S, reindex=False, form='csc')`
 
-Converts a collection of sets into a sparse CSC array.
+Converts a collection of sets into a sparse array.
 
 This function converts a `Collection` of integer-valued sequences into a sparse matrix, where
 each column represents a set and each row represents an element. Optionally, if
@@ -18,6 +22,6 @@ to map the elements to the base index set $[n] = {0, 1, ..., n - 1}$.
 
 ## Returns
 
-| Type      | Description                                 |
-|-----------|---------------------------------------------|
-| csc_array | sparse boolean CSC array in canonical form. |
+| Type      | Description                             |
+|-----------|-----------------------------------------|
+| csc_array | sparse boolean array in canonical form. |

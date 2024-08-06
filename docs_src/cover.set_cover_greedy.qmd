@@ -1,8 +1,7 @@
 ---
-breadtitle: cover.set_cover_greedy
+title: cover.set_cover_greedy
 bread-crumbs: true
 ---
-
 # cover.set_cover_greedy { #geomcover.cover.set_cover_greedy }
 
 `cover.set_cover_greedy(subsets, weights=None)`
@@ -10,11 +9,11 @@ bread-crumbs: true
 Approximates the weighted set cover problem via _greedy steps_.
 
 This function iteratively constructs a set cover by choosing the set that covers the largest number
-of yet uncovered elements. This greedy strategy is known to multiplicative $\log(d + 1)$-approximation
-to the weighted set cover problem.
+of yet uncovered elements with the least weight.
 
-Relative to other algorithms, the greedy strategy tends to be the most computationally efficient, though
-certain types of inputs can lead to arbitrarily bad covers.
+The greedy strategy is a very fast SC algorithm, though counter-examples have demonstrated the method
+can produce poor covers on certain pathological inputs. It has been shown that the algorithm has a
+worst-case multiplicative $\log(n + 1)$-approximation factor [1].
 
 ## Parameters
 
@@ -28,3 +27,13 @@ certain types of inputs can lead to arbitrarily bad covers.
 | Type   | Description                                                                         |
 |--------|-------------------------------------------------------------------------------------|
 | tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |
+
+## Notes
+
+The algorithm implemented here uses the 'dual-fitting' variant discussed in 5.3 of [2] below, which \
+can be used used to generate a feasible solution to dual LP. 
+
+## References
+
+1. Feige, Uriel. "A threshold of ln n for approximating set cover." Journal of the ACM (JACM) 45.4 (1998): 634-652.
+2. [CS 583 notes by Chandra Chekuri](https://courses.grainger.illinois.edu/cs583/sp2018/Notes/covering.pdf)
