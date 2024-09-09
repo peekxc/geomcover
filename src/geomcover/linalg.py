@@ -1,15 +1,18 @@
 """Provides standard linear algebra algorithms."""
 
-import numpy as np 
+import numpy as np
 from numpy.typing import ArrayLike
 from scipy.spatial.distance import squareform
+from typing import Union
 
-## Classical MDS 
-def cmds(D: ArrayLike, d: int = 2, coords: bool = True) -> np.ndarray:
-	"""Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling.
+
+## Classical MDS
+## See also: https://math.stackexchange.com/questions/3704727/derivative-of-double-centered-euclidean-distance-matrix
+def cmds(D: ArrayLike, d: int = 2, coords: bool = True) -> Union[np.ndarray, tuple]:
+	"""Constructs coordinates from squared distances using Classical Multi-Dimensional Scaling.
 
 	CMDS is a coordinatization algorithm that generates `d`-dimensional coordinates from a Euclidean \
-	distance matrix `D`. Algorithmically, `D` is converted into a Gram matrix `G`, \
+	distance matrix `D`. Algorithmically, `D` is converted into a doubly-centered Gram matrix `G` \
 	whose eigen decomposition is used to produce coordinates minimizing a notion of 'strain'.
 
 	Parameters: 
@@ -51,28 +54,29 @@ def cmds(D: ArrayLike, d: int = 2, coords: bool = True) -> np.ndarray:
 		all_close = np.allclose(Y_pca_D, Y_mds_D)
 		print(f"PCA and MDS coord. distances identical? {all_close}")
 		```
-	""" 
+	"""
 	D = np.asarray(D)
 	D = squareform(D) if D.ndim == 1 else D
 	n = D.shape[0]
 	D_center = D.mean(axis=0)
-	G = -0.50 * (D  - D_center - D_center.reshape((n,1)) + D_center.mean())
+	G = -0.50 * (D - D_center - D_center.reshape((n, 1)) + D_center.mean())
 	evals, evecs = np.linalg.eigh(G)
-	evals, evecs = evals[(n-d):n], evecs[:,(n-d):n]
+	evals, evecs = evals[(n - d) : n], evecs[:, (n - d) : n]
 
-	# Compute the coordinates using positive-eigenvalued components only     
-	if coords:               
+	# Compute the coordinates using positive-eigenvalued components only
+	if coords:
 		w = np.flip(np.maximum(evals, np.repeat(0.0, d)))
 		Y = np.fliplr(evecs) @ np.diag(np.sqrt(w))
-		return(Y)
-	else: 
+		return Y
+	else:
 		w = np.where(evals > 0)[0]
 		ni = np.setdiff1d(np.arange(d), w)
-		evecs[:,ni] = 1.0
+		evecs[:, ni] = 1.0
 		evals[ni] = 0.0
-		return(evals, evecs)
+		return (evals, evecs)
 
-def pca(X: ArrayLike, d: int = 2, center: bool = True, coords: bool = True) -> np.ndarray:
+
+def pca(X: ArrayLike, d: int = 2, center: bool = True, coords: bool = True) -> Union[np.ndarray, tuple]:
 	"""Projects `X` onto a `d`-dimensional linear subspace via Principal Component Analysis.
 
 	PCA is a linear dimensionality reduction algorithm that projects a point set `X` onto a lower dimensional space \
@@ -115,12 +119,12 @@ def pca(X: ArrayLike, d: int = 2, center: bool = True, coords: bool = True) -> n
 		print(f"PCA and MDS coord. distances identical? {all_close}")
 		```
 	"""
-	X = np.atleast_2d(X)
-	if center: 
-		X -= X.mean(axis = 0)
+	X: np.ndarray = np.atleast_2d(X)
+	if center:
+		X -= X.mean(axis=0)
 	evals, evecs = np.linalg.eigh(np.cov(X, rowvar=False))
-	idx = np.argsort(evals)[::-1] # descending order to pick the largest components first 
+	idx = np.argsort(evals)[::-1]  # descending order to pick the largest components first
 	if coords:
-		return(np.dot(X, evecs[:,idx[range(d)]]))
-	else: 
-		return(evals[idx[range(d)]], evecs[:,idx[range(d)]])
+		return np.dot(X, evecs[:, idx[:d]])
+	else:
+		return (evals[idx[:d]], evecs[:, idx[:d]])

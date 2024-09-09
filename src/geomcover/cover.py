@@ -1,5 +1,6 @@
+import array
 import re
-from typing import Any, Callable, Collection, Iterable, Optional
+from typing import Any, Callable, Collection, Union, Iterable, Optional
 
 import numpy as np
 from numpy.typing import ArrayLike
@@ -15,12 +16,14 @@ SC_ALGS = ["rr", "greedy", "ilp", "sat"]
 MIP_solvers = ["highs", "cbc", "glop", "bop", "sat", "scip", "gurobi_mip", "cplex_mip", "xpress_mip", "glpk_mip"]
 
 
-def _validate_inputs(subsets: Any, weights: Optional[ArrayLike] = None):
+def _validate_inputs(
+	subsets: Union[np.ndarray, sparray], weights: Optional[ArrayLike] = None
+) -> "tuple[sparray, np.ndarray]":
 	if isinstance(subsets, Collection):
 		subsets = sets_to_sparse(subsets)
-	subsets = to_canonical(subsets, form="csc")
+	subsets: sparray = to_canonical(subsets, form="csc")
 	assert issparse(subsets), "Cover must be sparse matrix"
-	weights = np.asarray(weights) if weights is not None else np.ones(subsets.shape[1], dtype=np.float64)
+	weights: np.ndarray = np.asarray(weights) if weights is not None else np.ones(subsets.shape[1], dtype=np.float64)
 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
 	assert np.all(weights >= 0), "Set weights must be non-negative."
 	return subsets, weights
@@ -36,10 +39,8 @@ def coverage(subsets: sparray, ind: Optional[np.ndarray] = None) -> np.ndarray:
 		ind = np.flatnonzero(ind) if (len(ind) == subsets.shape[1] and ind.dtype == bool) else ind
 	if "coo" in class_name:
 		covered = np.zeros(subsets.shape[0], dtype=np.int64)
-		if ind is None:
-			np.add.at(covered, subsets.row, 1)
-		else:
-			np.add.at(covered, subsets.row[np.isin(subsets.col, ind)], 1)
+		mask = Ellipsis if ind is None else np.isin(subsets.col, ind)
+		np.add.at(covered, subsets.row[mask], 1)
 	elif "lil" in class_name:
 		covered = subsets.sum(axis=1) if ind is None else subsets[:, ind].sum(axis=1)  # equiv, 5.9s
 	else:
@@ -64,44 +65,44 @@ def valid_cover(subsets: sparray, ind: Optional[np.ndarray] = None) -> bool:
 
 # Adapted from: http://www.martinbroadhurst.com/greedy-set-cover-in-python.html
 # Also see: https://courses.engr.illinois.edu/cs598csc/sp2011/Lectures/lecture_4.pdf
-# S* = argmin_{I \subseteq [m]} \sum_{i \in I} W[i]
-# 		 s.t. union(S_1, ..., S_k) covers [n]
-# def wset_cover_greedy(subsets: csc_matrix, weights: ArrayLike, ):
-# 	"""
-# 	Computes a set of indices I whose subsets S[I] = { S_1, S_2, ..., S_k }
-# 	yield an approximation to the minimal weighted set cover, i.e.
+def _set_cover_greedy(subsets: Collection, weights: Optional[ArrayLike] = None):
+	"""Approximates the weighted set cover problem via _greedy steps_.
 
-# 	Parameters:
-# 		S: An (n x m) sparse matrix whose non-zero elements indicate subset membership (one subset per column)
-# 		W: Weights for each subset
+	This function iteratively constructs a set cover by choosing the set that covers the largest number
+	of yet uncovered elements with the least weight.
 
-# 	Returns:
-# 		(s, c) := tuple where s is a boolean vector indicating which subsets are included in the optimal solution
-# 		and c is the minimized cost of that solution.
-# 	"""
-# 	assert issparse(subsets), "cover must be sparse matrix"
-# 	assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
-# 	subsets = to_canonical(subsets, "csc", copy=True)
+	Parameters:
+		S: A collection of sets, represented as integer subsets
+		W: non-negative weights for each subset
 
-# 	S, W = subsets, weights
-# 	n, J = S.shape
-# 	elements, sets, point_cover, set_cover = set(range(n)), set(range(J)), set(), array('I')
-# 	slice_col = lambda j: S.indices[S.indptr[j]:S.indptr[j+1]] # provides efficient column slicing
+	Returns:
+		pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost.
+	"""
+	# assert issparse(subsets), "cover must be sparse matrix"
+	# assert len(weights) == subsets.shape[1], "Number of weights must match number of subsets"
+	# subsets = to_canonical(subsets, "csc", copy=True)
+	weights = np.ones(len(subsets)) if weights is None else weights
+	assert len(subsets) == len(weights), "Number of weights must match number of subsets"
 
-# 	## Make infinite costs finite, but very large
-# 	if np.any(W == np.inf):
-# 		W[W == np.inf] = 1.0/np.finfo(float).resolution
+	n, J = subsets.shape
+	elements, cand_sets = set(range(n)), set(range(J))
+	point_cover, set_cover = set(), set()  # array("I")
 
-# 	## Greedily add the subsets with the most uncovered points
-# 	while point_cover != elements:
-# 		#I = min(sets, key=lambda j: W[j]/len(set(slice_col(j)) - point_cover) ) # adding RHS new elements to cover incurs weighted cost of w/|RHS|
-# 		I = min(sets, key=lambda j: np.inf if (p := len(set(slice_col(j)) - point_cover)) == 0.0 else W[j]/p)
-# 		set_cover.append(I)
-# 		point_cover |= set(slice_col(I))
-# 		sets -= set(set_cover)
-# 	assignment = np.zeros(J, dtype=bool)
-# 	assignment[set_cover] = True
-# 	return (assignment, np.sum(weights[assignment])) if not info else set_cover
+	## Make infinite costs finite, but very large
+	weights = np.minimum(weights, 1.0 / np.finfo(float).resolution)
+
+	## Map the sequences to sets
+	subsets = list(map(subsets, set))
+
+	## Greedily add the subsets with the most uncovered points
+	while point_cover != elements:
+		i = min(cand_sets, key=lambda j: np.inf if (p := len(subsets[j] - point_cover)) == 0.0 else weights[j] / p)
+		set_cover.add(i)
+		point_cover |= subsets[i]
+		cand_sets -= set_cover
+	assignment = np.zeros(J, dtype=bool)
+	assignment[set_cover] = True
+	return assignment, np.sum(weights[assignment])
 
 
 def _grasp_heuristic(heuristic: str, seed: int | None = None) -> Callable[[ArrayLike], int]:
@@ -139,7 +140,7 @@ def _grasp_heuristic(heuristic: str, seed: int | None = None) -> Callable[[Array
 	# 	raise ValueError(f"Invalid heuristic '{heuristic}' supplied; must be one of ['greedy', 'topk', 'topk%'] where k >= 1.")
 
 
-def _maxsat_wcnf(subsets: csc_matrix, weights: ArrayLike):
+def _maxsat_wcnf(subsets: csc_matrix, weights: np.ndarray):
 	"""Generates a WMAX-SAT CNF formula from a weighted cover."""
 	# assert isinstance(subsets, csc_matrix) or isinstance(subsets, csc_array), "Subset membership must be given as sparse (n x J) CSC array."
 	subsets = to_canonical(subsets, "csc", copy=False)
@@ -164,22 +165,13 @@ def _maxsat_wcnf(subsets: csc_matrix, weights: ArrayLike):
 	return WCNF(from_string=wcnf.to_dimacs())
 
 
-# for j in range(subsets.shape[1]):
-# 	wcnf.append(list(np.flatnonzero(subsets[:,j].A)+1), weight=None)
-# for subset in np.split(subsets.indices, subsets.indptr)[1:-1]:
-# 	wcnf.append(list(subset+1), weight=None)
-# for j, w in enumerate(weights):
-# 	wcnf.append([-int(j+1)], weight=w)
-## The types are not inferred from direct inputs, so have to write to file to get correct parsing
-# tmp = NamedTemporaryFile()
-# wcnf.to_file(tmp.name)
-# wcnf = WCNF(from_file=tmp.name)
-# tmp.close()
-
-
-## Note: Attempted optimization of v @ A for sparse v via the following:
-# to_count = np.isin(subsets.indices, np.flatnonzero(1 - point_cover))
-# set_counts = np.maximum(np.add.reduceat(to_count, subsets.indptr[:-1]), 1/n)
+# Greedy provides an H_k-approximation for the weight k set cover, where H_k = \sum\limits_{i=1}^k 1/i is the k-th harmonic number
+# http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.1615&rep=rep1&type=pdf
+# See also concise bounds w/ references: https://www.cs.ucr.edu/~neal/Young08SetCover.pdf
+# Nice slides: http://cs.williams.edu/~shikha/teaching/spring20/cs256/lectures/Lecture31.pdf
+# NOTE: Attempted optimization of v @ A for sparse v via the following:
+# 	to_count = np.isin(subsets.indices, np.flatnonzero(1 - point_cover))
+# 	set_counts = np.maximum(np.add.reduceat(to_count, subsets.indptr[:-1]), 1/n)
 # Though it works, it's roughly 5x slower
 def set_cover_greedy(subsets: sparray, weights: Optional[ArrayLike] = None) -> tuple:
 	r"""Approximates the weighted set cover problem via _greedy steps_.
@@ -224,7 +216,7 @@ def set_cover_greedy(subsets: sparray, weights: Optional[ArrayLike] = None) -> t
 def set_cover_rr(
 	subsets: sparray,
 	weights: Optional[ArrayLike] = None,
-	maxiter: int = "default",
+	maxiter: Optional[int] = None,
 	sparsity: float = 1.0,
 	seed: Optional[int] = None,
 ) -> tuple:
@@ -263,9 +255,9 @@ def set_cover_rr(
 		- [reference](/index.qmd)
 
 	Notes:
-		This function requires `subsets` to be a sparse matrix in [canonical](https://docs.scipy.org/doc/scipy/tutorial/sparse.html#canonical-formats) CSC form. If `subsets` is not in this form,
-		a copy of the `subsets` is converted first; to avoid this for maximum performance, ensure the subset matrix is
-		in canonical form first.
+		This function requires `subsets` to be a sparse matrix in [canonical](https://docs.scipy.org/doc/scipy/tutorial/sparse.html#canonical-formats) CSC form. \
+		If `subsets` is not in this form, a copy of the `subsets` is converted first; to avoid this for maximum performance, ensure the subset \ 
+		matrix is in canonical form first.
 
 	Examples:
 		```{python}
@@ -294,7 +286,7 @@ def set_cover_rr(
 	assert soln.success, "Linear progam did not find a solution, which suggests problem is infeasible"
 
 	## Change maxiter to default solution
-	maxiter = int(np.ceil((2 / sparsity) * np.log(n))) if maxiter == "default" else int(maxiter)
+	maxiter = int(np.ceil((2 / sparsity) * np.log(n))) if maxiter is None else int(maxiter)
 
 	## Sample subsets elementwise with probability 'p_i' until achieving a valid cover.
 	## Repeat the sampling process 'maxiter' times and choose the best one
@@ -380,7 +372,9 @@ def set_cover_ilp(subsets: sparray, weights: Optional[ArrayLike] = None, solver:
 		return soln, min_cost
 
 
-def set_cover_sat(subsets: sparray, weights: Optional[ArrayLike] = None, full_output: bool = False, **kwargs) -> tuple:
+def set_cover_sat(
+	subsets: sparray, weights: Optional[ArrayLike] = None, full_output: bool = False, **kwargs: dict
+) -> tuple:
 	"""Computes an approximate solution to the weighted set cover problem via *weighted MaxSAT*.
 
 	This function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance, \
@@ -392,7 +386,7 @@ def set_cover_sat(subsets: sparray, weights: Optional[ArrayLike] = None, full_ou
 	Parameters:
 		subsets: (n x J) sparse matrix of J subsets whose union forms a cover over n points.
 		weights: (J)-length array of subset weights.
-		return_solver: whether to return the SAT-solver instance. Defaults to False.
+		full_output: whether to return the SAT-solver instance. Defaults to False.
 		**kwargs: additional keyword arguments to pass to the solver.
 
 	Returns:
@@ -405,93 +399,46 @@ def set_cover_sat(subsets: sparray, weights: Optional[ArrayLike] = None, full_ou
 
 	wcnf = _maxsat_wcnf(subsets, weights)
 	solver = RC2Stratified(wcnf, **kwargs)
-	finished, clauses = False, None
+	finished: bool = False
+	clauses: np.ndarray = np.empty(shape=(0,), dtype=np.int64)
 	try:
 		clauses = np.array(solver.compute())
 		finished = True
 	except KeyboardInterrupt:
 		finished = False
 	finally:
-		set_ind = clauses[clauses > 0] - 1 if finished else np.abs(np.array(solver.core_sels)) - 1  # 0-based
+		set_ind = clauses[clauses > 0] - 1 if finished and len(clauses) > 0 else np.abs(np.array(solver.core_sels)) - 1
 		assignment = np.zeros(subsets.shape[1], dtype=bool)
 		assignment[set_ind] = True
 		out = (assignment, np.sum(weights[assignment]))
 	return out if not full_output else out, dict(solver=solver, formula=wcnf, clauses=clauses)
 
 
-def set_cover(subsets: sparray, weights: Optional[ArrayLike] = None, method: str = "RR", **kwargs: dict[str, Any]):
-	"""Computes an approximate solution to the weighted set cover problem using a supplied method."""
+def set_cover(
+	subsets: sparray, weights: Optional[ArrayLike] = None, method: str = "RR", **kwargs: dict[str, Any]
+) -> tuple:  # type: ignore
+	"""Computes an approximate solution to the weighted set cover problem.
+
+	This is essentially a lightweight wrapper around the various set cover implementations, which can be configured via
+	the `method` argument (supported options are {'RR', 'GREEDY', 'ILP', 'SAT'}). All additional keyword-arguments are
+	forwarded to their subsequent solvers.
+
+	Parameters:
+		subsets: (n x J) sparse matrix of J subsets whose union forms a cover over n points.
+		weights: (J)-length array of subset weights.
+		**kwargs: additional keyword arguments to pass to the solver.
+
+	Returns:
+		pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost.
+	"""
 	method = str(method).upper()
 	if method == "RR":
-		return set_cover_rr(subsets, weights, **kwargs)
+		return set_cover_rr(subsets, weights, **kwargs)  # type: ignore
 	elif method == "GREEDY":
-		return set_cover_greedy(subsets, weights, **kwargs)
+		return set_cover_greedy(subsets, weights, **kwargs)  # type: ignore
 	elif method == "ILP":
-		return set_cover_ilp(subsets, weights, **kwargs)
+		return set_cover_ilp(subsets, weights, **kwargs)  # type: ignore
 	elif method == "SAT":
-		return set_cover_sat(subsets, weights, **kwargs)
+		return set_cover_sat(subsets, weights, **kwargs)  # type: ignore
 	else:
 		raise ValueError(f"Invalid method '{method}' supplied; must be one of {SC_ALGS}")
-
-
-# # RC2(wcnf)
-
-# ## Solve
-# from pysat.examples.rc2 import RC2
-# # with RC2(wcnf) as rc2:
-# #   for assignment in rc2.enumerate():
-# #     print('model {0} has cost {1}'.format(assignment, rc2.cost))
-
-# # TODO: iterate through k-subsets!
-# for k in range(2, 8):
-#   cover = create_cover(k)
-#   formula = maxsat_wcnf(cover, mean_proj)
-#   assignment = RC2(formula).compute()
-#   sol_ind = np.flatnonzero(np.array(assignment) >= 0)
-#   print(f"size: {len(sol_ind)}, weight: {np.sum(mean_proj[sol_ind])}")
-
-# Greedy provides an H_k-approximation for the weight k set cover, where H_k = \sum\limits_{i=1}^k 1/i is the k-th harmonic number
-# http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.1615&rep=rep1&type=pdf
-# See also concise bounds w/ references: https://www.cs.ucr.edu/~neal/Young08SetCover.pdf
-# Nice slides: http://cs.williams.edu/~shikha/teaching/spring20/cs256/lectures/Lecture31.pdf
-
-# def wset_cover_greedy_naive(n, S, W):
-# 	'''
-# 	Computes a set of indices I \in [m] whose subsets S[I] = { S_1, S_2, ..., S_k }
-# 	yield an approximation to the minimal weighted set cover, i.e.
-
-# 		S* = argmin_{I \subseteq [m]} \sum_{i \in I} W[i]
-# 				 such that S_1 \cup ... \cup S_k covers [n]
-
-# 	Parameters:
-# 		n: int := The number of points the subsets must cover
-# 		S: (n x J) sparsematrix := A sparse matrix whose non-zero elements indicate the subsets (one subset per column-wise)
-# 		W: ndarray(J,1) := weights for each subset
-
-# 	Returns:
-# 		C: ndarray(k,1) := set of indices of which subsets form a minimal cover
-# 	'''
-# 	assert issparse(S)
-# 	assert S.shape[0] == n and S.shape[1] == len(W)
-# 	J = S.shape[1]
-
-# 	def covered(I):
-# 		membership = np.zeros(n, dtype=bool)
-# 		for j in I: membership[np.flatnonzero(S[:,j].A)] = True
-# 		return(membership)
-
-# 	C = []
-# 	membership = covered(C)
-# 	while not(np.all(membership)):
-# 		not_covered = np.flatnonzero(np.logical_not(membership))
-# 		cost_effectiveness = []
-# 		for j in range(J):
-# 			S_j = np.flatnonzero(S[:,j].A)
-# 			size_uncovered = len(np.intersect1d(S_j, not_covered))
-# 			cost_effectiveness.append(size_uncovered/W[j])
-# 		C.append(np.argmax(cost_effectiveness))
-# 		# print(C[-1])
-# 		membership = covered(C)
-
-# 	## Return the greedy cover
-# 	return(np.array(C))

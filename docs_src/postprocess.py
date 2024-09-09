@@ -1,8 +1,10 @@
 """post-processes the docs after generating the with quartodoc"""
 
+# %% imports
 import os
 import re
 
+# Note
 doc_source = "/Users/mpiekenbrock/geomcover/docs_src"
 qmd_files = os.listdir(doc_source)
 qmd_files = [fn for fn in qmd_files if fn[-3:] == "qmd"]

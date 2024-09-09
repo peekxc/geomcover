@@ -39,6 +39,12 @@ show(p)
 p = plot_nerve(M, X, width=450, height=150)
 show(p)
 
+# %% TODO: make tangentPairs classesthat admit projection methods
+# from geomstats.learning.preprocessing import ToTangentSpace
+# from geomstats.learning.pca import TangentPCA
+
+# ToTangentSpace
+
 # %% Step 2: choose a bundle weighting scheme
 TW = bundle_weights(M, TM, method="cosine", reduce=np.mean)  # lambda x: np.ptp(x/2.0)
 # TW = bundle_weights(M, TM, method="distance", reduce=np.max)

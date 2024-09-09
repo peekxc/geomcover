@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.55">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -126,18 +126,22 @@ ul.task-list li input[type="checkbox"] {
 <td>Determines whether given sets form a <em>feasible</em> cover over the universe.</td>
 </tr>
 <tr class="odd">
+<td><a href="./cover.set_cover.html#geomcover.cover.set_cover">cover.set_cover</a></td>
+<td>Computes an approximate solution to the weighted set cover problem.</td>
+</tr>
+<tr class="even">
 <td><a href="./cover.set_cover_greedy.html#geomcover.cover.set_cover_greedy">cover.set_cover_greedy</a></td>
 <td>Approximates the weighted set cover problem via <em>greedy steps</em>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="./cover.set_cover_rr.html#geomcover.cover.set_cover_rr">cover.set_cover_rr</a></td>
 <td>Approximates the weighted set cover problem via <em>randomized rounding</em>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="./cover.set_cover_ilp.html#geomcover.cover.set_cover_ilp">cover.set_cover_ilp</a></td>
 <td>Approximates the weighted set cover problem via <em>integer linear programming</em>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="./cover.set_cover_sat.html#geomcover.cover.set_cover_sat">cover.set_cover_sat</a></td>
 <td>Computes an approximate solution to the weighted set cover problem via <em>weighted MaxSAT</em>.</td>
 </tr>
@@ -155,7 +159,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><a href="./linalg.cmds.html#geomcover.linalg.cmds">linalg.cmds</a></td>
-<td>Projects <code>G</code> onto a <code>d</code>-dimensional linear subspace via Classical Multi-Dimensional Scaling.</td>
+<td>Constructs coordinates from squared distances using Classical Multi-Dimensional Scaling.</td>
 </tr>
 </tbody>
 </table>
@@ -167,11 +171,23 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td><a href="./geometry.tangent_bundle.html#geomcover.geometry.tangent_bundle">geometry.tangent_bundle</a></td>
-<td>Estimates the tangent bundle of ‘M’ via local PCA on neighborhoods in <code>X</code>.</td>
+<td>Estimates the tangent bundle of a range space (<code>X</code>,<code>M</code>) via local PCA.</td>
 </tr>
 <tr class="even">
 <td><a href="./geometry.bundle_weights.html#geomcover.geometry.bundle_weights">geometry.bundle_weights</a></td>
 <td>Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cluster-cluster" class="level2">
+<h2 class="anchored" data-anchor-id="cluster-cluster">Cluster (<code>cluster</code>)</h2>
+<p>Algorithms related to clustering points in metric spaces.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="./cluster.mean_shift.html#geomcover.cluster.mean_shift">cluster.mean_shift</a></td>
+<td>Mean shift algorithm for clustering or smoothing points via kernel density estimation.</td>
 </tr>
 </tbody>
 </table>

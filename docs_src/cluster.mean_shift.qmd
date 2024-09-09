@@ -1,0 +1,27 @@
+# cluster.mean_shift { #geomcover.cluster.mean_shift }
+
+`cluster.mean_shift(P, Q=None, kernel='gaussian', bandwidth='scott', batch=25, maxiter=300, atol=1.1920929e-06, blur=False, callback=None)`
+
+Mean shift algorithm for clustering or smoothing points via kernel density estimation.
+
+This functions repeatedly mean shifts points `P` with respect to reference points `Q`, returning the shifted points.    If `Q` is not supplied the shift points are shifted w.r.t `P`, or the shift points themselves if `blur = True`, until   either `maxiter` iterations is reached the distance shifted is less than `atol` (elementwise), whichever comes first. 
+
+## Parameters
+
+| Name        | Type                          | Description                                                                           | Default         |
+|-------------|-------------------------------|---------------------------------------------------------------------------------------|-----------------|
+| `P`         | np.ndarray                    | points to shift, given as a 2d np.array.                                              | _required_      |
+| `Q`         | Optional\[np.ndarray\]        | reference points to shift `P` with respect to. Defaults to `P` itself.                | `None`          |
+| `kernel`    | Union\[str, Callable\]        | kernel function to use. Only "gaussian" is supported for now.                         | `'gaussian'`    |
+| `bandwidth` | Union\[str, float, Callable\] | smoothing parameter for the kernel.                                                   | `'scott'`       |
+| `batch`     | int                           | number of points to apply the shift to at once. See details.                          | `25`            |
+| `maxiter`   | Optional\[float\]             | maximum number of times to apply a the shift to a point. Can be `None` or `np.inf` to | `300`           |
+| `atol`      | float                         | absolute tolerance with which to consider a point as converged between iterations.    | `1.1920929e-06` |
+| `blur`      | bool                          | whether to apply the blurring mean shift operation. See details.                      | `False`         |
+| `callback`  | Optional\[Callable\]          | callable to execute after each iteration.                                             | `None`          |
+
+## Returns
+
+| Type       | Description                                              |
+|------------|----------------------------------------------------------|
+| np.ndarray | ndarray of shift points with the same dimensions as `P`. |

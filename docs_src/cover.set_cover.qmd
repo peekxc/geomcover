@@ -1,0 +1,23 @@
+# cover.set_cover { #geomcover.cover.set_cover }
+
+`cover.set_cover(subsets, weights=None, method='RR', **kwargs)`
+
+Computes an approximate solution to the weighted set cover problem.
+
+This is essentially a lightweight wrapper around the various set cover implementations, which can be configured via
+the `method` argument (supported options are {'RR', 'GREEDY', 'ILP', 'SAT'}). All additional keyword-arguments are
+forwarded to their subsequent solvers.
+
+## Parameters
+
+| Name       | Type                  | Description                                                                 | Default    |
+|------------|-----------------------|-----------------------------------------------------------------------------|------------|
+| `subsets`  | sparray               | (n x J) sparse matrix of J subsets whose union forms a cover over n points. | _required_ |
+| `weights`  | Optional\[ArrayLike\] | (J)-length array of subset weights.                                         | `None`     |
+| `**kwargs` | dict\[str, Any\]      | additional keyword arguments to pass to the solver.                         | `{}`       |
+
+## Returns
+
+| Type   | Description                                                                         |
+|--------|-------------------------------------------------------------------------------------|
+| tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |

@@ -1,12 +1,10 @@
----
-title: linalg.cmds
-bread-crumbs: true
----
+# linalg.cmds { #geomcover.linalg.cmds }
+
 `linalg.cmds(D, d=2, coords=True)`
 
-Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling.
+Constructs coordinates from squared distances using Classical Multi-Dimensional Scaling.
 
-CMDS is a coordinatization algorithm that generates `d`-dimensional coordinates from a Euclidean        distance matrix `D`. Algorithmically, `D` is converted into a Gram matrix `G`,  whose eigen decomposition is used to produce coordinates minimizing a notion of 'strain'.
+CMDS is a coordinatization algorithm that generates `d`-dimensional coordinates from a Euclidean        distance matrix `D`. Algorithmically, `D` is converted into a doubly-centered Gram matrix `G`   whose eigen decomposition is used to produce coordinates minimizing a notion of 'strain'.
 
 ## Parameters
 
@@ -18,9 +16,9 @@ CMDS is a coordinatization algorithm that generates `d`-dimensional coordinates 
 
 ## Returns
 
-| Type       | Description                                                                                                                                                                                                       |
-|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| np.ndarray | if `coords = True`, the coordinates from the largest `d` eigenvectors of `G`'s eigendecomposition. Otherwise,           the eigenvalues and eigenvectors are returned. See the Examples section for more details. |
+| Type                       | Description                                                                                                                                                                                                       |
+|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Union\[np.ndarray, tuple\] | if `coords = True`, the coordinates from the largest `d` eigenvectors of `G`'s eigendecomposition. Otherwise,           the eigenvalues and eigenvectors are returned. See the Examples section for more details. |
 
 ## Notes
 

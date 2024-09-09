@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.55">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -146,6 +146,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./cover.set_cover_greedy.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">cover.set_cover_greedy</span></a>
   </div>
@@ -219,12 +225,29 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">I/O (<code>io</code>)</span></a>
+ <span class="menu-text">Cluster (<code>cluster</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cluster.mean_shift.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cluster.mean_shift</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
@@ -266,36 +289,22 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./geometry.tangent_bundle.html">Geometry (<code>geometry</code>)</a></li><li class="breadcrumb-item"><a href="./geometry.tangent_bundle.html">geometry.tangent_bundle</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">geometry.tangent_bundle</h1>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<section id="geomcover.geometry.tangent_bundle" class="level1">
+<h1>geometry.tangent_bundle</h1>
 <p><code>geometry.tangent_bundle(M, X, d=2, centers=None)</code></p>
-<p>Estimates the tangent bundle of ‘M’ via local PCA on neighborhoods in <code>X</code>.</p>
-<p>This function estimates the <code>d</code>-dimensional tangent spaces of neighborhoods in <code>X</code> given by columns in <code>M</code>.</p>
+<p>Estimates the tangent bundle of a range space (<code>X</code>,<code>M</code>) via local PCA.</p>
+<p>This function estimates the <code>d</code>-dimensional tangent spaces of neighborhoods in <code>X</code> given by ranges in <code>M</code>. This may be interpreted as evaluating the logarithm between the <code>centers</code> and points in the local neighborhood in the direction given by the principle directions.</p>
 <section id="parameters" class="level2">
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 7%">
-<col style="width: 8%">
-<col style="width: 75%">
-<col style="width: 8%">
+<col style="width: 15%">
+<col style="width: 69%">
+<col style="width: 7%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -309,31 +318,53 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><code>M</code></td>
 <td>sparray</td>
-<td>Adjacency list, given as a sparse matrix</td>
+<td>Sparse matrix whose columns represent subsets of <code>X</code>.</td>
 <td><em>required</em></td>
 </tr>
 <tr class="even">
 <td><code>X</code></td>
 <td>np.ndarray</td>
-<td>coordinates of the vertices of ‘G’</td>
+<td>coordinates of the range space.</td>
 <td><em>required</em></td>
 </tr>
 <tr class="odd">
 <td><code>d</code></td>
 <td>int</td>
-<td>dimension of the tangent space</td>
+<td>dimension of the tangent space.</td>
 <td><code>2</code></td>
 </tr>
 <tr class="even">
 <td><code>centers</code></td>
-<td>np.ndarray</td>
-<td>points to center the tangent space estimates. If None, each neighborhoods is centered around its average.</td>
+<td>Optional[np.ndarray]</td>
+<td>points to center the tangent space estimates. If <code>None</code>, each neighborhoods is centered around its average.</td>
 <td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level2">
+<h2 class="anchored" data-anchor-id="returns">Returns</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 89%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>dict</td>
+<td>list of <em>tangent pairs</em>, i.e.&nbsp;base points paired with tangent vector.</td>
 </tr>
 </tbody>
 </table>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

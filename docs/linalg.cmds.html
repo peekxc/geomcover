@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.55">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -320,8 +320,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><code>linalg.cmds(D, d=2, coords=True)</code></p>
-<p>Projects <code>G</code> onto a <code>d</code>-dimensional linear subspace via Classical Multi-Dimensional Scaling.</p>
-<p>CMDS is a coordinatization algorithm that generates <code>d</code>-dimensional coordinates from a Euclidean distance matrix <code>D</code>. Algorithmically, <code>D</code> is converted into a Gram matrix <code>G</code>, whose eigen decomposition is used to produce coordinates minimizing a notion of ‘strain’.</p>
+<p>Constructs coordinates from squared distances using Classical Multi-Dimensional Scaling.</p>
+<p>CMDS is a coordinatization algorithm that generates <code>d</code>-dimensional coordinates from a Euclidean distance matrix <code>D</code>. Algorithmically, <code>D</code> is converted into a doubly-centered Gram matrix <code>G</code> whose eigen decomposition is used to produce coordinates minimizing a notion of ‘strain’.</p>
 <section id="parameters" class="level2">
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
@@ -365,8 +365,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 5%">
-<col style="width: 94%">
+<col style="width: 11%">
+<col style="width: 88%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -376,7 +376,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>np.ndarray</td>
+<td>Union[np.ndarray, tuple]</td>
 <td>if <code>coords = True</code>, the coordinates from the largest <code>d</code> eigenvectors of <code>G</code>’s eigendecomposition. Otherwise, the eigenvalues and eigenvectors are returned. See the Examples section for more details.</td>
 </tr>
 </tbody>
@@ -395,7 +395,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<div id="56f1c344" class="cell" data-execution_count="1">
+<div id="4ee37b28" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.linalg <span class="im">import</span> pca, cmds</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>

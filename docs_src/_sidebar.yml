@@ -7,6 +7,7 @@ website:
       contents:
         - ./cover.coverage.qmd
         - ./cover.valid_cover.qmd
+        - ./cover.set_cover.qmd
         - ./cover.set_cover_greedy.qmd
         - ./cover.set_cover_rr.qmd
         - ./cover.set_cover_ilp.qmd
@@ -19,6 +20,9 @@ website:
       contents:
         - ./geometry.tangent_bundle.qmd
         - ./geometry.bundle_weights.qmd
+    - section: Cluster (`cluster`)
+      contents:
+        - ./cluster.mean_shift.qmd
     - section: I/O (`io`)
       contents:
         - ./io.load_set_cover.qmd

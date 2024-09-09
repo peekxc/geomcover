@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.55">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -175,6 +209,12 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./cover.set_cover_greedy.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">cover.set_cover_greedy</span></a>
   </div>
@@ -248,12 +288,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">I/O (<code>io</code>)</span></a>
+ <span class="menu-text">Cluster (<code>cluster</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cluster.mean_shift.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cluster.mean_shift</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
@@ -314,7 +371,7 @@ window.Quarto = {
 </header>
 
 
-<p><code>cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)</code></p>
+<p><code>cover.set_cover_rr(subsets, weights=None, maxiter=None, sparsity=1.0, seed=None)</code></p>
 <p>Approximates the weighted set cover problem via <em>randomized rounding</em>.</p>
 <p>This function first computes a minimum-cost fractional set cover whose solution lower-bounds the optimal solution, then uses randomized rounding to produce a sequence of solutions whose objectives slightly increase this bound, continuing until a feasible solution is found.</p>
 <p>The minimum-cost fractional cover is obtained by solving the following linear program:</p>
@@ -329,7 +386,7 @@ window.Quarto = {
 <colgroup>
 <col style="width: 9%">
 <col style="width: 17%">
-<col style="width: 63%">
+<col style="width: 64%">
 <col style="width: 9%">
 </colgroup>
 <thead>
@@ -355,9 +412,9 @@ window.Quarto = {
 </tr>
 <tr class="odd">
 <td><code>maxiter</code></td>
-<td>int</td>
+<td>Optional[int]</td>
 <td>number of iterations to repeat the sampling process. See details.</td>
-<td><code>'default'</code></td>
+<td><code>None</code></td>
 </tr>
 <tr class="even">
 <td><code>sparsity</code></td>
@@ -404,13 +461,24 @@ window.Quarto = {
 </section>
 <section id="notes" class="level2">
 <h2 class="anchored" data-anchor-id="notes">Notes</h2>
-<p>This function requires <code>subsets</code> to be a sparse matrix in <a href="https://docs.scipy.org/doc/scipy/tutorial/sparse.html#canonical-formats">canonical</a> CSC form. If <code>subsets</code> is not in this form, a copy of the <code>subsets</code> is converted first; to avoid this for maximum performance, ensure the subset matrix is in canonical form first.</p>
+<p>This function requires <code>subsets</code> to be a sparse matrix in <a href="https://docs.scipy.org/doc/scipy/tutorial/sparse.html#canonical-formats">canonical</a> CSC form.<br>
+If <code>subsets</code> is not in this form, a copy of the <code>subsets</code> is converted first; to avoid this for maximum performance, ensure the subset &nbsp; matrix is in canonical form first.</p>
 </section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<p>from geomcover.cover import set_cover_rr from geomcover.io import load_set_cover</p>
-<p>subsets, weights = load_set_cover(“mushroom”) soln, cost = set_cover_rr(subsets, weights) n, J = subsets.shape</p>
-<p>print(“Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.”) ``````</p>
+<div id="48618f1c" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.cover <span class="im">import</span> set_cover_rr</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geomcover.io <span class="im">import</span> load_set_cover</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>subsets, weights <span class="op">=</span> load_set_cover(<span class="st">"mushroom"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>soln, cost <span class="op">=</span> set_cover_rr(subsets, weights)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n, J <span class="op">=</span> subsets.shape</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Set family with </span><span class="sc">{n}</span><span class="st"> elements and </span><span class="sc">{J}</span><span class="st"> sets can be covered with {np.sum(soln)} sets with cost </span><span class="sc">{cost}</span><span class="st">."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.</code></pre>
+</div>
+</div>
 
 
 </section>

@@ -1,8 +1,6 @@
----
-title: cover.set_cover_rr
-bread-crumbs: true
----
-`cover.set_cover_rr(subsets, weights=None, maxiter='default', sparsity=1.0, seed=None)`
+# cover.set_cover_rr { #geomcover.cover.set_cover_rr }
+
+`cover.set_cover_rr(subsets, weights=None, maxiter=None, sparsity=1.0, seed=None)`
 
 Approximates the weighted set cover problem via _randomized rounding_.
 
@@ -26,13 +24,13 @@ result in sparser or lower weight covers at the cost of more iterations.
 
 ## Parameters
 
-| Name       | Type                  | Description                                                                         | Default     |
-|------------|-----------------------|-------------------------------------------------------------------------------------|-------------|
-| `subsets`  | sparray               | (n x J) sparse matrix of J subsets whose union forms a cover over n points.         | _required_  |
-| `weights`  | Optional\[ArrayLike\] | (J)-length array of subset weights.                                                 | `None`      |
-| `maxiter`  | int                   | number of iterations to repeat the sampling process. See details.                   | `'default'` |
-| `sparsity` | float                 | constant used to emphasize sparsity between (0, 1]. See details.                    | `1.0`       |
-| `seed`     | Optional\[int\]       | seed for the random number generator. Use an integer for deterministic computation. | `None`      |
+| Name       | Type                  | Description                                                                         | Default    |
+|------------|-----------------------|-------------------------------------------------------------------------------------|------------|
+| `subsets`  | sparray               | (n x J) sparse matrix of J subsets whose union forms a cover over n points.         | _required_ |
+| `weights`  | Optional\[ArrayLike\] | (J)-length array of subset weights.                                                 | `None`     |
+| `maxiter`  | Optional\[int\]       | number of iterations to repeat the sampling process. See details.                   | `None`     |
+| `sparsity` | float                 | constant used to emphasize sparsity between (0, 1]. See details.                    | `1.0`      |
+| `seed`     | Optional\[int\]       | seed for the random number generator. Use an integer for deterministic computation. | `None`     |
 
 ## Returns
 
@@ -47,9 +45,9 @@ result in sparser or lower weight covers at the cost of more iterations.
 
 ## Notes
 
-This function requires `subsets` to be a sparse matrix in [canonical](https://docs.scipy.org/doc/scipy/tutorial/sparse.html#canonical-formats) CSC form. If `subsets` is not in this form,
-a copy of the `subsets` is converted first; to avoid this for maximum performance, ensure the subset matrix is
-in canonical form first.
+This function requires `subsets` to be a sparse matrix in [canonical](https://docs.scipy.org/doc/scipy/tutorial/sparse.html#canonical-formats) CSC form. \
+If `subsets` is not in this form, a copy of the `subsets` is converted first; to avoid this for maximum performance, ensure the subset \ 
+matrix is in canonical form first.
 
 ## Examples
 
@@ -62,4 +60,4 @@ soln, cost = set_cover_rr(subsets, weights)
 n, J = subsets.shape
 
 print("Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.")
-``````
+```

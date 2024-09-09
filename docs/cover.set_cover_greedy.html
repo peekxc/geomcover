@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.55">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -31,7 +31,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./cover.set_cover_rr.html" rel="next">
-<link href="./cover.valid_cover.html" rel="prev">
+<link href="./cover.set_cover.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -175,6 +175,12 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./cover.set_cover_greedy.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">cover.set_cover_greedy</span></a>
   </div>
@@ -248,12 +254,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">I/O (<code>io</code>)</span></a>
+ <span class="menu-text">Cluster (<code>cluster</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cluster.mean_shift.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cluster.mean_shift</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
@@ -295,25 +318,11 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.coverage.html">Set Cover (<code>cover</code>)</a></li><li class="breadcrumb-item"><a href="./cover.set_cover_greedy.html">cover.set_cover_greedy</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">cover.set_cover_greedy</h1>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<section id="geomcover.cover.set_cover_greedy" class="level1">
+<h1>cover.set_cover_greedy</h1>
 <p><code>cover.set_cover_greedy(subsets, weights=None)</code></p>
 <p>Approximates the weighted set cover problem via <em>greedy steps</em>.</p>
 <p>This function iteratively constructs a set cover by choosing the set that covers the largest number of yet uncovered elements with the least weight.</p>
@@ -381,10 +390,11 @@ can be used used to generate a feasible solution to dual LP.</p>
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <ol type="1">
 <li>Feige, Uriel. “A threshold of ln n for approximating set cover.” Journal of the ACM (JACM) 45.4 (1998): 634-652.</li>
-<li><a href="https://courses.grainger.illinois.edu/cs583/sp2018/Notes/covering.pdf">CS 583 notes by Chandra Chekuri</a>ng.pdf)</li>
+<li><a href="https://courses.grainger.illinois.edu/cs583/sp2018/Notes/covering.pdf">CS 583 notes by Chandra Chekuri</a></li>
 </ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -810,8 +820,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./cover.valid_cover.html" class="pagination-link" aria-label="cover.valid_cover">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">cover.valid_cover</span>
+      <a href="./cover.set_cover.html" class="pagination-link" aria-label="cover.set_cover">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">cover.set_cover</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

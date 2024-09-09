@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>io.sets_to_sparse</title>
+<title>cluster.mean_shift</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./io.sparse_to_sets.html" rel="next">
-<link href="./io.to_canonical.html" rel="prev">
+<link href="./io.load_set_cover.html" rel="next">
+<link href="./geometry.bundle_weights.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -69,35 +69,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -134,7 +105,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./io.load_set_cover.html">I/O (<code>io</code>)</a></li><li class="breadcrumb-item"><a href="./io.sets_to_sparse.html">io.sets_to_sparse</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cluster.mean_shift.html">Cluster (<code>cluster</code>)</a></li><li class="breadcrumb-item"><a href="./cluster.mean_shift.html">cluster.mean_shift</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -171,6 +142,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="./cover.valid_cover.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">cover.valid_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -248,12 +225,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">I/O (<code>io</code>)</span></a>
+ <span class="menu-text">Cluster (<code>cluster</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cluster.mean_shift.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">cluster.mean_shift</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
@@ -268,7 +262,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./io.sets_to_sparse.html" class="sidebar-item-text sidebar-link active">
+  <a href="./io.sets_to_sparse.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">io.sets_to_sparse</span></a>
   </div>
 </li>
@@ -298,18 +292,18 @@ window.Quarto = {
 
 
 
-<section id="geomcover.io.sets_to_sparse" class="level1">
-<h1>io.sets_to_sparse</h1>
-<p><code>io.sets_to_sparse(S, reindex=False, form='csc')</code></p>
-<p>Converts a collection of sets into a sparse array.</p>
-<p>This function converts a <code>Collection</code> of integer-valued sequences into a sparse matrix, where each column represents a set and each row represents an element. Optionally, if the sets themselves do not represent 0-based indices, you can set <code>reindex=True</code> to map the elements to the base index set <span class="math inline">\([n] = {0, 1, ..., n - 1}\)</span>.</p>
+<section id="geomcover.cluster.mean_shift" class="level1">
+<h1>cluster.mean_shift</h1>
+<p><code>cluster.mean_shift(P, Q=None, kernel='gaussian', bandwidth='scott', batch=25, maxiter=300, atol=1.1920929e-06, blur=False, callback=None)</code></p>
+<p>Mean shift algorithm for clustering or smoothing points via kernel density estimation.</p>
+<p>This functions repeatedly mean shifts points <code>P</code> with respect to reference points <code>Q</code>, returning the shifted points. If <code>Q</code> is not supplied the shift points are shifted w.r.t <code>P</code>, or the shift points themselves if <code>blur = True</code>, until either <code>maxiter</code> iterations is reached the distance shifted is less than <code>atol</code> (elementwise), whichever comes first.</p>
 <section id="parameters" class="level2">
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 11%">
-<col style="width: 66%">
+<col style="width: 8%">
+<col style="width: 20%">
+<col style="width: 58%">
 <col style="width: 11%">
 </colgroup>
 <thead>
@@ -322,16 +316,58 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>S</code></td>
-<td>Collection</td>
-<td>Collection of indices representing subsets.</td>
+<td><code>P</code></td>
+<td>np.ndarray</td>
+<td>points to shift, given as a 2d np.array.</td>
 <td><em>required</em></td>
 </tr>
 <tr class="even">
-<td><code>reindex</code></td>
+<td><code>Q</code></td>
+<td>Optional[np.ndarray]</td>
+<td>reference points to shift <code>P</code> with respect to. Defaults to <code>P</code> itself.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
+<td><code>kernel</code></td>
+<td>Union[str, Callable]</td>
+<td>kernel function to use. Only “gaussian” is supported for now.</td>
+<td><code>'gaussian'</code></td>
+</tr>
+<tr class="even">
+<td><code>bandwidth</code></td>
+<td>Union[str, float, Callable]</td>
+<td>smoothing parameter for the kernel.</td>
+<td><code>'scott'</code></td>
+</tr>
+<tr class="odd">
+<td><code>batch</code></td>
+<td>int</td>
+<td>number of points to apply the shift to at once. See details.</td>
+<td><code>25</code></td>
+</tr>
+<tr class="even">
+<td><code>maxiter</code></td>
+<td>Optional[float]</td>
+<td>maximum number of times to apply a the shift to a point. Can be <code>None</code> or <code>np.inf</code> to</td>
+<td><code>300</code></td>
+</tr>
+<tr class="odd">
+<td><code>atol</code></td>
+<td>float</td>
+<td>absolute tolerance with which to consider a point as converged between iterations.</td>
+<td><code>1.1920929e-06</code></td>
+</tr>
+<tr class="even">
+<td><code>blur</code></td>
 <td>bool</td>
-<td>whether to reindex the sets to the base index set. Default to False.</td>
+<td>whether to apply the blurring mean shift operation. See details.</td>
 <td><code>False</code></td>
+</tr>
+<tr class="odd">
+<td><code>callback</code></td>
+<td>Optional[Callable]</td>
+<td>callable to execute after each iteration.</td>
+<td><code>None</code></td>
 </tr>
 </tbody>
 </table>
@@ -339,6 +375,10 @@ window.Quarto = {
 <section id="returns" class="level2">
 <h2 class="anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 82%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Type</th>
@@ -347,8 +387,8 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td>csc_array</td>
-<td>sparse boolean array in canonical form.</td>
+<td>np.ndarray</td>
+<td>ndarray of shift points with the same dimensions as <code>P</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -780,13 +820,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./io.to_canonical.html" class="pagination-link" aria-label="io.to_canonical">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">io.to_canonical</span>
+      <a href="./geometry.bundle_weights.html" class="pagination-link" aria-label="geometry.bundle_weights">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">geometry.bundle_weights</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./io.sparse_to_sets.html" class="pagination-link" aria-label="io.sparse_to_sets">
-        <span class="nav-page-text">io.sparse_to_sets</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./io.load_set_cover.html" class="pagination-link" aria-label="io.load_set_cover">
+        <span class="nav-page-text">io.load_set_cover</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

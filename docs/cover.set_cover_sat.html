@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.55">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -266,25 +266,11 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.coverage.html">Set Cover (<code>cover</code>)</a></li><li class="breadcrumb-item"><a href="./cover.set_cover_sat.html">cover.set_cover_sat</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">cover.set_cover_sat</h1>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<section id="geomcover.cover.set_cover_sat" class="level1">
+<h1>cover.set_cover_sat</h1>
 <p><code>cover.set_cover_sat(subsets, weights=None, full_output=False, **kwargs)</code></p>
 <p>Computes an approximate solution to the weighted set cover problem via <em>weighted MaxSAT</em>.</p>
 <p>This function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance, which is known to achieve at least an (8/7)-approximation of the optimal solution.</p>
@@ -293,9 +279,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 13%">
-<col style="width: 17%">
-<col style="width: 59%">
+<col style="width: 11%">
+<col style="width: 18%">
+<col style="width: 60%">
 <col style="width: 9%">
 </colgroup>
 <thead>
@@ -320,14 +306,14 @@ ul.task-list li input[type="checkbox"] {
 <td><code>None</code></td>
 </tr>
 <tr class="odd">
-<td><code>return_solver</code></td>
-<td></td>
+<td><code>full_output</code></td>
+<td>bool</td>
 <td>whether to return the SAT-solver instance. Defaults to False.</td>
-<td><em>required</em></td>
+<td><code>False</code></td>
 </tr>
 <tr class="even">
 <td><code>**kwargs</code></td>
-<td></td>
+<td>dict</td>
 <td>additional keyword arguments to pass to the solver.</td>
 <td><code>{}</code></td>
 </tr>
@@ -356,6 +342,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

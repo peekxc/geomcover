@@ -1,18 +1,24 @@
----
-title: geometry.tangent_bundle
-bread-crumbs: true
----
+# geometry.tangent_bundle { #geomcover.geometry.tangent_bundle }
+
 `geometry.tangent_bundle(M, X, d=2, centers=None)`
 
-Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`.
+Estimates the tangent bundle of a range space (`X`,`M`) via local PCA.
 
-This function estimates the `d`-dimensional tangent spaces of neighborhoods in `X` given by columns in `M`.
+This function estimates the `d`-dimensional tangent spaces of neighborhoods in `X` given by ranges in `M`.
+This may be interpreted as evaluating the logarithm between the `centers` and points in the local neighborhood
+in the direction given by the principle directions.
 
 ## Parameters
 
-| Name      | Type       | Description                                                                                               | Default    |
-|-----------|------------|-----------------------------------------------------------------------------------------------------------|------------|
-| `M`       | sparray    | Adjacency list, given as a sparse matrix                                                                  | _required_ |
-| `X`       | np.ndarray | coordinates of the vertices of 'G'                                                                        | _required_ |
-| `d`       | int        | dimension of the tangent space                                                                            | `2`        |
-| `centers` | np.ndarray | points to center the tangent space estimates. If None, each neighborhoods is centered around its average. | `None`     |e`     |
+| Name      | Type                   | Description                                                                                                 | Default    |
+|-----------|------------------------|-------------------------------------------------------------------------------------------------------------|------------|
+| `M`       | sparray                | Sparse matrix whose columns represent subsets of `X`.                                                       | _required_ |
+| `X`       | np.ndarray             | coordinates of the range space.                                                                             | _required_ |
+| `d`       | int                    | dimension of the tangent space.                                                                             | `2`        |
+| `centers` | Optional\[np.ndarray\] | points to center the tangent space estimates. If `None`, each neighborhoods is centered around its average. | `None`     |
+
+## Returns
+
+| Type   | Description                                                           |
+|--------|-----------------------------------------------------------------------|
+| dict   | list of *tangent pairs*, i.e. base points paired with tangent vector. |

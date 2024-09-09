@@ -3,7 +3,7 @@
 from collections import namedtuple
 from itertools import combinations
 from math import comb
-from typing import Callable, Union
+from typing import Callable, Union, Optional
 
 import numpy as np
 from combin import inverse_choose
@@ -21,14 +21,14 @@ TangentPair = namedtuple("TangentPair", field_names=("base_point", "tangent_vec"
 
 ## Predicates to simplify type-checking
 def is_distance_matrix(x: ArrayLike) -> bool:
-	"""Checks whether 'x' is a distance matrix, i.e. is square, symmetric, and that the diagonal is all 0."""
+	"""Checks whether `x` is a distance matrix, i.e. is square, symmetric, and that the diagonal is all 0."""
 	x = np.array(x, copy=False)
 	is_square = x.ndim == 2 and (x.shape[0] == x.shape[1])
-	return False if not (is_square) else np.all(np.diag(x) == 0)
+	return False if not (is_square) else bool(np.all(np.diag(x) == 0))
 
 
 def is_pairwise_distances(x: ArrayLike) -> bool:
-	"""Checks whether 'x' is a 1-d array of pairwise distances"""
+	"""Checks whether `x` is a 1-d array of pairwise distances."""
 	x = np.array(x, copy=False)  # don't use asanyarray here
 	if x.ndim > 1:
 		return False
@@ -37,7 +37,7 @@ def is_pairwise_distances(x: ArrayLike) -> bool:
 
 
 def is_point_cloud(x: ArrayLike) -> bool:
-	"""Checks whether 'x' is a 2-d array of points"""
+	"""Checks whether `x` is a 2-d array of points."""
 	return isinstance(x, np.ndarray) and x.ndim == 2
 
 
@@ -58,16 +58,21 @@ def is_point_cloud(x: ArrayLike) -> bool:
 # 	return G.tocsc()
 
 
-def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: np.ndarray = None) -> dict:
-	"""Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`.
+def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: Optional[np.ndarray] = None) -> dict:
+	"""Estimates the tangent bundle of a range space (`X`,`M`) via local PCA.
 
-	This function estimates the `d`-dimensional tangent spaces of neighborhoods in `X` given by columns in `M`.
+	This function estimates the `d`-dimensional tangent spaces of neighborhoods in `X` given by ranges in `M`.
+	This may be interpreted as evaluating the logarithm between the `centers` and points in the local neighborhood
+	in the direction given by the principle directions.
 
 	Parameters:
-		M: Adjacency list, given as a sparse matrix
-		X: coordinates of the vertices of 'G'
-		d: dimension of the tangent space
-		centers: points to center the tangent space estimates. If None, each neighborhoods is centered around its average.
+		M: Sparse matrix whose columns represent subsets of `X`.
+		X: coordinates of the range space.
+		d: dimension of the tangent space.
+		centers: points to center the tangent space estimates. If `None`, each neighborhoods is centered around its average.
+
+	Returns:
+		list of *tangent pairs*, i.e. base points paired with tangent vector.
 	"""
 	M = to_canonical(M, "csr")
 	if centers is not None:
@@ -92,10 +97,10 @@ def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: np.ndarray = 
 	return tangents
 
 
-def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLike = None):
+def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: Optional[ArrayLike] = None):
 	"""Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle."""
 	A = M.tocoo()
-	assert method in {"distance", "cosine", "angle"}, f"Invalid method '{str(method)}' supplied"
+	assert method in {"distance", "cosine", "angle"}, f"Invalid method '{method!s}' supplied"
 	stat_f = getattr(np, reduce) if isinstance(reduce, str) else reduce
 	assert isinstance(
 		stat_f, Callable
@@ -147,7 +152,7 @@ def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: ArrayLik
 def neighbor_graph_ball(
 	X: ArrayLike, radius: float, batch: int = 15, metric: str = "euclidean", weighted: bool = False, **kwargs
 ):
-	"""Empty."""
+	"""Constructs a neighborhood graph by via the nerve of the union of balls centered at `X`."""
 	from array import array
 
 	n = len(X)
@@ -214,8 +219,7 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind=None):
 		ind = indices to approximate the neighborhoods at. If not specified, will use every point.
 
 	Returns:
-		G = the neighborhood graph, given as an (n x len(ind)) incidence matrix
-		weights = len(ind)-length array
+		neighborhood graph and weights.
 	"""
 	ind = np.array(range(X.shape[0])) if ind is None else ind
 	m = len(ind)
@@ -237,9 +241,9 @@ def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind=None):
 		## Project all points onto tangent plane, then measure distance between projected points and original
 		proj_coords = np.dot(centered_pts, T_y)  # project points onto d-tangent plane
 		proj_points = np.array([np.sum(p * T_y, axis=1) for p in proj_coords])  # orthogonal projection in D dimensions
-		weights[i] = np.sum([
-			np.sqrt(np.sum(diff**2)) for diff in (centered_pts - proj_points)
-		])  # np.linalg.norm(centered_pts - proj_points)
+		weights[i] = np.sum(
+			[np.sqrt(np.sum(diff**2)) for diff in (centered_pts - proj_points)]
+		)  # np.linalg.norm(centered_pts - proj_points)
 
 	# assert np.all(G.A == G.A.T)
 	G = coo_matrix((v, (r, c)), shape=(X.shape[0], len(ind)), dtype=bool)

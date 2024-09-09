@@ -8,6 +8,7 @@ Functions to find minimum weight set covers.
 | --- | --- |
 | [cover.coverage](cover.coverage.qmd#geomcover.cover.coverage) | Returns the amount covered by each subset in the set of cover indices provided. |
 | [cover.valid_cover](cover.valid_cover.qmd#geomcover.cover.valid_cover) | Determines whether given sets form a *feasible* cover over the universe. |
+| [cover.set_cover](cover.set_cover.qmd#geomcover.cover.set_cover) | Computes an approximate solution to the weighted set cover problem. |
 | [cover.set_cover_greedy](cover.set_cover_greedy.qmd#geomcover.cover.set_cover_greedy) | Approximates the weighted set cover problem via _greedy steps_. |
 | [cover.set_cover_rr](cover.set_cover_rr.qmd#geomcover.cover.set_cover_rr) | Approximates the weighted set cover problem via _randomized rounding_. |
 | [cover.set_cover_ilp](cover.set_cover_ilp.qmd#geomcover.cover.set_cover_ilp) | Approximates the weighted set cover problem via _integer linear programming_. |
@@ -20,7 +21,7 @@ Standard linear algebra algorithms.
 | | |
 | --- | --- |
 | [linalg.pca](linalg.pca.qmd#geomcover.linalg.pca) | Projects `X` onto a `d`-dimensional linear subspace via Principal Component Analysis. |
-| [linalg.cmds](linalg.cmds.qmd#geomcover.linalg.cmds) | Projects `G` onto a `d`-dimensional linear subspace via Classical Multi-Dimensional Scaling. |
+| [linalg.cmds](linalg.cmds.qmd#geomcover.linalg.cmds) | Constructs coordinates from squared distances using Classical Multi-Dimensional Scaling. |
 
 ## Geometry (`geometry`)
 
@@ -28,8 +29,16 @@ Algorithms for computing information on manifolds.
 
 | | |
 | --- | --- |
-| [geometry.tangent_bundle](geometry.tangent_bundle.qmd#geomcover.geometry.tangent_bundle) | Estimates the tangent bundle of 'M' via local PCA on neighborhoods in `X`. |
+| [geometry.tangent_bundle](geometry.tangent_bundle.qmd#geomcover.geometry.tangent_bundle) | Estimates the tangent bundle of a range space (`X`,`M`) via local PCA. |
 | [geometry.bundle_weights](geometry.bundle_weights.qmd#geomcover.geometry.bundle_weights) | Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle. |
+
+## Cluster (`cluster`)
+
+Algorithms related to clustering points in metric spaces.
+
+| | |
+| --- | --- |
+| [cluster.mean_shift](cluster.mean_shift.qmd#geomcover.cluster.mean_shift) | Mean shift algorithm for clustering or smoothing points via kernel density estimation. |
 
 ## I/O (`io`)
 

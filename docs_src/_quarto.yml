@@ -48,6 +48,7 @@ quartodoc:
       contents:
         - cover.coverage
         - cover.valid_cover
+        - cover.set_cover
         - cover.set_cover_greedy
         - cover.set_cover_rr
         - cover.set_cover_ilp
@@ -62,6 +63,10 @@ quartodoc:
       contents: 
         - geometry.tangent_bundle
         - geometry.bundle_weights
+    - title: Cluster (`cluster`)
+      desc: Algorithms related to clustering points in metric spaces. 
+      contents: 
+        - cluster.mean_shift
     - title: I/O (`io`)
       desc: Algorithms for loading, parsing, and cleaning set cover data sets.
       contents: 
