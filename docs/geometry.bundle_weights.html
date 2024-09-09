@@ -289,13 +289,97 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./geometry.tangent_bundle.html">Geometry (<code>geometry</code>)</a></li><li class="breadcrumb-item"><a href="./geometry.bundle_weights.html">geometry.bundle_weights</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">geometry.bundle_weights</h1>
+</div>
 
 
 
-<section id="geomcover.geometry.bundle_weights" class="level1">
-<h1>geometry.bundle_weights</h1>
-<p><code>geometry.bundle_weights(M, TM, method, reduce, X=None)</code></p>
-<p>Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle.</p>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><code>geometry.bundle_weights(M, TM, method, reduce)</code></p>
+<p>Computes geometrically informative statistics about a given tangent bundle.</p>
+<p>This function computes a geometrically-derived statistic about a given tangent space <code>TM</code> using its neighborhood information. Such measures can at times be useful for constructing nerve complexes, removing outliers, detecting locally smooth areas, etc.</p>
+<p>The methods supported include ‘distance’, ‘cosine’, and ‘angle’, which do the following:</p>
+<pre><code>    * 'distance': Measures the distance from each neighborhood point to its projection onto the tangent space using the Euclidean norm.
+    * 'cosine': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the cosine distance. 
+    * 'angle': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the stiefel canonical metric. </code></pre>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 16%">
+<col style="width: 67%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>M</code></td>
+<td>sparray</td>
+<td>Sparse matrix whose columns represent subsets of <code>X</code>.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>TM</code></td>
+<td>list</td>
+<td>Tangent bundle, given as a list of <em>(base point, tangent vector)</em> pairs</td>
+<td><em>required</em></td>
+</tr>
+<tr class="odd">
+<td><code>method</code></td>
+<td>str</td>
+<td>geometric quantity to compute, one of <code>{'distance', 'cosine', 'angle'}</code>. Defaults to ‘cosine’.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>reduce</code></td>
+<td>Union[str, Callable]</td>
+<td>aggregation function to compute the final statistic. Defaults to the average (see details).</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level2">
+<h2 class="anchored" data-anchor-id="returns">Returns</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 86%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>np.ndarray</td>
+<td>the aggregate statistic for each tangent space, given as an array of weights.</td>
+</tr>
+</tbody>
+</table>
 
 
 </section>

@@ -1,5 +1,7 @@
-# io.load_set_cover { #geomcover.io.load_set_cover }
-
+---
+title: io.load_set_cover
+bread-crumbs: true
+---
 `io.load_set_cover(test_set)`
 
 Loads an instance of for testing weighted set cover algorithms.
@@ -16,4 +18,4 @@ The following test sets are available for testing.
 - 'toy':
 - 'camera_stadium':
 - 'mushroom': https://archive.ics.uci.edu/dataset/73/mushroom
-- 'scp*': Set cover problem instance from OR library.
+- 'scp*': Set cover problem instance from OR library.y.

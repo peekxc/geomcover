@@ -1,5 +1,7 @@
-# cluster.mean_shift { #geomcover.cluster.mean_shift }
-
+---
+title: cluster.mean_shift
+bread-crumbs: true
+---
 `cluster.mean_shift(P, Q=None, kernel='gaussian', bandwidth='scott', batch=25, maxiter=300, atol=1.1920929e-06, blur=False, callback=None)`
 
 Mean shift algorithm for clustering or smoothing points via kernel density estimation.
@@ -24,4 +26,4 @@ This functions repeatedly mean shifts points `P` with respect to reference point
 
 | Type       | Description                                              |
 |------------|----------------------------------------------------------|
-| np.ndarray | ndarray of shift points with the same dimensions as `P`. |
+| np.ndarray | ndarray of shift points with the same dimensions as `P`. |. |

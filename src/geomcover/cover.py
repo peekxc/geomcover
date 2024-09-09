@@ -414,9 +414,7 @@ def set_cover_sat(
 	return out if not full_output else out, dict(solver=solver, formula=wcnf, clauses=clauses)
 
 
-def set_cover(
-	subsets: sparray, weights: Optional[ArrayLike] = None, method: str = "RR", **kwargs: dict[str, Any]
-) -> tuple:  # type: ignore
+def set_cover(subsets: sparray, weights: Optional[ArrayLike] = None, method: str = "RR", **kwargs: dict) -> tuple:  # type: ignore
 	"""Computes an approximate solution to the weighted set cover problem.
 
 	This is essentially a lightweight wrapper around the various set cover implementations, which can be configured via

@@ -1,5 +1,7 @@
-# cover.set_cover_sat { #geomcover.cover.set_cover_sat }
-
+---
+title: cover.set_cover_sat
+bread-crumbs: true
+---
 `cover.set_cover_sat(subsets, weights=None, full_output=False, **kwargs)`
 
 Computes an approximate solution to the weighted set cover problem via *weighted MaxSAT*.
@@ -21,4 +23,4 @@ The default solver is the Relaxed Cardinality Constraint solver (RC2), with Bool
 
 | Type   | Description                                                                         |
 |--------|-------------------------------------------------------------------------------------|
-| tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |
+| tuple  | pair (s, c) where ``s`` is an array indicating cover membership and ``c`` its cost. |t. |

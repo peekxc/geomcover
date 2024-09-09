@@ -1,5 +1,7 @@
-# io.sets_to_sparse { #geomcover.io.sets_to_sparse }
-
+---
+title: io.sets_to_sparse
+bread-crumbs: true
+---
 `io.sets_to_sparse(S, reindex=False, form='csc')`
 
 Converts a collection of sets into a sparse array.
@@ -20,4 +22,4 @@ to map the elements to the base index set $[n] = {0, 1, ..., n - 1}$.
 
 | Type      | Description                             |
 |-----------|-----------------------------------------|
-| csc_array | sparse boolean array in canonical form. |
+| csc_array | sparse boolean array in canonical form. | |

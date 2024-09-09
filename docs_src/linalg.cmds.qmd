@@ -1,5 +1,7 @@
-# linalg.cmds { #geomcover.linalg.cmds }
-
+---
+title: linalg.cmds
+bread-crumbs: true
+---
 `linalg.cmds(D, d=2, coords=True)`
 
 Constructs coordinates from squared distances using Classical Multi-Dimensional Scaling.

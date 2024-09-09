@@ -1,5 +1,7 @@
-# io.to_canonical { #geomcover.io.to_canonical }
-
+---
+title: io.to_canonical
+bread-crumbs: true
+---
 `io.to_canonical(A, form='csc', copy=False)`
 
 Converts a sparse array into a supplied form, gauranteeing canonical format.

@@ -97,8 +97,27 @@ def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: Optional[np.n
 	return tangents
 
 
-def bundle_weights(M, TM, method: str, reduce: Union[str, Callable], X: Optional[ArrayLike] = None):
-	"""Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle."""
+def bundle_weights(M: sparray, TM: list, method: str, reduce: Union[str, Callable]) -> np.ndarray:
+	"""Computes geometrically informative statistics about a given tangent bundle.
+
+	This function computes a geometrically-derived statistic about a given tangent space `TM` using its neighborhood information. Such \
+	measures can at times be useful for constructing nerve complexes, removing outliers, detecting locally smooth areas, etc. 
+
+	The methods supported include 'distance', 'cosine', and 'angle', which do the following:
+	
+		* 'distance': Measures the distance from each neighborhood point to its projection onto the tangent space using the Euclidean norm.
+		* 'cosine': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the cosine distance. 
+		* 'angle': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the stiefel canonical metric. 
+
+	Parameters:
+		M: Sparse matrix whose columns represent subsets of `X`.
+		TM: Tangent bundle, given as a list of _(base point, tangent vector)_ pairs
+		method: geometric quantity to compute, one of `{'distance', 'cosine', 'angle'}`. Defaults to 'cosine'. 
+		reduce: aggregation function to compute the final statistic. Defaults to the average (see details).
+
+	Returns:
+		the aggregate statistic for each tangent space, given as an array of weights.
+	"""
 	A = M.tocoo()
 	assert method in {"distance", "cosine", "angle"}, f"Invalid method '{method!s}' supplied"
 	stat_f = getattr(np, reduce) if isinstance(reduce, str) else reduce

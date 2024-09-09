@@ -1,5 +1,7 @@
-# cover.set_cover_greedy { #geomcover.cover.set_cover_greedy }
-
+---
+title: cover.set_cover_greedy
+bread-crumbs: true
+---
 `cover.set_cover_greedy(subsets, weights=None)`
 
 Approximates the weighted set cover problem via _greedy steps_.
@@ -32,4 +34,4 @@ can be used used to generate a feasible solution to dual LP.
 ## References
 
 1. Feige, Uriel. "A threshold of ln n for approximating set cover." Journal of the ACM (JACM) 45.4 (1998): 634-652.
-2. [CS 583 notes by Chandra Chekuri](https://courses.grainger.illinois.edu/cs583/sp2018/Notes/covering.pdf)
+2. [CS 583 notes by Chandra Chekuri](https://courses.grainger.illinois.edu/cs583/sp2018/Notes/covering.pdf)ng.pdf)

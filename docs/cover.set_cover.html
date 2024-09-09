@@ -289,11 +289,25 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.coverage.html">Set Cover (<code>cover</code>)</a></li><li class="breadcrumb-item"><a href="./cover.set_cover.html">cover.set_cover</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">cover.set_cover</h1>
+</div>
 
 
 
-<section id="geomcover.cover.set_cover" class="level1">
-<h1>cover.set_cover</h1>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p><code>cover.set_cover(subsets, weights=None, method='RR', **kwargs)</code></p>
 <p>Computes an approximate solution to the weighted set cover problem.</p>
 <p>This is essentially a lightweight wrapper around the various set cover implementations, which can be configured via the <code>method</code> argument (supported options are {‘RR’, ‘GREEDY’, ‘ILP’, ‘SAT’}). All additional keyword-arguments are forwarded to their subsequent solvers.</p>
@@ -329,7 +343,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>**kwargs</code></td>
-<td>dict[str, Any]</td>
+<td>dict</td>
 <td>additional keyword arguments to pass to the solver.</td>
 <td><code>{}</code></td>
 </tr>
@@ -358,7 +372,6 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

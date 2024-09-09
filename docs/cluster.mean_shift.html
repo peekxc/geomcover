@@ -289,11 +289,25 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cluster.mean_shift.html">Cluster (<code>cluster</code>)</a></li><li class="breadcrumb-item"><a href="./cluster.mean_shift.html">cluster.mean_shift</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">cluster.mean_shift</h1>
+</div>
 
 
 
-<section id="geomcover.cluster.mean_shift" class="level1">
-<h1>cluster.mean_shift</h1>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p><code>cluster.mean_shift(P, Q=None, kernel='gaussian', bandwidth='scott', batch=25, maxiter=300, atol=1.1920929e-06, blur=False, callback=None)</code></p>
 <p>Mean shift algorithm for clustering or smoothing points via kernel density estimation.</p>
 <p>This functions repeatedly mean shifts points <code>P</code> with respect to reference points <code>Q</code>, returning the shifted points. If <code>Q</code> is not supplied the shift points are shifted w.r.t <code>P</code>, or the shift points themselves if <code>blur = True</code>, until either <code>maxiter</code> iterations is reached the distance shifted is less than <code>atol</code> (elementwise), whichever comes first.</p>
@@ -394,7 +408,6 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

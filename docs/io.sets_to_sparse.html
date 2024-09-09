@@ -175,6 +175,12 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./cover.set_cover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cover.set_cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./cover.set_cover_greedy.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">cover.set_cover_greedy</span></a>
   </div>
@@ -248,12 +254,29 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">I/O (<code>io</code>)</span></a>
+ <span class="menu-text">Cluster (<code>cluster</code>)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cluster.mean_shift.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cluster.mean_shift</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">I/O (<code>io</code>)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./io.load_set_cover.html" class="sidebar-item-text sidebar-link">
@@ -295,11 +318,25 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./io.load_set_cover.html">I/O (<code>io</code>)</a></li><li class="breadcrumb-item"><a href="./io.sets_to_sparse.html">io.sets_to_sparse</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">io.sets_to_sparse</h1>
+</div>
 
 
 
-<section id="geomcover.io.sets_to_sparse" class="level1">
-<h1>io.sets_to_sparse</h1>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p><code>io.sets_to_sparse(S, reindex=False, form='csc')</code></p>
 <p>Converts a collection of sets into a sparse array.</p>
 <p>This function converts a <code>Collection</code> of integer-valued sequences into a sparse matrix, where each column represents a set and each row represents an element. Optionally, if the sets themselves do not represent 0-based indices, you can set <code>reindex=True</code> to map the elements to the base index set <span class="math inline">\([n] = {0, 1, ..., n - 1}\)</span>.</p>
@@ -354,7 +391,6 @@ window.Quarto = {
 </table>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

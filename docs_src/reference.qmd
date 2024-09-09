@@ -30,7 +30,7 @@ Algorithms for computing information on manifolds.
 | | |
 | --- | --- |
 | [geometry.tangent_bundle](geometry.tangent_bundle.qmd#geomcover.geometry.tangent_bundle) | Estimates the tangent bundle of a range space (`X`,`M`) via local PCA. |
-| [geometry.bundle_weights](geometry.bundle_weights.qmd#geomcover.geometry.bundle_weights) | Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle. |
+| [geometry.bundle_weights](geometry.bundle_weights.qmd#geomcover.geometry.bundle_weights) | Computes geometrically informative statistics about a given tangent bundle. |
 
 ## Cluster (`cluster`)
 

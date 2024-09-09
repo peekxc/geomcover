@@ -1,5 +1,30 @@
-# geometry.bundle_weights { #geomcover.geometry.bundle_weights }
+---
+title: geometry.bundle_weights
+bread-crumbs: true
+---
+`geometry.bundle_weights(M, TM, method, reduce)`
 
-`geometry.bundle_weights(M, TM, method, reduce, X=None)`
+Computes geometrically informative statistics about a given tangent bundle.
 
-Computes a geometrically informative statistic on each tangent space estimate of a tangent bundle.
+This function computes a geometrically-derived statistic about a given tangent space `TM` using its neighborhood information. Such      measures can at times be useful for constructing nerve complexes, removing outliers, detecting locally smooth areas, etc. 
+
+The methods supported include 'distance', 'cosine', and 'angle', which do the following:
+
+        * 'distance': Measures the distance from each neighborhood point to its projection onto the tangent space using the Euclidean norm.
+        * 'cosine': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the cosine distance. 
+        * 'angle': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the stiefel canonical metric. 
+
+## Parameters
+
+| Name     | Type                   | Description                                                                                    | Default    |
+|----------|------------------------|------------------------------------------------------------------------------------------------|------------|
+| `M`      | sparray                | Sparse matrix whose columns represent subsets of `X`.                                          | _required_ |
+| `TM`     | list                   | Tangent bundle, given as a list of _(base point, tangent vector)_ pairs                        | _required_ |
+| `method` | str                    | geometric quantity to compute, one of `{'distance', 'cosine', 'angle'}`. Defaults to 'cosine'. | _required_ |
+| `reduce` | Union\[str, Callable\] | aggregation function to compute the final statistic. Defaults to the average (see details).    | _required_ |
+
+## Returns
+
+| Type       | Description                                                                   |
+|------------|-------------------------------------------------------------------------------|
+| np.ndarray | the aggregate statistic for each tangent space, given as an array of weights. |ights. |

@@ -1,5 +1,7 @@
-# io.sparse_to_sets { #geomcover.io.sparse_to_sets }
-
+---
+title: io.sparse_to_sets
+bread-crumbs: true
+---
 `io.sparse_to_sets(subsets, reindex=False)`
 
 Converts a collection of sets into a sparse CSC array.
@@ -20,4 +22,4 @@ set $[n] = {0, 1, ..., n - 1}$.
 
 | Type      | Description                                 |
 |-----------|---------------------------------------------|
-| csc_array | Collection of indices representing subsets. |
+| csc_array | Collection of indices representing subsets. | |
