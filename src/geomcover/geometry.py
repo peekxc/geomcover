@@ -8,7 +8,7 @@ from typing import Callable, Union, Optional
 import numpy as np
 from combin import inverse_choose
 from numpy.typing import ArrayLike
-from scipy.sparse import coo_array, coo_matrix, csr_array, find, sparray
+from scipy.sparse import coo_array, coo_matrix, csr_array, find, sparray, diags
 from scipy.spatial import Delaunay
 from scipy.spatial.distance import cdist
 
@@ -104,7 +104,7 @@ def bundle_weights(M: sparray, TM: list, method: str, reduce: Union[str, Callabl
 	measures can at times be useful for constructing nerve complexes, removing outliers, detecting locally smooth areas, etc. 
 
 	The methods supported include 'distance', 'cosine', and 'angle', which do the following:
-	
+
 		* 'distance': Measures the distance from each neighborhood point to its projection onto the tangent space using the Euclidean norm.
 		* 'cosine': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the cosine distance. 
 		* 'angle': Measures the distance from each neighborhood tangent vector to a fixed tangent vector using the stiefel canonical metric. 
@@ -186,7 +186,9 @@ def neighbor_graph_ball(
 		C.extend(ind[c])
 		V.extend(v.astype(dtype))
 	G = coo_matrix((V, (R, C)), shape=(n, n), dtype=dtype)
-	return to_canonical(G, form="csc", diag=True, symmetrize=False)
+	G = to_canonical(G, form="csc")
+	G += diags(np.ones(G.shape[0]))
+	return G
 
 
 def neighbor_graph_knn(
@@ -208,7 +210,9 @@ def neighbor_graph_knn(
 	R, C = np.array(R), np.array(C)
 	dtype = np.float32 if weighted else bool
 	G = coo_matrix((V, (R, C)), shape=(n, n), dtype=dtype)
-	return to_canonical(G, form="csc", diag=True, symmetrize=False)
+	G = to_canonical(G, form="csc")
+	G += diags(np.ones(G.shape[0]))
+	return G
 
 
 def neighbor_graph_del(X: ArrayLike, weighted: bool = False, **kwargs):
@@ -224,7 +228,8 @@ def neighbor_graph_del(X: ArrayLike, weighted: bool = False, **kwargs):
 	V = np.ones(len(R)) if not weighted else np.linalg.norm(X[R] - X[C], axis=1)
 	dtype = np.bool if not weighted else np.float32
 	G = coo_array((V, (R, C)), shape=(n, n), dtype=dtype)
-	return to_canonical(G, form="csc", diag=True, symmetrize=False)
+	G += diags(np.ones(G.shape[0]))
+	return G
 
 
 def tangent_neighbor_graph(X: ArrayLike, d: int, r: float, ind=None):

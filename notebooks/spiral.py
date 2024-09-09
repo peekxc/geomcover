@@ -4,7 +4,7 @@ from numpy import pi
 from bokeh.io import output_notebook
 from bokeh.plotting import figure, show
 from geomcover.geometry import tangent_bundle
-from geomcover.plotting import plot_tangent_bundle
+from geomcover.plotting import plot_nerve, plot_tangent_bundle
 
 output_notebook()
 
@@ -20,9 +20,9 @@ def spiral(N, sigma=1.0):
 
 # %% Data set
 X = spiral(N=300, sigma=0.50)
-p = figure(width=325, height=325, match_aspect=True)
-p.scatter(*X.T, size=4, color="red", line_color="gray")
-show(p)
+p1 = figure(width=325, height=325, match_aspect=True)
+p1.scatter(*X.T, size=4, color="blue", line_color="gray")
+show(p1)
 
 # %% First step: tangent bundle estimation
 from geomcover.geometry import neighbor_graph_knn
@@ -34,64 +34,77 @@ M = neighbor_graph_knn(X, k=15, weighted=False)
 TM = tangent_bundle(M=M, X=X, d=1, centers=X)
 
 ## Plot the bundle
-p = plot_tangent_bundle(TM, width=325, height=325, match_aspect=True)
-show(p)
+p2 = plot_tangent_bundle(TM, width=325, height=325, match_aspect=True)
+show(p2)
 
 ## Plot the cover
 # p = plot_nerve(M, X, width = 450, height = 150)
 # show(p)
 
 # %% Step 2: choose a bundle weighting scheme
-from set_cover.covers import bundle_weights
+from geomcover.geometry import bundle_weights
 from map2color import map2hex
 
-# TW = bundle_weights(M, TM, method="cosine", reduce=np.mean) # lambda x: np.ptp(x/2.0)
+# TW = bundle_weights(M, TM, method="cosine", reduce=np.mean)  # lambda x: np.ptp(x/2.0)
 # TW = bundle_weights(M, TM, method="distance", reduce=np.max)
 TW = bundle_weights(M, TM, method="angle", reduce=np.mean)  # uses Stiefel Canonical Metric
 
 (x, y), (xs, ys) = plot_tangent_bundle(TM, data=True, c=2.0)
-p = figure(width=350, height=350, match_aspect=True)
-p.multi_line(xs, ys, color=map2hex(TW, "viridis"))
-p.scatter(x, y, color=map2hex(TW, "viridis"), size=3.5, fill_alpha=1.0)
-show(p)
+p3 = figure(width=350, height=350, match_aspect=True)
+p3.multi_line(xs, ys, color=map2hex(TW, "viridis"))
+p3.scatter(x, y, color=map2hex(TW, "viridis"), size=3.5, fill_alpha=1.0)
+show(p3)
+
 
 # %% Step 3: form the minimal weight set cover
-from set_cover.wset_cover import wset_cover
+from geomcover.cover import set_cover
 
 TW_unit = np.ones(len(TW))
 
-cover, cover_weight = wset_cover(M, TW_unit, "greedy")
-cover, cover_weight = wset_cover(M, TW_unit, "LP", sparsity=0.25)
-cover, cover_weight = wset_cover(M, TW, "LP", sparsity=0.25)
-cover, cover_weight = wset_cover(M, TW, "sat")
-wset_cover(M, TW_unit, "sat")
+# cover, cover_weight = wset_cover(M, TW_unit, "greedy")
+# cover, cover_weight = wset_cover(M, TW_unit, "LP", sparsity=0.25)
+# cover, cover_weight = wset_cover(M, TW, "LP", sparsity=0.25)
 # cover, cover_weight = wset_cover(M, TW, "sat")
-cover_ind = np.flatnonzero(cover)
+# cover, cover_weight = set_cover(M, TW_unit, "ILP")
+# cover, cover_weight = wset_cover(M, TW, "sat")
+# cover_ind = np.flatnonzero(cover)
 # assert valid_cover(M, ind=np.flatnonzero(cover))
+cover, cover_weight = set_cover(M, TW, "ILP")
 
 xs_c, ys_c = list(np.array(xs)[cover]), list(np.array(ys)[cover])
-p = figure(width=350, height=350, match_aspect=True)
-p.scatter(*X[~cover].T, color="gray", size=4, line_color="gray", fill_alpha=0.50)
-p.scatter(*X[cover].T, color="red", size=5, line_color="black")
-p.multi_line(xs_c, ys_c, color="red", line_width=4)
-show(p)
+p4 = figure(width=350, height=350, match_aspect=True)
+p4.scatter(*X[~cover].T, color="gray", size=4, line_color="gray", fill_alpha=0.50)
+p4.scatter(*X[cover].T, color="red", size=5, line_color="black")
+p4.multi_line(xs_c, ys_c, color="red", line_width=3)
+show(p4)
 
-# %% Step 4: Tweak the weights to match what we want
-from scipy.stats import gaussian_kde
+# %%
+from bokeh.layouts import row
 
-kde = gaussian_kde(X.T)
-density = kde(X.T)
-alignment = bundle_weights(M, TM, method="angle", reduce=np.mean)
+show(row(p1, p2, p3, p4))
 
-normalize = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
-TW = 0.5 * normalize(alignment) + 0.5 * normalize(density)
 
-cover, cover_weight = wset_cover(M, TW, "LP")
-cover_ind = np.flatnonzero(cover)
+# %% Show nerve simplification
+X[cover]
 
-xs_c, ys_c = list(np.array(xs)[cover]), list(np.array(ys)[cover])
-p = figure(width=350, height=350, match_aspect=True)
-p.scatter(*X[~cover].T, color="gray", size=4, line_color="gray", fill_alpha=0.50)
-p.scatter(*X[cover].T, color="red", size=5, line_color="black")
-p.multi_line(xs_c, ys_c, color="red", line_width=4)
-show(p)
+show(plot_nerve(M, X))
+
+# # %% Step 4: Tweak the weights to match what we want
+# from scipy.stats import gaussian_kde
+
+# kde = gaussian_kde(X.T)
+# density = kde(X.T)
+# alignment = bundle_weights(M, TM, method="angle", reduce=np.mean)
+
+# normalize = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
+# TW = 0.5 * normalize(alignment) + 0.5 * normalize(density)
+
+# cover, cover_weight = wset_cover(M, TW, "LP")
+# cover_ind = np.flatnonzero(cover)
+
+# xs_c, ys_c = list(np.array(xs)[cover]), list(np.array(ys)[cover])
+# p = figure(width=350, height=350, match_aspect=True)
+# p.scatter(*X[~cover].T, color="gray", size=4, line_color="gray", fill_alpha=0.50)
+# p.scatter(*X[cover].T, color="red", size=5, line_color="black")
+# p.multi_line(xs_c, ys_c, color="red", line_width=4)
+# show(p)
