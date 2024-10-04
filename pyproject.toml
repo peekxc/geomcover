@@ -24,4 +24,9 @@ where = ["src"]
 
 [tool.pyright]
 venvPath = "~/opt/miniconda3/envs"
-venv = "spirit"
+venv = "default"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = ["tests"]

@@ -97,23 +97,23 @@ def mean_shift(
 ) -> np.ndarray:
 	"""Mean shift algorithm for clustering or smoothing points via kernel density estimation.
 
-	This functions repeatedly mean shifts points `P` with respect to reference points `Q`, returning the shifted points. \
-	If `Q` is not supplied the shift points are shifted w.r.t `P`, or the shift points themselves if `blur = True`, until \
-	either `maxiter` iterations is reached the distance shifted is less than `atol` (elementwise), whichever comes first. 
+	This functions repeatedly mean shifts points `P` with respect to reference points `Q`, returning the shifted points.
+	If `Q` is not supplied the shift points are shifted w.r.t `P`, or the shift points themselves if `blur = True`, until
+	either `maxiter` iterations is reached the distance shifted is less than `atol` (elementwise), whichever comes first.
 
 	Parameters:
-		P: points to shift, given as a 2d np.array. 
-		Q: reference points to shift `P` with respect to. Defaults to `P` itself. 
-		kernel: kernel function to use. Only "gaussian" is supported for now. 
+		P: points to shift, given as a 2d np.array.
+		Q: reference points to shift `P` with respect to. Defaults to `P` itself.
+		kernel: kernel function to use. Only "gaussian" is supported for now.
 		bandwidth: smoothing parameter for the kernel.
-		batch: number of points to apply the shift to at once. See details. 
-		maxiter: maximum number of times to apply a the shift to a point. Can be `None` or `np.inf` to 
+		batch: number of points to apply the shift to at once. See details.
+		maxiter: maximum number of times to apply a the shift to a point. Can be `None` or `np.inf` to
 		atol: absolute tolerance with which to consider a point as converged between iterations.
-		blur: whether to apply the blurring mean shift operation. See details. 
+		blur: whether to apply the blurring mean shift operation. See details.
 		callback: callable to execute after each iteration.
 
 	Returns:
-		ndarray of shift points with the same dimensions as `P`. 
+		ndarray of shift points with the same dimensions as `P`.
 	"""
 	assert not (blur) or Q is None, "`Q` cannot be supplied when `blur = True`."
 	assert kernel == "gaussian", "Only Gaussian kernels are supported currently"

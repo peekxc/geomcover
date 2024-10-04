@@ -52,8 +52,6 @@ def plot_nerve(M, X, **kwargs):
 	from bokeh.plotting import figure  # noqa: PLC0415
 
 	A = M.tocoo()
-	# st = SimplexTree(zip(A.row, A.col))
-	# st.expand(5)
 	xs = list(zip(X[A.row, 0], X[A.col, 0]))
 	ys = list(zip(X[A.row, 1], X[A.col, 1]))
 	p = figure(**kwargs)

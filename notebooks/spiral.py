@@ -31,7 +31,7 @@ from geomcover.geometry import neighbor_graph_knn
 n = len(X)
 # M = neighbor_graph_ball(X, radius=1.00)
 M = neighbor_graph_knn(X, k=15, weighted=False)
-TM = tangent_bundle(M=M, X=X, d=1, centers=X)
+TM = tangent_bundle(X=X, M=M, d=1, centers=X)
 
 ## Plot the bundle
 p2 = plot_tangent_bundle(TM, width=325, height=325, match_aspect=True)

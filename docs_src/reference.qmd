@@ -6,7 +6,7 @@ Functions to find minimum weight set covers.
 
 | | |
 | --- | --- |
-| [cover.coverage](cover.coverage.qmd#geomcover.cover.coverage) | Returns the amount covered by each subset in the set of cover indices provided. |
+| [cover.coverage](cover.coverage.qmd#geomcover.cover.coverage) | Returns each elements coverage by the sets given by `ind`. |
 | [cover.valid_cover](cover.valid_cover.qmd#geomcover.cover.valid_cover) | Determines whether given sets form a *feasible* cover over the universe. |
 | [cover.set_cover](cover.set_cover.qmd#geomcover.cover.set_cover) | Computes an approximate solution to the weighted set cover problem. |
 | [cover.set_cover_greedy](cover.set_cover_greedy.qmd#geomcover.cover.set_cover_greedy) | Approximates the weighted set cover problem via _greedy steps_. |

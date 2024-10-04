@@ -1,7 +1,5 @@
----
-title: geometry.tangent_bundle
-bread-crumbs: true
----
+# geometry.tangent_bundle { #geomcover.geometry.tangent_bundle }
+
 `geometry.tangent_bundle(M, X, d=2, centers=None)`
 
 Estimates the tangent bundle of a range space (`X`,`M`) via local PCA.
@@ -23,4 +21,4 @@ in the direction given by the principle directions.
 
 | Type   | Description                                                           |
 |--------|-----------------------------------------------------------------------|
-| dict   | list of *tangent pairs*, i.e. base points paired with tangent vector. |ector. |
+| dict   | list of *tangent pairs*, i.e. base points paired with tangent vector. |

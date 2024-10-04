@@ -69,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -294,10 +323,72 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="geomcover.cover.coverage" class="level1">
 <h1>cover.coverage</h1>
-<p><code>cover.coverage(subsets, ind=None)</code></p>
-<p>Returns the amount covered by each subset in the set of cover indices provided.</p>
+<p><code>cover.coverage(subsets, ind=None, weights=None)</code></p>
+<p>Returns each elements coverage by the sets given by <code>ind</code>.</p>
+<p>The <em>coverage</em> of a element <span class="math inline">\(e \in U\)</span> in universe <span class="math inline">\(U\)</span> is defined as the weighted sum: <span class="math display">\[ \mathrm{coverage}(e) = \sum_{s \in S} w(s) \cdot \mathbf{1}(e \in s) \]</span> where <span class="math inline">\(w(s)\)</span> is the weight of set <span class="math inline">\(s \in S\)</span>. In the unweighted setting, the coverage is of an element is equal to number of sets containing it.</p>
+<p>This function specialized the coverage computation efficiently for a variety of common sparse matrix formats., and can be used to quickly verify a family of sets satisfies the covering property.</p>
+<section id="parameters" class="level2">
+<h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 17%">
+<col style="width: 65%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>subsets</code></td>
+<td>sparray</td>
+<td>(n x J) sparse matrix describing a set family of <code>J</code> sets covering <code>n</code> elements.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td><code>ind</code></td>
+<td>Optional[np.ndarray]</td>
+<td>indices indicating which subsets to restrict too. By default, all sets are considered.</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns" class="level2">
+<h2 class="anchored" data-anchor-id="returns">Returns</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 87%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>np.ndarray</td>
+<td>the coverage of all elements in the sets specified by <code>ind</code>, or all sets otherwise.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="see-also" class="level2">
+<h2 class="anchored" data-anchor-id="see-also">See Also</h2>
+<ul>
+<li>valid_cover</li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

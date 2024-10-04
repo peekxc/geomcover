@@ -1,10 +1,12 @@
----
-title: cover.valid_cover
-bread-crumbs: true
----
+# cover.valid_cover { #geomcover.cover.valid_cover }
+
 `cover.valid_cover(subsets, ind=None)`
 
 Determines whether given sets form a *feasible* cover over the universe.
+
+This function is used to check whether a set family fully contains its universe of elements, i.e.
+forms a cover over its elements. This effectively reduces to ensuring the `coverage` of each
+element is strictly positive.
 
 ## Parameters
 
@@ -17,4 +19,4 @@ Determines whether given sets form a *feasible* cover over the universe.
 
 | Type   | Description                                                                    |
 |--------|--------------------------------------------------------------------------------|
-| bool   | a boolean indicating whether the subsets indexed by `ind` cover every element. | |
+| bool   | a boolean indicating whether the subsets indexed by `ind` cover every element. |

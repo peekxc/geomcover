@@ -69,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -289,28 +318,16 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cover.coverage.html">Set Cover (<code>cover</code>)</a></li><li class="breadcrumb-item"><a href="./cover.set_cover_sat.html">cover.set_cover_sat</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">cover.set_cover_sat</h1>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<section id="geomcover.cover.set_cover_sat" class="level1">
+<h1>cover.set_cover_sat</h1>
 <p><code>cover.set_cover_sat(subsets, weights=None, full_output=False, **kwargs)</code></p>
 <p>Computes an approximate solution to the weighted set cover problem via <em>weighted MaxSAT</em>.</p>
-<p>This function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance, which is known to achieve at least an (8/7)-approximation of the optimal solution.</p>
+<p>This function converts the problem of finding a minimum weight set cover to a weighted MaxSAT instance:</p>
+<p><span class="math display">\[ \max_{\mathcal{C} \subseteq \mathcal{S}} \sum_{S_i \in \mathcal{C}} -w_i x_i \quad \text{subject to} \quad \bigvee_{x_i \in N_j} x_i = 1 \quad \forall j \in U \]</span></p>
+<p>where <span class="math inline">\(x_i \in \{0,1\}\)</span> is an indicator of cover membership and <span class="math inline">\(N_j\)</span> represents the subsets of <span class="math inline">\(\mathcal{S}\)</span> that the element <span class="math inline">\(j \in U\)</span> intersects. The MaxSAT approximation is known to achieve at least an (8/7)-approximation of the optimal solution.</p>
 <p>The default solver is the Relaxed Cardinality Constraint solver (RC2), with Boolean lexicographic optimization (BLO) stratification options turned on. RC2 requires <code>python-sat</code> to be installed.</p>
 <section id="parameters" class="level2">
 <h2 class="anchored" data-anchor-id="parameters">Parameters</h2>
@@ -379,6 +396,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

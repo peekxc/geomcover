@@ -40,14 +40,16 @@ def test_setcover():
 def test_coverage():
 	## From: https://optimization.cbe.cornell.edu/index.php?title=Set_covering_problem
 	subsets, weights = load_set_cover("camera_stadium")
-	assert np.all(coverage(subsets) == subsets.sum(axis=1))
-	assert np.all(coverage(subsets, ind=[0, 1, 2]) == subsets.todense()[:, [0, 1, 2]].sum(axis=1))
-	assert np.min(coverage(subsets)) <= 1
-	soln, cost = set_cover(subsets, weights, "ilp")
-	soln_ind = np.flatnonzero(soln)
-	assert cost == 4
-	assert np.min(coverage(subsets, soln_ind)) >= 1
-	assert np.all(soln_ind == np.array([1, 2, 3, 4])) or np.all(soln_ind == np.array([0, 2, 4, 5]))
+	for form in ["csr", "csc", "coo", "bsr", "lil"]:
+		subsets = getattr(subsets, "to" + form)()
+		assert np.all(coverage(subsets) == subsets.sum(axis=1))
+		assert np.all(coverage(subsets, ind=[0, 1, 2]) == subsets.todense()[:, [0, 1, 2]].sum(axis=1))
+		assert np.min(coverage(subsets)) <= 1
+		soln, cost = set_cover(subsets, weights, "ilp")
+		soln_ind = np.flatnonzero(soln)
+		assert cost == 4
+		assert np.min(coverage(subsets, soln_ind)) >= 1
+		assert np.all(soln_ind == np.array([1, 2, 3, 4])) or np.all(soln_ind == np.array([0, 2, 4, 5]))
 
 
 def test_medium():

@@ -23,7 +23,7 @@ show(p1)
 ## Our manifold will be the simple cycle graph (+ identity)
 n = len(x)
 M = cycle_graph(n, k=7) + dia_array(np.eye(n))
-TM = tangent_bundle(M=M, X=X, d=1, centers=X)
+TM = tangent_bundle(X=X, M=M, d=1, centers=X)
 
 # %% Plot the bundle
 p2 = plot_tangent_bundle(TM, width=325, height=325, match_aspect=True)
@@ -64,3 +64,38 @@ show(p5)
 from bokeh.layouts import row
 
 show(row(p1, p2, p3, p4, p5))
+
+
+# %% Dense point example - demonstrates
+# - Start with like 1.5k points around the circle
+# - Keep kNN graph with k = 5 to determine tangent space estimates
+# - Parameterize the set cover via r-distance to each points tangent space
+# 	- when r = 0, each set is a singleton
+# 	- when r >= diam(X) each set contains all the points
+# 	- for 0 < r < diam(X), the goal reduces to determining a minimal weight SC
+# - Ideally, the PH in dim-1 of the nerves for most 0 < r < diam(X) (under diameter function?)
+#   will have closer wasserstein distance to the rips-PH of X than successive landmarking does
+# How do we measure? via number of vertices in the nerve? Or via eps-distance?
+from geomcover.csgraph import cycle_graph
+from geomcover.geometry import tangent_bundle
+
+n = 128
+x = np.cos(np.linspace(0, 2 * np.pi, n, endpoint=False))
+y = np.sin(np.linspace(0, 2 * np.pi, n, endpoint=False))
+X = np.c_[x, y]
+C = cycle_graph(n, k=5)
+TM = tangent_bundle(X, C)
+
+## project onto the tangent vectors
+TM[0].tangent_vec
+from geomcover.geometry import project_tangent_space
+
+c = project_tangent_space(X[0], TM[0])
+
+
+p = figure(width=250, height=250)
+p.scatter(*X.T)
+p.scatter(*c)
+show(p)
+
+# from sklearn.manifold import PCA

@@ -1,5 +1,30 @@
 # cover.coverage { #geomcover.cover.coverage }
 
-`cover.coverage(subsets, ind=None)`
+`cover.coverage(subsets, ind=None, weights=None)`
 
-Returns the amount covered by each subset in the set of cover indices provided.
+Returns each elements coverage by the sets given by `ind`.
+
+The _coverage_ of a element $e \in U$ in universe $U$ is defined as the weighted sum:
+$$ \mathrm{coverage}(e) = \sum_{s \in S} w(s) \cdot \mathbf{1}(e \in s) $$
+where $w(s)$ is the weight of set $s \in S$. In the unweighted setting, the coverage is of an element is equal to
+number of sets containing it.
+
+This function specialized the coverage computation efficiently for a variety of common sparse matrix formats., and can
+be used to quickly verify a family of sets satisfies the covering property.
+
+## Parameters
+
+| Name      | Type                   | Description                                                                            | Default    |
+|-----------|------------------------|----------------------------------------------------------------------------------------|------------|
+| `subsets` | sparray                | (n x J) sparse matrix describing a set family of `J` sets covering `n` elements.       | _required_ |
+| `ind`     | Optional\[np.ndarray\] | indices indicating which subsets to restrict too. By default, all sets are considered. | `None`     |
+
+## Returns
+
+| Type       | Description                                                                         |
+|------------|-------------------------------------------------------------------------------------|
+| np.ndarray | the coverage of all elements in the sets specified by `ind`, or all sets otherwise. |
+
+## See Also
+
+- valid_cover

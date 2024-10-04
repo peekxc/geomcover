@@ -32,26 +32,56 @@ def _validate_inputs(
 ## https://people.brunel.ac.uk/~mastjjb/jeb/orlib/scpinfo.html
 ## https://algnotes.info/on/obliv/lagrangian/set-cover-fractional/
 ## NOTE: This function originally used `sortednp` kway_merge, but this ended up being slower
-def coverage(subsets: sparray, ind: Optional[np.ndarray] = None) -> np.ndarray:
-	"""Returns the amount covered by each subset in the set of cover indices provided."""
+def coverage(subsets: sparray, ind: Optional[np.ndarray] = None, weights: Optional[np.ndarray] = None) -> np.ndarray:
+	r"""Returns each elements coverage by the sets given by `ind`.
+
+	The _coverage_ of a element $e \in U$ in universe $U$ is defined as the weighted sum:
+	$$ \mathrm{coverage}(e) = \sum_{s \in S} w(s) \cdot \mathbf{1}(e \in s) $$
+	where $w(s)$ is the weight of set $s \in S$. In the unweighted setting, the coverage is of an element is equal to
+	number of sets containing it.
+
+	This function specialized the coverage computation efficiently for a variety of common sparse matrix formats., and can
+	be used to quickly verify a family of sets satisfies the covering property.
+
+	Parameters:
+		subsets: (n x J) sparse matrix describing a set family of `J` sets covering `n` elements.
+		ind: indices indicating which subsets to restrict too. By default, all sets are considered.
+
+	Returns:
+		the coverage of all elements in the sets specified by `ind`, or all sets otherwise.
+
+	See Also:
+		- valid_cover
+	"""
 	class_name = type(subsets).__name__
+	weights = np.asarray(weights) if weights is not None else weights
 	if ind is not None:
 		ind = np.flatnonzero(ind) if (len(ind) == subsets.shape[1] and ind.dtype == bool) else ind
 	if "coo" in class_name:
 		covered = np.zeros(subsets.shape[0], dtype=np.int64)
 		mask = Ellipsis if ind is None else np.isin(subsets.col, ind)
-		np.add.at(covered, subsets.row[mask], 1)
-	elif "lil" in class_name:
-		covered = subsets.sum(axis=1) if ind is None else subsets[:, ind].sum(axis=1)  # equiv, 5.9s
-	else:
+		row_ind = subsets.row[mask]
+		data = 1 if weights is None else weights[row_ind]
+		np.add.at(covered, row_ind, data)
+		return covered
+	elif "lil" in class_name and weights is None:
+		return subsets.sum(axis=1) if ind is None else subsets[:, ind].sum(axis=1)  # equiv, 5.9s
+	# elif "csr" in class_name and weights is None:
+	# 	return subsets.sum(axis=1) if ind is None else np.diff(subsets.indptr)[ind].ravel()
+	elif weights is None:
 		z = np.zeros(subsets.shape[1], dtype=np.int64)
 		z[ind] = 1
-		covered = subsets @ z
-	return covered
+		return subsets @ z
+	else:
+		return coverage(subsets.tocoo(), ind, weights)
 
 
 def valid_cover(subsets: sparray, ind: Optional[np.ndarray] = None) -> bool:
 	"""Determines whether given sets form a *feasible* cover over the universe.
+
+	This function is used to check whether a set family fully contains its universe of elements, i.e.
+	forms a cover over its elements. This effectively reduces to ensuring the `coverage` of each
+	element is strictly positive.
 
 	Parameters:
 		subsets: (n x J) sparse matrix describing `J` sets covering `n` elements.
@@ -60,7 +90,7 @@ def valid_cover(subsets: sparray, ind: Optional[np.ndarray] = None) -> bool:
 	Returns:
 		a boolean indicating whether the subsets indexed by `ind` cover every element.
 	"""
-	return np.min(coverage(subsets, ind)) > 0
+	return bool(np.min(coverage(subsets, ind)) > 0)
 
 
 # Adapted from: http://www.martinbroadhurst.com/greedy-set-cover-in-python.html
@@ -176,12 +206,14 @@ def _maxsat_wcnf(subsets: csc_matrix, weights: np.ndarray):
 def set_cover_greedy(subsets: sparray, weights: Optional[ArrayLike] = None) -> tuple:
 	r"""Approximates the weighted set cover problem via _greedy steps_.
 
-	This function iteratively constructs a set cover by choosing the set that covers the largest number
-	of yet uncovered elements with the least weight.
+	This function iteratively constructs a set cover $\mathcal{C} \subseteq \mathcal{S}$ by choosing the set that 
+	covers the largest number of uncovered elements with the least weight:
 
-	The greedy strategy is a very fast SC algorithm, though counter-examples have demonstrated the method
-	can produce poor covers on certain pathological inputs. It has been shown that the algorithm has a
-	worst-case multiplicative $\log(n + 1)$-approximation factor [1].
+	$$ \min_{S_i \in \mathcal{S}} \; w_i \, / \, \lvert S_i \cap \mathcal{C}' \rvert, \quad \mathcal{C}' = U \setminus \mathcal{C} $$
+
+	It has been shown that the algorithm has a worst-case multiplicative $\log(n + 1)$-approximation factor [1].
+	The greedy strategy is a very fast SC algorithm, though counter-examples have demonstrated the method can produce poor 
+	covers on certain pathological inputs. 
 
 	Parameters:
 		subsets: (n x J) sparse matrix of ``J`` subsets whose union forms a cover over ``n`` points.
@@ -228,7 +260,7 @@ def set_cover_rr(
 
 	The minimum-cost fractional cover is obtained by solving the following linear program:
 
-	$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in C} s_j \cdot w_j  \\
+	$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in [J]} s_j \cdot w_j  \\
 	\text{s.t.} \quad & \sum\limits_{j \in N_i}  s_j  \geq 1, \quad \forall \, i \in [n] \\
 	& s_j \in [0, 1], \quad \forall \, j \in [J]\end{align*}$$
 
@@ -309,7 +341,7 @@ def set_cover_ilp(subsets: sparray, weights: Optional[ArrayLike] = None, solver:
 	This function attempts to directly solve weighted set cover problem by reducing it to 
 	the following mixed-integer linear program:
 
-	$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in C} s_j \cdot w_j  \\
+	$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in [J]} s_j \cdot w_j  \\
 	\text{s.t.} \quad & \sum\limits_{j \in N_i}  s_j  \geq 1, \quad \forall \, i \in [n] \\
 	& s_j \in \{0, 1\}, \quad \forall \, j \in [J]\end{align*}$$
 
@@ -330,7 +362,7 @@ def set_cover_ilp(subsets: sparray, weights: Optional[ArrayLike] = None, solver:
 		- [Mixed-integer program](scipy.optimize.milp)
 	"""
 	subsets, weights = _validate_inputs(subsets, weights)
-	assert solver.lower() in MIP_solvers, f"Unknown solver supplied '{solver}'; must be one of {str(MIP_solvers)}"
+	assert solver.lower() in MIP_solvers, f"Unknown solver supplied '{solver}'; must be one of {MIP_solvers}"
 	if solver == "highs":
 		from scipy.optimize import LinearConstraint, milp  # noqa: PLC0415
 
@@ -375,13 +407,17 @@ def set_cover_ilp(subsets: sparray, weights: Optional[ArrayLike] = None, solver:
 def set_cover_sat(
 	subsets: sparray, weights: Optional[ArrayLike] = None, full_output: bool = False, **kwargs: dict
 ) -> tuple:
-	"""Computes an approximate solution to the weighted set cover problem via *weighted MaxSAT*.
+	r"""Computes an approximate solution to the weighted set cover problem via *weighted MaxSAT*.
 
-	This function converts the problem of finding a minimal weight set cover to a weighted MaxSAT instance, \
-	which is known to achieve at least an (8/7)-approximation of the optimal solution.
+	This function converts the minimum weight set cover to a weighted MaxSAT instance:
 
-	The default solver is the Relaxed Cardinality Constraint solver (RC2), with Boolean lexicographic optimization \
-	(BLO) stratification options turned on. RC2 requires `python-sat` to be installed.
+	$$ \max_{\mathcal{C} \subseteq \mathcal{S}} \sum_{S_i \in \mathcal{C}} -w_i x_i \quad \text{subject to} \quad \bigvee_{x_i \in N_j} x_i = 1 \quad \forall j \in U $$
+
+	where $x_i \in \{0,1\}$ is an indicator of cover membership and $N_j$ represents the subsets of $\mathcal{S}$ that
+	the element $j \in U$ intersects. The MaxSAT approximation is known to achieve at least an (8/7)-approximation of the optimal solution.
+
+	The default solver is the Relaxed Cardinality Constraint solver (RC2), with Boolean lexicographic optimization (BLO)
+	stratification options turned on. RC2 requires `python-sat` to be installed.
 
 	Parameters:
 		subsets: (n x J) sparse matrix of J subsets whose union forms a cover over n points.
@@ -415,10 +451,15 @@ def set_cover_sat(
 
 
 def set_cover(subsets: sparray, weights: Optional[ArrayLike] = None, method: str = "RR", **kwargs: dict) -> tuple:  # type: ignore
-	"""Computes an approximate solution to the weighted set cover problem.
+	r"""Computes an approximate solution to the weighted set cover problem.
+
+	Given a family of sets $\mathcal{S}$ and set weights $w \in \mathbb{R}^{\lvert \mathcal{S} \rvert}$, this function attempts
+	to find a set family $\mathcal{C} \subseteq \mathcal{S}$ covering the universe $U = \{0, 1, \dots, n - 1\}$ and having minimum total weight:
+
+	$$ \min_{\mathcal{C} \subseteq \mathcal{S}} \; \sum_{S_i \in \mathcal{C}} w_i \quad \text{ subject to } \quad \bigcup_{S_i \in \mathcal{C}} = U $$
 
 	This is essentially a lightweight wrapper around the various set cover implementations, which can be configured via
-	the `method` argument (supported options are {'RR', 'GREEDY', 'ILP', 'SAT'}). All additional keyword-arguments are
+	the `method` argument (supported options are 'RR', 'GREEDY', 'ILP', 'SAT'). All additional keyword-arguments are
 	forwarded to their subsequent solvers.
 
 	Parameters:

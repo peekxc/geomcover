@@ -1,5 +1,6 @@
 """I/O related functions for loading set cover instance problems or converting them to canonical formats."""
 
+import os
 import importlib
 import re
 from array import array
@@ -169,14 +170,17 @@ def load_set_cover(test_set: str) -> tuple:
 	if test_set.lower() in {"camera_stadium", "camera stadium"}:
 		A = csc_array(CAMERA_STADIUM.reshape((15, 8)))
 		set_weights = np.ones(A.shape[1])
-	elif test_set.lower() == "toy1":
+	elif test_set.lower() == "toy":
 		A = sets_to_sparse(TOYSET1, reindex=True)
 		set_weights = np.ones(A.shape[1])
 	elif test_set.lower() == "mushroom":
-		with resources.path("geomcover.data", "mushroom.dat") as fn:
-			sets = np.loadtxt(fn)
-			A = sets_to_sparse(sets, reindex=True)
-			set_weights = np.ones(A.shape[1])
+		if hasattr(resources, "files"):
+			fn = os.path.join(resources.files("geomcover.data"), "mushroom.dat")
+		else:
+			fn = resources.path("geomcover.data", "mushroom.dat")
+		sets = np.loadtxt(fn)
+		A = sets_to_sparse(sets, reindex=True)
+		set_weights = np.ones(A.shape[1])
 	elif test_set.lower() in OR_TEST_FILES:
 		data = urlopen(f"https://people.brunel.ac.uk/~mastjjb/jeb/orlib/files/{test_set.lower()}.txt")
 		lines = data.readlines()

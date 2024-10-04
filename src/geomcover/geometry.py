@@ -58,7 +58,7 @@ def is_point_cloud(x: ArrayLike) -> bool:
 # 	return G.tocsc()
 
 
-def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: Optional[np.ndarray] = None) -> dict:
+def tangent_bundle(X: np.ndarray, M: sparray, d: int = 2, centers: Optional[np.ndarray] = None) -> dict:
 	"""Estimates the tangent bundle of a range space (`X`,`M`) via local PCA.
 
 	This function estimates the `d`-dimensional tangent spaces of neighborhoods in `X` given by ranges in `M`.
@@ -66,8 +66,8 @@ def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: Optional[np.n
 	in the direction given by the principle directions.
 
 	Parameters:
-		M: Sparse matrix whose columns represent subsets of `X`.
-		X: coordinates of the range space.
+		X: coordinates of points.
+		M: Sparse matrix whose columns represent neighborhood in `X`.
 		d: dimension of the tangent space.
 		centers: points to center the tangent space estimates. If `None`, each neighborhoods is centered around its average.
 
@@ -97,7 +97,20 @@ def tangent_bundle(M: sparray, X: np.ndarray, d: int = 2, centers: Optional[np.n
 	return tangents
 
 
-def bundle_weights(M: sparray, TM: list, method: str, reduce: Union[str, Callable]) -> np.ndarray:
+def project_tangent_space(x: np.ndarray, tangent_pair):
+	"""Projects points `X` onto tangent space `TM`"""
+	# base_points = np.array([p for p, v in TM])  # n x D
+	# tangent_vec = np.array([v.T.flatten() for p, v in TM])  # n x D x d
+	projections = []
+	# for j, (pt, T_y) in enumerate(TM):
+	# for x in X:
+	pt, T_y = tangent_pair
+	tangent_inner_prod = (x - pt).dot(T_y)
+	proj_coords = pt + T_y * tangent_inner_prod[:, np.newaxis]
+	return proj_coords
+
+
+def bundle_weights(M: sparray, TM: list, method: str = "cosine", reduce: Union[str, Callable] = np.mean) -> np.ndarray:
 	"""Computes geometrically informative statistics about a given tangent bundle.
 
 	This function computes a geometrically-derived statistic about a given tangent space `TM` using its neighborhood information. Such \
@@ -112,7 +125,7 @@ def bundle_weights(M: sparray, TM: list, method: str, reduce: Union[str, Callabl
 	Parameters:
 		M: Sparse matrix whose columns represent subsets of `X`.
 		TM: Tangent bundle, given as a list of _(base point, tangent vector)_ pairs
-		method: geometric quantity to compute, one of `{'distance', 'cosine', 'angle'}`. Defaults to 'cosine'. 
+		method: geometric quantity to compute, one of 'distance', 'cosine', or 'angle'. Defaults to 'cosine'. 
 		reduce: aggregation function to compute the final statistic. Defaults to the average (see details).
 
 	Returns:
@@ -171,7 +184,7 @@ def bundle_weights(M: sparray, TM: list, method: str, reduce: Union[str, Callabl
 def neighbor_graph_ball(
 	X: ArrayLike, radius: float, batch: int = 15, metric: str = "euclidean", weighted: bool = False, **kwargs
 ):
-	"""Constructs a neighborhood graph by via the nerve of the union of balls centered at `X`."""
+	"""Constructs a neighborhood graph via the nerve of the union of balls centered at `X`."""
 	from array import array
 
 	n = len(X)
@@ -194,7 +207,7 @@ def neighbor_graph_ball(
 def neighbor_graph_knn(
 	X: ArrayLike, k: int, batch: int = 15, metric: str = "euclidean", weighted: bool = False, diag: bool = False, **kwargs
 ):
-	"""Empty."""
+	"""Forms a neighborhood graph by the k-nearest neighbors of a point."""
 	from array import array
 
 	n = len(X)
@@ -216,7 +229,7 @@ def neighbor_graph_knn(
 
 
 def neighbor_graph_del(X: ArrayLike, weighted: bool = False, **kwargs):
-	"""Empty."""
+	"""Forms a neighborhood graph by constructing the 1-skeleton of the Delaunay triangulation."""
 	from array import array
 
 	n = len(X)

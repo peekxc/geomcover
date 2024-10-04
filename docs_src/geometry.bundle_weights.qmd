@@ -1,7 +1,5 @@
----
-title: geometry.bundle_weights
-bread-crumbs: true
----
+# geometry.bundle_weights { #geomcover.geometry.bundle_weights }
+
 `geometry.bundle_weights(M, TM, method, reduce)`
 
 Computes geometrically informative statistics about a given tangent bundle.
@@ -27,4 +25,4 @@ The methods supported include 'distance', 'cosine', and 'angle', which do the fo
 
 | Type       | Description                                                                   |
 |------------|-------------------------------------------------------------------------------|
-| np.ndarray | the aggregate statistic for each tangent space, given as an array of weights. |ights. |
+| np.ndarray | the aggregate statistic for each tangent space, given as an array of weights. |

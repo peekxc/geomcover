@@ -1,17 +1,26 @@
 import numpy as np
 from itertools import islice, cycle, chain, combinations
 from typing import Iterable, Generator, Sequence
-from scipy.sparse import coo_array
+from scipy.sparse import coo_array, sparray
+from numbers import Integral
+
+import geomcover
+from geomcover import cover
 
 
 def sliding_window(S: Iterable, n: int = 2) -> Generator:
-	"""Generates a sliding window of width n from the iterable.
+	"""Generates a sliding window of width `n` from the iterable `S`.
 
-	This function maps a m-length sequence 's' to a generator of tuples:
+	This function maps a m-length sequence `S` to a generator of tuples:
 
 	  s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ..., (s[m-n],s[m-n+1],...,sm)
 
+	If the window size is larger than the iterable, the Generator will be empty.
+
+	Parameters:
+		S
 	"""
+	assert isinstance(n, Integral) and n >= 1
 	it = iter(S)
 	result = tuple(islice(it, n))
 	if len(result) == n:
@@ -53,3 +62,27 @@ def path_graph(n: int, k: int = 2):
 	G = coo_array((np.ones(len(E), dtype=bool), (E[:, 0], E[:, 1])), shape=(n, n))
 	G = G + G.T
 	return G
+
+
+def nerve_complex(subsets: sparray, ind: np.ndarray, dim: int = 1):
+	# subsets = M
+	# ind = cover_ind
+	from geomcover.cover import coverage, valid_cover
+
+	## Use the definition of the laplacian to construct the edges
+	assert valid_cover(subsets, ind), "Must be a valid cover"
+	nerve_cover = subsets.tolil()[:, ind]
+	nerve_laplacian = nerve_cover.T @ nerve_cover
+	nerve_laplacian = nerve_laplacian.tocoo()
+
+	from simplextree import SimplexTree
+
+	st = SimplexTree()
+	if dim >= 0:
+		st.insert([[v] for v in range(len(ind))])
+	if dim >= 1:
+		st.insert(zip(nerve_laplacian.row, nerve_laplacian.col))
+	if dim >= 2:
+		nonempty_intersect = lambda s: bool((nerve_cover[:, np.array(s)] != 0).sum(axis=1).max() == len(s))
+		st.expand(dim, nonempty_intersect)
+	return st

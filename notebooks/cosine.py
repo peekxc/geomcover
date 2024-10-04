@@ -29,7 +29,7 @@ show(p)
 ## Our manifold will be the simple path graph (+ identity)
 n = len(x)
 M = path_graph(n, k=5) + sp.sparse.dia_array(np.eye(n))
-TM = tangent_bundle(M=M, X=X, d=1, centers=X)
+TM = tangent_bundle(X=X, M=M, d=1, centers=X)
 
 ## Plot the bundle
 p = plot_tangent_bundle(TM, width=450, height=150, x_range=p.x_range, y_range=p.y_range)

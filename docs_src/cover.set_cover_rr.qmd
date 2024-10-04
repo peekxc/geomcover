@@ -1,7 +1,5 @@
----
-title: cover.set_cover_rr
-bread-crumbs: true
----
+# cover.set_cover_rr { #geomcover.cover.set_cover_rr }
+
 `cover.set_cover_rr(subsets, weights=None, maxiter=None, sparsity=1.0, seed=None)`
 
 Approximates the weighted set cover problem via _randomized rounding_.
@@ -12,7 +10,7 @@ continuing until a feasible solution is found.
 
 The minimum-cost fractional cover is obtained by solving the following linear program:
 
-$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in C} s_j \cdot w_j  \\
+$$\begin{align*}\text{minimize} \quad & \sum\limits_{j \in [J]} s_j \cdot w_j  \\
 \text{s.t.} \quad & \sum\limits_{j \in N_i}  s_j  \geq 1, \quad \forall \, i \in [n] \\
 & s_j \in [0, 1], \quad \forall \, j \in [J]\end{align*}$$
 
@@ -62,4 +60,4 @@ soln, cost = set_cover_rr(subsets, weights)
 n, J = subsets.shape
 
 print("Set family with {n} elements and {J} sets can be covered with {np.sum(soln)} sets with cost {cost}.")
-``````
+```

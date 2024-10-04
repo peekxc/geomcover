@@ -1,13 +1,16 @@
----
-title: cover.set_cover
-bread-crumbs: true
----
+# cover.set_cover { #geomcover.cover.set_cover }
+
 `cover.set_cover(subsets, weights=None, method='RR', **kwargs)`
 
 Computes an approximate solution to the weighted set cover problem.
 
+Given a family of sets $\mathcal{S}$ and set weights $w \in \mathbb{R}^{\lvert \mathcal{S} \rvert}$, this function attempts
+to find a set family $\mathcal{C} \subseteq \mathcal{S}$ covering the universe $U = \{0, 1, \dots, n - 1\}$ and having minimum total weight:
+
+$$ \min_{\mathcal{C} \subseteq \mathcal{S}} \; \sum_{S_i \in \mathcal{C}} w_i \quad \text{ subject to } \quad \bigcup_{S_i \in \mathcal{C}} = U $$
+
 This is essentially a lightweight wrapper around the various set cover implementations, which can be configured via
-the `method` argument (supported options are {'RR', 'GREEDY', 'ILP', 'SAT'}). All additional keyword-arguments are
+the `method` argument (supported options are 'RR', 'GREEDY', 'ILP', 'SAT'). All additional keyword-arguments are
 forwarded to their subsequent solvers.
 
 ## Parameters

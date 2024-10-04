@@ -30,7 +30,7 @@ G, weights, tangents = tangent_neighbor_graph(S, d=1, r=0.95)
 
 from set_cover.covers import tangent_bundle, neighborhood_graph
 M = neighborhood_graph(S, r=0.95)
-TM = tangent_bundle(M, S, d=1)
+TM = tangent_bundle(S, M=M, d=1)
 
 # %% Plot the neighborhood graph 
 A = M.tocoo()
@@ -55,7 +55,7 @@ show(p)
 
 
 ## Same plot, but with tangents centered at the points in S
-TM = tangent_bundle(M, S, d=1, centers=S)
+TM = tangent_bundle(S, M, d=1, centers=S)
 xs = [np.ravel((p[0]-v[0], p[0]+v[0])) for p,v in TM]
 ys = [np.ravel((p[1]-v[1], p[1]+v[1])) for p,v in TM]
 p = figure(width=300, height=300, match_aspect=True)
